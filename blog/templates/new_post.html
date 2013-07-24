@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 id="">Write a post</h1>
+        <form method="post" action="{{ url_for('new_post') }}" class="form-horizontal">
+        <p>            
+        <label for="title">Title</label>
+        <input type="text" name="title" placeholder="Title">
+        </p>
+        <p>
+        <label for="title">Content</label>
+        <input type="text" name="content" placeholder="Content">
+        </p>
+        <p><input type="submit" value="Save post"/></p>
+    </form>
+{% endblock %}

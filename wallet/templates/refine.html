@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block extra_head %}
+    <script type="text/javascript">
+    function open_market(type_id) {
+        CCPEVE.showMarketDetails(type_id);
+    }
+    </script>
+
+    <style type="text/css">
+    table.strapless{
+      width:100%;
+      background-color: transparent;
+      border-collapse:collapse 
+      border-style:none;
+    }
+    tr.strapless {
+    max-width: 100%;
+    border:none;
+    background-color: transparent;
+    }
+    td.strapless {
+    text-align:right;
+    border:none;
+    background-color: transparent;
+    }   
+    td.straplessr {
+    text-align:left;
+    border:none;
+    background-color: transparent;
+    }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="span12">
+            <div class="page-header">
+              <h1>Refine Finder <small>blah blah </small></h1>
+            </div> 
+              <table class="table table-striped">
+                <thead>
+                    <th scope="col">Item</th>
+                    <th class="ral" scope="col">Portion</th>
+                    <th class="ral" scope="col">Refine</th>
+                    <th class="ral" scope="col">Jita Price</th>
+                </thead>
+                <tbody>
+                    {% for row in data %}  
+                <tr>
+                <td><a href="Javascript:open_market({{row[0]}})"><i class="icon-search"></i></a> <a href="/item/{{row[0]}}">{{row[1]}}</a></td>
+                <td class="ral">{{row[2]}}</td>
+                <td class="ral">{{'{:20,.2f}'.format(row[3])}}</td>
+                <td class="ral">{{'{:20,.2f}'.format(row[4])}}</td>
+                </tr>    
+                    {% endfor %} 
+                <tbody>
+            </table>
+        </div><!--/span-->
+    </div><!--/row-->
+{% endblock %}
+

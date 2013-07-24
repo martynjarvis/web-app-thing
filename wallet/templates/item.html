@@ -1,0 +1,318 @@
+{% extends "base.html" %}
+{% block extra_head %}
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/highcharts-more.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+<script type="text/javascript">
+var chart1; // globally available
+$(document).ready(function() {
+      chart1 = new Highcharts.Chart({
+         chart: {
+            renderTo: 'chart_div',
+            zoomType: 'x',
+         },
+         title: {
+            text: 'Transactions'
+         },
+         xAxis: {
+            type: 'datetime',
+            title: {
+               text: 'Date'
+            },
+         },
+         yAxis: {
+            title: {
+               text: 'Price'
+            },
+            min: 0,
+         },
+            plotOptions: {
+                spline: {
+                    lineWidth: 2,
+                    states: {
+                        hover: {
+                            lineWidth: 4
+                        }
+                    },
+                    marker: {
+                        enabled: false,
+                        states: {
+                            hover: {
+                                enabled: true,
+                                symbol: 'circle',
+                                radius: 5,
+                                lineWidth: 1
+                            }
+                        }
+                    },
+                }
+            },
+         series: [{
+            type: 'scatter',
+            name: 'Buy',
+            color: 'rgba(223, 83, 83, 1)',
+            data: [
+            {% for row in transaction_data %}
+                {% if row[7] == 'buy' %}
+                  [ Date.UTC({{row[2].year}},{{row[2].month-1}},{{row[2].day}},{{row[2].hour}},{{row[2].minute}},{{row[2].second}}) ,{{row[4]}}],
+                {% endif %}
+            {% endfor %}
+            ]
+         }, 
+         {
+            type: 'scatter',
+            name: 'Sell',
+            color: 'rgba(0, 151, 70, 1)',
+            data: [
+            {% for row in transaction_data %}
+                {% if row[7] == 'sell' %}
+                  [ Date.UTC({{row[2].year}},{{row[2].month-1}},{{row[2].day}},{{row[2].hour}},{{row[2].minute}},{{row[2].second}}) ,{{row[4]}}],
+                {% endif %}
+            {% endfor %}
+            ]
+         }, 
+         {
+            type: 'spline',
+            name: 'Hist',
+            color: 'rgba(0, 150, 221, .5)',
+            data: [
+            {% for row in hist_data %}
+              [ Date.UTC({{row[0].year}},{{row[0].month-1}},{{row[0].day}}) ,{{row[1]}}],
+            {% endfor %}
+            ]
+         }]
+      });
+    });
+    </script>
+{% endblock %}
+
+
+{% block content %}
+<div class="row-fluid">
+        <div class="span12">
+            <div class="page-header">
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="/market">All</a> <span class="divider">/</span>
+                    </li>
+                    {% if tree|count > 0 %}
+                      {% for step in tree|reverse %}
+                        <li>
+                          <a href="/market/{{step[1]}}">{{step[0]}}</a> <span class="divider">/</span>
+                        </li>
+                      {% endfor %}
+                    {% endif %}
+                </ul>
+                <h1>
+                <img src="http://image.eveonline.com/Type/{{item_data["id"]}}_32.png" class="img-polaroid">
+                 {{item_data["name"]}} <small></small></h1>
+            </div>
+        </div><!--/span--> 
+    </div><!--/row-->    
+    
+    <div class="row-fluid">
+        <div class="span12">
+            <h2>Historical Transaction Data <small>Buy and Sell</small></h2>
+            <!--<div id="chart_div" style="width: 900px; height: 500px;"></div>-->
+            <div id="chart_div" style="height: 400px;"></div>
+        </div><!--/span--> 
+    </div><!--/row-->    
+    
+    <hr>
+    
+    <div class="row-fluid">      
+        <div class="span12">       
+            <h2>Statistics <small></small></h2>
+        </div><!--/span-->   
+    </div><!--/row-->  
+
+    <div class="row-fluid">  
+        <div class="span4">  
+            <table class="table table-striped">
+                <thead>
+                    <th scope="col">Transaction Stats</th>
+                </thead> 
+                <tbody>
+                    <tr> <td>Last Buy</td>
+                        {% if stats_data["last_buy"] %}
+                            <td>{{'{:20,.2f}'.format(stats_data["last_buy"])}}</td>
+                        {% else %}
+                            <td>-</td>
+                        {% endif %} </tr>
+                    <tr> <td>Last Sell</td>
+                        {% if stats_data["last_sell"] %}
+                            <td>{{'{:20,.2f}'.format(stats_data["last_sell"])}}</td>
+                        {% else %}
+                            <td>-</td>
+                        {% endif %} </tr>
+                    <tr> <td>Profit</td>
+                        {% if stats_data["last_buy"] and  stats_data["last_sell"] %}
+                            <td>{{'{:20,.2f}'.format(stats_data["last_sell"]-stats_data["last_buy"])}}</td>
+                        {% else %}
+                            <td>-</td>
+                        {% endif %} </tr>
+                    <tr> <td>Margin</td>
+                        {% if stats_data["last_buy"] and  stats_data["last_sell"] %}
+                            <td>{{'{:20,.2f}'.format(100*(stats_data["last_sell"]-stats_data["last_buy"])/stats_data["last_buy"])}}%</td>
+                        {% else %}
+                            <td>-</td>
+                        {% endif %} </tr>
+                    <tr> <td>Item m^3</td> <td>{{item_data["volume"]}}</td> </tr>
+                    <tr> <td>Profit / m^3</td> 	
+                        {% if stats_data["last_buy"] and  stats_data["last_sell"] %}
+                            <td>{{'{:20,.2f}'.format((stats_data["last_sell"]-stats_data["last_buy"])/item_data["volume"])}}</td>
+                        {% else %}
+                            <td>-</td>
+                        {% endif %} </tr>
+                </tbody>
+            </table>
+        </div><!--/span-->      
+        <div class="span4">  
+            <table class="table table-striped">
+                <thead>
+                    <th scope="col">Profit Stats</th>
+                </thead> 
+                <tbody>
+                    <tr><td>Sold Total</td> <td>{{stats_data["sold_total"]}}</td> </tr>
+                    <tr><td>Profit Total</td> 
+                        {% if stats_data["profit_total"] %}  
+                            <td>{{'{:20,.2f}'.format(stats_data["profit_total"])}}</td>
+                        {% else %}
+                            <td>-</td>                
+                        {% endif %} </tr>
+                    <tr><td>Sold 30 Days</td><td>{{stats_data["sold_30"]}}</td></tr>
+                    <tr><td>Sold 7 Days</td><td>{{stats_data["sold_7"]}}</td> </tr>
+                    <tr> <td>30 Day Profit Projection</td>
+                        {% if stats_data["sold_total"] > 0 and stats_data["sold_30"] > 0 and stats_data["profit_total"]%}
+                            <td>{{'{:20,.2f}'.format(stats_data["profit_total"]*stats_data["sold_30"]/stats_data["sold_total"])}}</td>
+                        {% else %}
+                            <td>-</td>
+                        {% endif %} </tr> 
+                    <tr> <td>7 Day Profit Projection</td>
+                        {% if stats_data["sold_total"] > 0 and stats_data["sold_7"] > 0 and stats_data["profit_total"]%}
+                            <td>{{'{:20,.2f}'.format(stats_data["profit_total"]*stats_data["sold_7"]/stats_data["sold_total"])}}</td>
+                        {% else %}
+                            <td>-</td> 
+                        {% endif %}</tr> 
+                </tbody>
+            </table>
+
+        </div><!--/span-->   
+        <div class="span4">  
+            <table class="table table-striped">
+                <thead>
+                    <th scope="col">Market Stats</th>
+                </thead> 
+                <tbody>
+                    <tr><td>Jita Price</td><td>{{'{:20,.2f}'.format(market_data[0])}}</td></tr>
+                    <tr><td>Import Price</td><td>{{'{:20,.2f}'.format(market_data[0]|float+400*item_data["volume"])}}</td></tr>
+                    <tr><td>10% Margin</td><td>{{'{:20,.2f}'.format((market_data[0]|float+400*item_data["volume"])*1.1)}}</td></tr>
+                    <tr><td>20% Margin</td><td>{{'{:20,.2f}'.format((market_data[0]|float+400*item_data["volume"])*1.2)}}</td></tr>
+                    <tr><td>30% Margin</td><td>{{'{:20,.2f}'.format((market_data[0]|float+400*item_data["volume"])*1.3)}}</td></tr>
+                    <tr><td>40% Margin</td><td>{{'{:20,.2f}'.format((market_data[0]|float+400*item_data["volume"])*1.4)}}</td></tr>
+                </tbody>
+            </table>
+        </div><!--/span-->   
+    </div><!--/row-->  
+    
+    
+    
+    <hr>
+    
+    {% if order_data %}
+    <div class="row-fluid">      
+        <div class="span12">       
+            <h2>Active Orders <small>All buy and sell orders currently on markets</small></h2>
+            <h3>Sell Orders <small></small></h3>
+            <table class="table table-striped">
+                <thead>
+                    <th scope="col">Character</th>
+                    <th scope="col">Issued</th>
+                    <th scope="col">Volume</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Station</th>
+                </thead>
+                <tbody>
+                    {% for row in order_data %}
+                      {% if row[11]==0 and row[6]==0 %}
+                        <td><a href="/char/{{row[0]}}/">{{row[1]}}</a></td>
+                        <td>{{row[12]}}</td>
+                        <td> 
+                            <div class="progress">
+                                <div class="bar" style="float: left; width: {{(100.0*(row[4]|float))/row[3]}}%;">{{(row[4])}}</div>
+                            </div> 
+                        </td>
+                        <td>{{'{:20,.2f}'.format(row[10])}}</td>
+                        <td><a href="/station/{{row[2]}}/">{{row[2]}}</a></td>
+                        </tr>    
+                      {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <h3>Buy Orders <small></small></h3>
+            <table class="table table-striped">
+                <thead>
+                    <th scope="col">Character</th>
+                    <th scope="col">Issued</th>
+                    <th scope="col">Volume</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Station</th>
+                </thead>
+                <tbody>
+                    {% for row in order_data %}
+                      {% if row[11]==1 and row[6]==0 %}
+                        <td><a href="/char/{{row[0]}}/">{{row[1]}}</a></td>
+                        <td>{{row[12]}}</td>
+                        <td> 
+                            <div class="progress">
+                                <div class="bar" style="float: left; width: {{(100.0*(row[4]|float))/row[3]}}%;">{{(row[4])}}</div>
+                            </div> 
+                        </td>
+                        <td>{{'{:20,.2f}'.format(row[10])}}</td>
+                        <td><a href="/station/{{row[2]}}/">{{row[2]}}</a></td>
+                        </tr>    
+                      {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div><!--/span-->      
+    </div><!--/row-->    
+    <hr>
+    {% endif %}
+    
+    {% if transaction_data %}    
+    <div class="row-fluid">
+        <div class="span12">    
+            <h2>Transaction History <small>Transactions from wallet</small></h2>
+            <table class="table table-striped">
+                <thead>
+                    <th scope="col">Character</th>
+                    <th scope="col">Buy/Sell</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Station</th>
+                </thead>
+                <tbody>
+                    {% for row in transaction_data %}
+                    </tr>    
+                    <td><a href="/char/{{row[0]}}/">{{row[1]}}</a></td>
+                    <td>{{row[7]}}</td>
+                    <td>{{row[2]}}</td>
+                    <td>{{row[3]}}</td>
+                    <td>{{'{:20,.2f}'.format(row[4])}}</td>
+                    <td><a href="/station/{{row[5]}}/">{{row[6]}}</a></td>
+                    </tr>    
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div><!--/span-->      
+    </div><!--/row-->         
+    {% endif %}
+  
+{% endblock %}
+
+

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+<script type="text/javascript">
+    function trust() {
+      CCPEVE.requestTrust('{{url_for('index',_external=True )}}')
+    }
+</script>
+
+{% endblock %}
+
+
+{% block content %}
+    <div class="row">
+        <div class="span4">
+            <div class="page-header">
+                <h1>Request Trust<small></small></h1>
+            </div>
+        </div><!--/span--> 
+    </div><!--/row-->   
+
+    <div class="row-fluid">
+        <div class="span4">
+            <button class="btn btn-primary" onclick="trust();">Request Trust</button>
+            <a href="{{url_for(redirect)}}" class="btn">Continue</a>
+        </div><!--/span--> 
+    </div><!--/row-->   
+{% endblock %}
+

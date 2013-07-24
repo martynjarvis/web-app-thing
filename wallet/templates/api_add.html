@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row-fluid">
+        <div class="span4">
+  
+            <form method="post" action="/api_add" class="form-horizontal">
+                {% if error %}
+                    <div class="alert alert-error">
+                      <button type="button" class="close" data-dismiss="alert">x</button>
+                      <strong>Error!</strong> {{ error }}
+                    </div>
+                {% endif %}
+              <div class="control-group">
+                <label class="control-label" for="inputUsername">ID</label>
+                <div class="controls">
+                  <input type="text" name="api_id" placeholder="ID">
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="control-label" for="inputPassword">VCode</label>
+                <div class="controls">
+                  <input type="text" name="api_vcode" placeholder="VCode">
+                </div>
+              </div>
+              <div class="control-group">
+                <div class="controls">
+
+                    <button type="submit" class="btn">Add</button>
+                </div>
+              </div>
+            </form>
+
+        </div><!--/span-->
+    </div><!--/row-->
+{% endblock %}
+

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row-fluid">
+        <div class="span12">
+            <div class="page-header">
+                <ul class="breadcrumb">
+                  <li>
+                    <a href="/market">All</a> <span class="divider">/</span>
+                  </li>
+                {% for step in (tree[1:]|reverse) %}
+                  <li>
+                    <a href="/market/{{step[1]}}">{{step[0]}}</a> <span class="divider">/</span>
+                  </li>
+                {% endfor %}
+                  <li>
+                    {{title}} 
+                  </li>
+                </ul>
+                <h1> {{title}} <small></small></h1>
+            </div>
+        </div><!--/span--> 
+    </div><!--/row-->    
+
+    <div class="row">
+        <div class="span8 offset2">
+          {% if child_markets|count > 0 %}
+            <table class="table table-striped">
+                <thead>
+                    <th scope="col">Groups</th>
+                </thead>
+                <tbody>
+                    {% for row in child_markets %}
+                    </tr> 
+                    <td><a href="/market/{{row[1]}}">{{row[0]}}</a></td>
+                    </tr> 
+                    {% endfor %}
+                <tbody>
+            </table>
+          {% endif %}
+       
+          {% if child_items|count > 0 %}
+            <table class="table table-striped">
+                <thead>
+                    <th scope="col">Items</th>
+                </thead>
+                <tbody>
+                   {% for row in child_items %}
+                    </tr> 
+                    <td><img src="http://image.eveonline.com/Type/{{row[1]}}_32.png" class="img-polaroid"></td>
+                    <td><a href="/item/{{row[1]}}">{{row[0]}}</a></td>
+                    </tr> 
+                    {% endfor %}
+                <tbody>
+            </table>
+          {% endif %}
+                      
+        </div><!--/span-->
+    </div><!--/row-->
+{% endblock %}
+

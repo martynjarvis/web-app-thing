@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row">
+        <div class="span8 offset2">
+            <div class="page-header">
+              <h1>Search <small> Market items found matching: {{search_term}} </small></h1>
+            </div> 
+
+            <table class="table table-striped">
+              <thead>
+                 <th scope="col">Item ID</th>					
+                 <th scope="col">Item Name</th>
+              </thead>
+              <tbody>
+                   {% for row in search_data %}
+                    </tr> 
+                    <td><img src="http://image.eveonline.com/Type/{{row[0]}}_32.png" class="img-polaroid"></td>
+                    <td><a href="/item/{{row[0]}}">{{row[1]}}</a></td>
+                    </tr> 
+                    {% endfor %}
+              
+              <tbody>
+            </table>
+        </div><!--/span-->
+    </div><!--/row-->
+
+{% endblock %}

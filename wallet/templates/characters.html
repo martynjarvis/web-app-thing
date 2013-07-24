@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row">
+        <div class="span8 offset2">
+            <div class="page-header">
+              <h1>Characters <small> Eve characters linked to this account: </small></h1>
+            </div>          
+
+            <table class="table table-striped">
+                <thead>
+                    <th scope="col">Portrait</th>					
+                    <th scope="col">Name</th>
+                </thead>
+                <tbody>
+                    {% for char in data %}  
+                        <tr> 
+                        <td> <img src="http://image.eveonline.com/Character/{{char.characterID}}_64.jpg" class="img-polaroid"></td>
+                        <td>{{char.characterName}}</td>
+                        </tr> 
+                    {% endfor %} 
+                <tbody>
+            </table>
+        </div><!--/span-->
+    </div><!--/row-->
+{% endblock %}
+

@@ -161,55 +161,7 @@ def transactions():
     userKey = ndb.Key(urlsafe=session['userkey']) 
     chars = Character.query().filter(Character.user == userKey).fetch(keys_only=True)
     # then get data
-    data = Transaction.query(Transaction.character.IN(chars)).fetch(200)
+    data = Transaction.query(Transaction.character.IN(chars)).order(-Transaction.transactionID).fetch(200)
     return render_template('transactions.html', title="Transactions", data=data )
     
-    
-@app.route('/tasks/transactions')
-def worker_transaction():
-    apis = Api.query()
-    for api in apis:
-        for chara in api.characters: 
-            previousTransaction = Transaction.query(Transaction.character == chara).order(-Transaction.transactionID).fetch(1)
-            previousID = 0
-            if previousTransaction:
-                previousID = previousTransaction[0].transactionID
- 
-            # Create API object with auth and char reference
-            auth = EVEAPIConnection().auth(keyID=api.keyID, vCode=api.vCode).character(chara.get().characterID)
-        
-            # Wallet balances
-            try:
-                wallet_transactions = auth.WalletTransactions()
-            except api_error, e:
-                print "eveapi returned the following error when querying transactions:"
-                print "code:", e.code
-                print "message:", e.message
-                return
-            except Exception, e:
-                print "Something went horribly wrong:" + str(e)
-                return
-                
-            transactionList = []
-            for transaction in wallet_transactions.transactions :
-                if transaction.transactionID > previousID: 
-                    t = Transaction(
-                        transactionDateTime = datetime.datetime.fromtimestamp(transaction.transactionDateTime),
-                        transactionID = transaction.transactionID,
-                        quantity = transaction.quantity,
-                        typeName = transaction.typeName,
-                        typeID = transaction.typeID,
-                        price = transaction.price,
-                        clientID = transaction.clientID,
-                        clientName = transaction.clientName,
-                        stationID = transaction.stationID,
-                        stationName = transaction.stationName,
-                        transactionType = transaction.transactionType,
-                        transactionFor = transaction.transactionFor,
-                        journalTransactionID = transaction.journalTransactionID,
-                        character = chara
-                        )
-                    transactionList.append(t)
-            ndb.put_multi(transactionList)
-    return "0"        
     

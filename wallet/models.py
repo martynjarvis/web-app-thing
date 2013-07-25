@@ -67,5 +67,5 @@ class Transaction(ndb.Model):
     transactionType=ndb.StringProperty()
     transactionFor=ndb.StringProperty()
     journalTransactionID=ndb.IntegerProperty()
-    character = ndb.KeyProperty(kind=Character)
+    character = ndb.KeyProperty(Character)
     

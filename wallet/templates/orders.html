@@ -2,107 +2,56 @@
 
 {% block extra_head %}
     <style type="text/css">
-      @import "/static/datatables/media/css/demo_table.css";
+      @import "/static/datatables/css/demo_table.css";
     </style>
 
-    <script class="jsbin" src="http://datatables.net/download/build/jquery.dataTables.nightly.js"></script>
+<script class="jsbin" src="http://datatables.net/download/build/jquery.dataTables.nightly.js"></script>
 
-    <script type="text/javascript">
-        $(document).ready(function(){
-            {%for chara in sell_orders%}
-                {%for station in sell_orders[chara]["stations"]%}
-                    $('#table-{{chara}}-{{station}}').dataTable({
-                        "aaSorting": [[ 0, "asc" ]],
-                    });
-                {% endfor %} 
-            {% endfor %}   
-        });
-    </script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#example').dataTable({
+    "iDisplayLength": 15,
+    "aLengthMenu": [[15,50,100,500,-1], [15,50,100,500, "All"]],
+    "aaSorting": [[ 2, "desc" ]],
+    });
+});
+</script>
+
 {% endblock %}
 
 {% block content %}
     <div class="row">
-        <div class="span12">
+         <div class="span12">
             <div class="page-header">
-                <h1>Market Orders <small></small></h1>
-            </div>
-        </div><!--/span--> 
-    </div><!--/row-->   
-    <div class="row-fluid">
-        <div class="span12">
-
-            <h3>Sell Orders <small></small></h3>  
-        
-            {%for chara in sell_orders%}
-            <h2> <img src="http://image.eveonline.com/Character/{{chara}}_64.jpg" class="img-polaroid">
-                {{sell_orders[chara]["name"]}}
-                <small>{{'{:20,.2f}'.format(sell_orders[chara]["total"])}}</small>
-            </h2>   
-
-            <div class="accordion" id="accordion-{{chara}}">         
-                {%for station in sell_orders[chara]["stations"]%}
-                <div class="accordion-group">
-                    <div class="accordion-heading">
-                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-{{chara}}" href="#collapse-{{chara}}-{{station}}">
-                            {{sell_orders[chara]["stations"][station]["name"]}}
-                        </a>
-                    </div>
-                    <div id="collapse-{{chara}}-{{station}}" class="accordion-body collapse">
-                        <div class="accordion-inner">
-                            {%if sell_orders[chara]["stations"][station]["orders"]%}
-                                <table class="table table-striped" id="table-{{chara}}-{{station}}">
-                                    <thead>
-                                        <th scope="col">Item</th>
-                                        <th scope="col">Issued</th>
-                                        <th scope="col">Bar</th>
-                                        <th class="ral" scope="col">Price</th>
-                                        <th class="ral" scope="col">Volume</th>
-                                        <th class="ral" scope="col">Total</th>
-                                    </thead>
-                                    <tbody>
-                                        {% for order in sell_orders[chara]["stations"][station]["orders"] %}  
-                                            <tr> 
-                                            <td><a href="/item/{{sell_orders[chara]["stations"][station]["orders"][order]["id"]}}">
-                                                               {{sell_orders[chara]["stations"][station]["orders"][order]["name"]}}</a></td>
-                                            <td>{{sell_orders[chara]["stations"][station]["orders"][order]["issued"]}}</td>
-                                            <td>
-                                                <div class="progress">
-                                                    <div class="bar" style="float: left; width:
-                                                    {{(100.0*(sell_orders[chara]["stations"][station]["orders"][order]["vol_remaining"]|float))/
-                                                              sell_orders[chara]["stations"][station]["orders"][order]["vol_entered"]}}%;"                                                            "></div>
-                                                </div> 
-                                             </td>
-                                            <td class="ral">{{'{:20,.2f}'.format(sell_orders[chara]["stations"][station]["orders"][order]["price"])}}</td>
-                                            <td class="ral">{{sell_orders[chara]["stations"][station]["orders"][order]["vol_remaining"]}}</td>
-                                            <td class="ral">{{'{:20,.2f}'.format(sell_orders[chara]["stations"][station]["orders"][order]["price"]*
-                                                                                 sell_orders[chara]["stations"][station]["orders"][order]["vol_remaining"])}}</td>
-                                            </tr> 
-                                        {% endfor %} 
-                                    </tbody>
-                                </table>
-                                <table class="table">   
-                                    <tr> 
-                                        <td><strong>Total</strong></td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td class="ral"> </td>
-                                        <td class="ral"> </td>
-                                        <td class="ral"><strong>{{'{:20,.2f}'.format(sell_orders[chara]["stations"][station]["total"])}}</strong></td>
-                                    </tr>  
-                                </table>                        
-                            {% endif %} 
-                        </div><!--/accordian inner--> 
-                    </div><!--/accordian body--> 
-                </div> <!--/accordian group-->  
-                {% endfor %} <!--/station loop-->  
-            </div> <!--/accordian main-->  
-            {% endfor %} 
+                <h1>Market Orders <small>tag</small></h1>
+            </div>    
             
-            
-            <h3>Buy Orders <small></small></h3>  
-            
-        </div><!--/span--> 
-    </div><!--/row-->     
-    
+            <table class="table table-striped" id="example">     
+                <thead>
+                    <th scope="col">Character</th>
+                    <th scope="col">b/s</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Item</th>
+                    <th class="ral" scope="col">Price</th>
+                    <th class="ral" scope="col">n</th>
+                    <th class="ral" scope="col">Total</th>
+                    <th scope="col">Station</th>
+                </thead>
+                <tbody>
+                    {% for row in data %}  
+                    <tr> 
+                    <td><a href="/char/{{row.character.get().characterID}}">{{row.character.get().characterName}}</a></td>
+                    <td>{{row.bid}}</td>
+                    <td>{{row.issued}}</td>
+                    <td><a href="/item/{{row.typeID}}">{{row.typeID}}</a></td>
+                    <td class="ral">{{'{:20,.2f}'.format(row.price)}}</td>
+                    <td class="ral">{{row.volRemaining}}</td>
+                    <td class="ral">{{'{:20,.2f}'.format(row.price*row.volRemaining)}} </td>
+                    <td><a href="/station/{{row.stationID}}">{{row.stationID}}</a></td> 
+                    </tr> 
+                    {% endfor %} 
+                <tbody>
+            </table>
+        </div><!--/span-->
+    </div><!--/row-->
 {% endblock %}
-

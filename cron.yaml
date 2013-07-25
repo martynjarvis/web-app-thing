@@ -1,4 +1,7 @@
 cron:
+- description: orders
+  url: /tasks/orders
+  schedule: every 2 hours
 - description: transactions
   url: /tasks/transactions
-  schedule: every 1 hours
+  schedule: every 2 hours

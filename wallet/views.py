@@ -1,5 +1,5 @@
 from wallet import app
-from models import User,Api,Character
+from models import User,Api,Character,Transaction
 from decorators import login_required
 
 from google.appengine.ext import ndb
@@ -9,6 +9,7 @@ from flask import render_template, flash, url_for, redirect, request, session
 from eveapi import EVEAPIConnection
 from eveapi import Error as api_error
 
+import datetime
 import hashlib
 
 # app methods
@@ -79,7 +80,7 @@ def api():
     userKey = ndb.Key(urlsafe=session['userkey']) 
     apis = Api.query().filter(Api.user == userKey)
     return render_template('api.html', title="APIs", data=apis)
-         
+  
 def update_char_from_api(keyID,vCode):
     userKey = ndb.Key(urlsafe=session['userkey'])  
     apiCon = EVEAPIConnection()
@@ -94,7 +95,6 @@ def update_char_from_api(keyID,vCode):
         return 
     charList = []
     for character in auth.account.Characters().characters:
-        charList.append(character.characterID)
         q = Character.query().filter(Character.characterID == character.characterID).fetch(1)
         if q:
             c = q[0]
@@ -106,6 +106,7 @@ def update_char_from_api(keyID,vCode):
         c.corporationID=int(character.corporationID)
         c.corporationName=character.corporationName
         c.put()
+        charList.append(c.key)
     return charList
     
 @app.route('/api_add', methods=['GET', 'POST'])
@@ -151,3 +152,64 @@ def characters():
     chars = Character.query().filter(Character.user == userKey)
     return render_template('characters.html', title="Characters", data=chars)
 
+
+@app.route('/transactions')
+@login_required
+def transactions():
+    ''' List transactions in db for this user'''
+    # get chars
+    userKey = ndb.Key(urlsafe=session['userkey']) 
+    chars = Character.query().filter(Character.user == userKey).fetch(keys_only=True)
+    # then get data
+    data = Transaction.query(Transaction.character.IN(chars)).fetch(200)
+    return render_template('transactions.html', title="Transactions", data=data )
+    
+    
+@app.route('/tasks/transactions')
+def worker_transaction():
+    apis = Api.query()
+    for api in apis:
+        for chara in api.characters: 
+            previousTransaction = Transaction.query(Transaction.character == chara).order(-Transaction.transactionID).fetch(1)
+            previousID = 0
+            if previousTransaction:
+                previousID = previousTransaction[0].transactionID
+ 
+            # Create API object with auth and char reference
+            auth = EVEAPIConnection().auth(keyID=api.keyID, vCode=api.vCode).character(chara.get().characterID)
+        
+            # Wallet balances
+            try:
+                wallet_transactions = auth.WalletTransactions()
+            except api_error, e:
+                print "eveapi returned the following error when querying transactions:"
+                print "code:", e.code
+                print "message:", e.message
+                return
+            except Exception, e:
+                print "Something went horribly wrong:" + str(e)
+                return
+                
+            transactionList = []
+            for transaction in wallet_transactions.transactions :
+                if transaction.transactionID > previousID: 
+                    t = Transaction(
+                        transactionDateTime = datetime.datetime.fromtimestamp(transaction.transactionDateTime),
+                        transactionID = transaction.transactionID,
+                        quantity = transaction.quantity,
+                        typeName = transaction.typeName,
+                        typeID = transaction.typeID,
+                        price = transaction.price,
+                        clientID = transaction.clientID,
+                        clientName = transaction.clientName,
+                        stationID = transaction.stationID,
+                        stationName = transaction.stationName,
+                        transactionType = transaction.transactionType,
+                        transactionFor = transaction.transactionFor,
+                        journalTransactionID = transaction.journalTransactionID,
+                        character = chara
+                        )
+                    transactionList.append(t)
+            ndb.put_multi(transactionList)
+    return "0"        
+    

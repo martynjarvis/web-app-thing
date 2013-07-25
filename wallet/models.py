@@ -39,19 +39,19 @@ class User(ndb.Model):
         return cls.query(cls.username == username).get()
     
 
-
-class Api(ndb.Model):
-    keyID = ndb.IntegerProperty()
-    vCode = ndb.StringProperty()
-    characters = ndb.IntegerProperty(repeated = True)
-    user = ndb.KeyProperty(kind=User)
-    
 class Character(ndb.Model):
     characterID=ndb.IntegerProperty()
     characterName=ndb.StringProperty()
     corporationID=ndb.IntegerProperty()
     corporationName=ndb.StringProperty()
     user = ndb.KeyProperty(kind=User)
+
+class Api(ndb.Model):
+    keyID = ndb.IntegerProperty()
+    vCode = ndb.StringProperty()
+    characters = ndb.KeyProperty(kind=Character,repeated = True)
+    user = ndb.KeyProperty(kind=User)
+    
     
 class Transaction(ndb.Model):
     transactionDateTime=ndb.DateTimeProperty()
@@ -67,4 +67,5 @@ class Transaction(ndb.Model):
     transactionType=ndb.StringProperty()
     transactionFor=ndb.StringProperty()
     journalTransactionID=ndb.IntegerProperty()
+    character = ndb.KeyProperty(kind=Character)
     

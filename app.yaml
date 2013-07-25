@@ -1,8 +1,9 @@
-application: gaeseries
-version: 3
-runtime: python
+application: wallet-thing
+version: 1
+runtime: python27
+threadsafe: true
 api_version: 1
 
 handlers:
 - url: .*
-  script: main.py
+  script: main.app

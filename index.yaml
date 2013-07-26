@@ -15,3 +15,9 @@ indexes:
   - name: character
   - name: transactionID
     direction: desc
+
+- kind: Transaction
+  properties:
+  - name: user
+  - name: transactionID
+    direction: desc

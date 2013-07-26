@@ -14,57 +14,8 @@ import datetime
 import hashlib
 
 #TODO
-# get rid of login methods and use google api stuff
-# replace calls to userKey = ndb.Key(urlsafe=session['userkey']) with google get user thing
-# replace character.user with user parameters
-# consider adding user parameters to all tables to speed up queries
+# delete all entities on live server(this will probably be all my write operations )
 # somehow add static database dump, I only need limited information
-
-# app methods
-# @app.route('/register', methods=['GET', 'POST'])
-# def register():
-    # error = None
-    # if request.method == 'POST':
-        # if request.form['username'] is None:
-            # flash('Invalid username','error')
-            # error = 'Invalid username'
-        # elif request.form['password1'] != request.form['password2'] :
-            # flash('Passwords do not match','error')
-            # error = 'Passwords do not match'   
-        # else :
-            # password_hash = (hashlib.md5(request.form['password1'].encode()).hexdigest())
-            # newUser = User(
-                # username = request.form['username'],
-                # email = request.form['email'],
-                # password = password_hash)
-            # newUser.put()
-            # session['logged_in'] = True
-            # session['username'] = request.form['username']
-            # session['userkey'] = newUser.key.urlsafe()
-            # flash('User created','success')
-            # return redirect(url_for('index'))
-    # return render_template('register.html', error=error)
-
-# @app.route('/login', methods=['GET', 'POST'])
-# def login():
-    # error = None
-    # if request.method == 'POST':
-        # loggingUser = User._get_by_username(request.form['username'])
-        # if loggingUser is None:
-            # flash('Invalid username','error')
-            # error = 'Invalid username'
-        # else :
-            # password_hash = (hashlib.md5(request.form['password'].encode()).hexdigest())
-            # if loggingUser.password != password_hash:
-                # flash('Invalid password','error')
-                # error = 'Invalid password'
-            # else :
-                # session['logged_in'] = True
-                # session['username'] = request.form['username']
-                # session['userkey'] = loggingUser.key.urlsafe()
-                # flash('You were logged in','success')
-                # return redirect(url_for('index'))
-    # return render_template('login.html', error=error)
 
 @app.route('/logout')
 def logout():
@@ -72,11 +23,6 @@ def logout():
     session.pop('username', None)
     flash('You were logged out','warning')
     return redirect(users.create_logout_url(url_for('index')))
-
-# @app.route('/logout', methods=['GET', 'POST'])
-# def logout():
-    # # users.get_current_user()
-    # return redirect(users.create_logout_url(request.url))
     
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -120,8 +66,8 @@ def update_char_from_api(keyID,vCode):
         c.user = users.get_current_user()
         c.characterID=int(character.characterID)
         c.characterName=character.name
-        c.corporationID=int(character.corporationID)
-        c.corporationName=character.corporationName
+        #c.corporationID=int(character.corporationID)
+        #c.corporationName=character.corporationName
         c.put()
         charList.append(c.key)
     return charList
@@ -173,9 +119,9 @@ def characters():
 def transactions():
     ''' List transactions in db for this user'''
     # get chars
-    chars = Character.query().filter(Character.user == users.get_current_user()).fetch(keys_only=True)
+    # chars = Character.query().filter(user == users.get_current_user()).fetch(keys_only=True)
     # then get data
-    data = Transaction.query(Transaction.character.IN(chars)).order(-Transaction.transactionID).fetch(100) # the IN is slooooow
+    data = Transaction.query().order(-Transaction.transactionID).filter(Transaction.user == users.get_current_user()).fetch(100)
     return render_template('transactions.html', title="Transactions", data=data )
     
     
@@ -184,9 +130,9 @@ def transactions():
 def orders():
     ''' List transactions in db for this user'''
     # get chars
-    chars = Character.query().filter(Character.user == users.get_current_user()).fetch(keys_only=True)
+    # chars = Character.query().filter(Character.user == users.get_current_user()).fetch(keys_only=True)
     # then get data
-    data = Order.query(Order.character.IN(chars)).fetch()
+    data = Order.query(Order.user == users.get_current_user()).fetch()
     return render_template('orders.html', title="Orders", data=data )
     
     

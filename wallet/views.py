@@ -1,5 +1,5 @@
 from wallet import app
-from models import Api,Character,Transaction,Order
+from models import Api,Character,Transaction,Order,Asset
 from decorators import login_required
 
 from google.appengine.ext import ndb
@@ -14,8 +14,8 @@ import datetime
 import hashlib
 
 #TODO
-# delete all entities on live server(this will probably be all my write operations )
 # somehow add static database dump, I only need limited information
+# market information, obviously can't add orders as I have on mysql
 
 @app.route('/logout')
 def logout():
@@ -118,9 +118,6 @@ def characters():
 @login_required
 def transactions():
     ''' List transactions in db for this user'''
-    # get chars
-    # chars = Character.query().filter(user == users.get_current_user()).fetch(keys_only=True)
-    # then get data
     data = Transaction.query().order(-Transaction.transactionID).filter(Transaction.user == users.get_current_user()).fetch(100)
     return render_template('transactions.html', title="Transactions", data=data )
     
@@ -129,10 +126,14 @@ def transactions():
 @login_required
 def orders():
     ''' List transactions in db for this user'''
-    # get chars
-    # chars = Character.query().filter(Character.user == users.get_current_user()).fetch(keys_only=True)
-    # then get data
     data = Order.query(Order.user == users.get_current_user()).fetch()
     return render_template('orders.html', title="Orders", data=data )
     
+@app.route('/assets')
+@login_required
+def assets():
+    ''' List transactions in db for this user'''
+    data = Asset.query(Asset.user == users.get_current_user()).fetch()
+    return render_template('assets.html', title="Assets", data=data )
     
+

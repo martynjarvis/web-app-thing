@@ -6,3 +6,4 @@ app.config.from_object('wallet.settings')
  
 import views
 import workers
+import data

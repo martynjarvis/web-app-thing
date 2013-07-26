@@ -1,7 +1,10 @@
 cron:
-- description: orders
-  url: /tasks/orders
-  schedule: every 2 hours
 - description: transactions
   url: /tasks/transactions
-  schedule: every 2 hours
+  schedule: every 5 mins
+- description: orders
+  url: /tasks/orders
+  schedule: every 10 mins
+- description: assets
+  url: /tasks/assets
+  schedule: every 30 mins

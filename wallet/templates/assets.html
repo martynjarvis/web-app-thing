@@ -2,101 +2,53 @@
 
 {% block extra_head %}
     <style type="text/css">
-      @import "/static/datatables/media/css/demo_table.css";
+      @import "/static/datatables/css/demo_table.css";
     </style>
 
-    <script class="jsbin" src="http://datatables.net/download/build/jquery.dataTables.nightly.js"></script>
+<script class="jsbin" src="http://datatables.net/download/build/jquery.dataTables.nightly.js"></script>
 
-    <script type="text/javascript">
-        $(document).ready(function(){
-            {%for chara in data_test%}
-                {%for station in data_test[chara]["stations"]%}
-                    $('#table-{{chara}}-{{station}}').dataTable({
-                        "aaSorting": [],
-                    });
-                {% endfor %} 
-            {% endfor %} 
-        });
-    </script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#example').dataTable({
+    "iDisplayLength": 15,
+    "aLengthMenu": [[15,50,100,500,-1], [15,50,100,500, "All"]],
+    "aaSorting": [[ 2, "desc" ]],
+    });
+});
+</script>
+
 {% endblock %}
 
 {% block content %}
     <div class="row">
-        <div class="span12">
+         <div class="span12">
             <div class="page-header">
-                <h1>Assets <small></small></h1>
-            </div>
-        </div><!--/span--> 
-    </div><!--/row-->   
-
-    <div class="row-fluid">
-        <div class="span12">
-
-            {%for chara in data_test%}
-            <h2> <img src="http://image.eveonline.com/Character/{{chara}}_64.jpg" class="img-polaroid">
-                {{data_test[chara]["name"]}}
-                <small>{{'{:20,.2f}'.format(data_test[chara]["total"])}}</small>
-            </h2>   
-
-            <div class="accordion" id="accordion-{{chara}}">         
-                {%for station in data_test[chara]["stations"]%}
-                <div class="accordion-group">
-                    <div class="accordion-heading">
-                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-{{chara}}" href="#collapse-{{chara}}-{{station}}">
-                            {{data_test[chara]["stations"][station]["name"]}}
-                        </a>
-                    </div>
-                    <div id="collapse-{{chara}}-{{station}}" class="accordion-body collapse">
-                        <div class="accordion-inner">
-                        <table class="table table-striped" id="table-{{chara}}-{{station}}">
-                            <thead>
-                                <th scope="col">Item</th>
-                                <th class="ral" scope="col">Volume</th>
-                                <th class="ral" scope="col">Jita Price</th>
-                                <th class="ral" scope="col">Quantity</th>
-                                <th class="ral" scope="col">Total</th>
-                            </thead>
-                            <tbody>           
-                                {%for asset in data_test[chara]["stations"][station]["assets"]%}
-                                <tr> 
-                                <td><a href="/item/{{data_test[chara]["stations"][station]["assets"][asset]["id"]}}">
-                                                   {{data_test[chara]["stations"][station]["assets"][asset]["name"]}}</a></td>
-                                <td class="ral">{{data_test[chara]["stations"][station]["assets"][asset]["vol"]}}</td>
-                                <td class="ral">{{'{:20,.2f}'.format(data_test[chara]["stations"][station]["assets"][asset]["price"])}}</td>
-                                <td class="ral">{{data_test[chara]["stations"][station]["assets"][asset]["quant"]}}</td>
-                                <td class="ral">{{'{:20,.2f}'.format(data_test[chara]["stations"][station]["assets"][asset]["quant"]
-                                                                    *data_test[chara]["stations"][station]["assets"][asset]["price"])}}</td>
-                                </tr>   
-                                  {%for content in data_test[chara]["stations"][station]["assets"][asset]["contents"]%}
-                                    <tr> 
-                                    <td> - - <a href="/item/{{data_test[chara]["stations"][station]["assets"][asset]["contents"][content]["id"]}}">
-                                                       {{data_test[chara]["stations"][station]["assets"][asset]["contents"][content]["name"]}}</a></td>
-                                    <td class="ral">{{data_test[chara]["stations"][station]["assets"][asset]["contents"][content]["vol"]}}</td>
-                                    <td class="ral">{{'{:20,.2f}'.format(data_test[chara]["stations"][station]["assets"][asset]["contents"][content]["price"])}}</td>
-                                    <td class="ral">{{data_test[chara]["stations"][station]["assets"][asset]["contents"][content]["quant"]}}</td>
-                                    <td class="ral">{{'{:20,.2f}'.format(data_test[chara]["stations"][station]["assets"][asset]["contents"][content]["quant"]
-                                                                        *data_test[chara]["stations"][station]["assets"][asset]["contents"][content]["price"])}}</td>
-                                    </tr>  
-                                  {% endfor %} 
-                                {% endfor %} 
-                            </tbody>
-                        </table>
-                        <table class="table">    
-                            <tr> 
-                                <td><strong>Total</strong></td>
-                                <td class="ral"> </td>
-                                <td class="ral"> </td>
-                                <td class="ral"> </td>
-                                <td class="ral"><strong>{{'{:20,.2f}'.format(data_test[chara]["stations"][station]["total"])}}</strong></td>
-                            </tr>  
-                        </table>
-                        </div>
-                    </div>
-                </div>  
-                {% endfor %} 
-            </div>
-            {% endfor %} 
-        </div><!--/span--> 
-    </div><!--/row-->       
+                <h1>Assets <small>tag</small></h1>
+            </div>    
+            <table class="table table-striped" id="example">     
+                <thead>
+                    <th scope="col">Character</th>
+                    <th scope="col">flag</th>
+                    <th scope="col">singleton</th>
+                    <th scope="col">rawQuantity</th>
+                    <th scope="col">Item</th>
+                    <th class="ral" scope="col">n</th>
+                    <th scope="col">Location</th>
+                </thead>
+                <tbody>
+                    {% for row in data %}  
+                    <tr> 
+                    <td><a href="/char/{{row.character.get().characterID}}">{{row.character.get().characterName}}</a></td>
+                    <td>{{row.flag}}</td>
+                    <td>{{row.singleton}}</td>
+                    <td>{{row.rawQuantity}}</td>
+                    <td><a href="/item/{{row.typeID}}">{{row.typeID}}</a></td>
+                    <td class="ral">{{row.quantity}}</td>
+                    <td><a href="/station/{{row.locationID}}">{{row.locationID}}</a></td> 
+                    </tr> 
+                    {% endfor %} 
+                <tbody>
+            </table>
+        </div><!--/span-->
+    </div><!--/row-->
 {% endblock %}
-

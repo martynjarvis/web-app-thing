@@ -1,5 +1,5 @@
 from wallet import app
-from models import Api,Character,Transaction,Order,Asset
+from models import Api,Character,Transaction,Order,Asset,Item
 from decorators import login_required
 
 from google.appengine.ext import ndb
@@ -14,7 +14,6 @@ import datetime
 import hashlib
 
 #TODO
-# somehow add static database dump, I only need limited information
 # market information, obviously can't add orders as I have on mysql
 
 @app.route('/logout')
@@ -126,14 +125,23 @@ def transactions():
 @login_required
 def orders():
     ''' List transactions in db for this user'''
-    data = Order.query(Order.user == users.get_current_user()).fetch()
+    data = Order.query().filter(Order.user == users.get_current_user()).fetch()
     return render_template('orders.html', title="Orders", data=data )
     
 @app.route('/assets')
 @login_required
 def assets():
     ''' List transactions in db for this user'''
-    data = Asset.query(Asset.user == users.get_current_user()).fetch()
+    data = Asset.query().filter(Asset.user == users.get_current_user()).fetch()
     return render_template('assets.html', title="Assets", data=data )
     
 
+@app.route('/item/<typeID>')
+def item(typeID):
+    ''' List orders,transactions and assets'''
+    typeID = int(typeID)
+    item         = Item.query().filter(Item.typeID == typeID).get()
+    orders       = Order.query().filter(Order.user == users.get_current_user()).filter(Order.typeID == typeID).fetch()
+    transactions = Transaction.query().filter(Transaction.user == users.get_current_user()).filter(Transaction.typeID == typeID).fetch()
+    assets       = Asset.query().filter(Asset.user == users.get_current_user()).filter(Asset.typeID == typeID).fetch()
+    return render_template('item.html', title=item.typeName, item=item,orders=orders,transactions=transactions,assets=assets)

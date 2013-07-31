@@ -41,11 +41,14 @@ class Order(ndb.Model):
     orderID	= ndb.IntegerProperty()
     #charID	= ndb.IntegerProperty()
     stationID = ndb.IntegerProperty(indexed=False)
+    # ? stationName=ndb.StringProperty(indexed=False)
+    # ? region?
     volEntered = ndb.IntegerProperty(indexed=False)
     volRemaining = ndb.IntegerProperty(indexed=False)
     #minVolume = ndb.IntegerProperty()
     #orderState = ndb.IntegerProperty()
     typeID = ndb.IntegerProperty()
+    typeName=ndb.StringProperty(indexed=False)
     #range = ndb.IntegerProperty()
     #accountKey = ndb.IntegerProperty()
     duration = ndb.IntegerProperty(indexed=False)
@@ -60,6 +63,7 @@ class Asset(ndb.Model):
     itemID = ndb.IntegerProperty()
     locationID = ndb.IntegerProperty(indexed=False)
     typeID = ndb.IntegerProperty()
+    typeName=ndb.StringProperty(indexed=False)
     quantity = ndb.IntegerProperty(indexed=False)
     flag = ndb.IntegerProperty(indexed=False)
     singleton = ndb.BooleanProperty(indexed=False)
@@ -68,7 +72,14 @@ class Asset(ndb.Model):
     user = ndb.UserProperty(required = True)
 
 
+    # think de normalised
+    # typeID, typeVolume, jitaVol, jitaSell, jitaBuy, karanVol,karanSell,karanBuy
     
+class Item(ndb.Model):
+    typeID = ndb.IntegerProperty()
+    typeName=ndb.StringProperty()
+    volume=ndb.FloatProperty(indexed=False)
+    marketGroupID = ndb.IntegerProperty()
     
     
     

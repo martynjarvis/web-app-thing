@@ -25,7 +25,7 @@ $(document).ready(function(){
             <div class="page-header">
                 <h1>Assets <small>tag</small></h1>
             </div>    
-            <table class="table table-striped" id="example">     
+            <table class="table" id="example">     
                 <thead>
                     <th scope="col">Character</th>
                     <th scope="col">flag</th>
@@ -42,7 +42,7 @@ $(document).ready(function(){
                     <td>{{row.flag}}</td>
                     <td>{{row.singleton}}</td>
                     <td>{{row.rawQuantity}}</td>
-                    <td><a href="/item/{{row.typeID}}">{{row.typeID}}</a></td>
+                    <td><a href="/item/{{row.typeID}}">{{row.typeName}}</a></td>
                     <td class="ral">{{row.quantity}}</td>
                     <td><a href="/station/{{row.locationID}}">{{row.locationID}}</a></td> 
                     </tr> 

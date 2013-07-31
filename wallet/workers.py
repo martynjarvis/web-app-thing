@@ -1,5 +1,5 @@
 from wallet import app
-from models import Api,Character,Transaction,Order,Cache,Asset
+from models import Api,Character,Transaction,Order,Cache,Asset,Item
 
 from google.appengine.ext import ndb
 from google.appengine.api import users
@@ -126,23 +126,20 @@ def worker_order():
                     o = Order(user = chara.get().user)
                     
                 if order.orderState  == 0: # still active
+                    if o.typeName == None:# add name of item if not known
+                        o.typeName = Item.query(Item.typeID == order.typeID).get().typeName
                     o.orderID	  = order.orderID	
-                    #o.charID      = order.charID
                     o.stationID   = order.stationID 
                     o.volEntered  = order.volEntered 
                     o.volRemaining= order.volRemaining 
-                    #o.minVolume   = order.minVolume 
-                    #o.orderState  = order.orderState 
                     o.typeID      = order.typeID 
-                    #o.range       = order.range 
-                    #o.accountKey  = order.accountKey 
                     o.duration    = order.duration 
                     o.escrow      = order.escrow 
                     o.price       = order.price 
                     o.bid         = bool(order.bid)
                     o.issued      = datetime.datetime.fromtimestamp(order.issued)
                     o.character   = chara
-                    o.put()
+                    o.put() # I think this is fine if the item already exists, no extra writes will be made
                 else : # fulfilled/cancelled/expired
                     if o.key: # if saved 
                         o.key.delete()
@@ -205,6 +202,9 @@ def worker_asset():
                 prevItem = previousItems.filter(Asset.itemID == asset.itemID).fetch(1) 
                 if prevItem: # item already exists, no need to add it
                     a = prevItem[0]
+                    if a.typeName == None:# add name of item if not known #TODO remove this eventually
+                        a.typeName = Item.query(Item.typeID == asset.typeID).get().typeName
+                        a.put()
                 else : # item does not exist, add it
                     try: # rawQuantity attribute is weird(:ccp:), it seems only "assembled" items have it...
                         rawQuantity = asset.rawQuantity
@@ -214,6 +214,7 @@ def worker_asset():
                     a.itemID =asset.itemID
                     a.locationID = asset.locationID
                     a.typeID = asset.typeID
+                    a.typeName = Item.query(Item.typeID == asset.typeID).get().typeName
                     a.quantity = asset.quantity 
                     a.flag = asset.flag
                     a.singleton = bool(asset.singleton)
@@ -232,6 +233,9 @@ def worker_asset():
                     prevItem = previousItems.filter(Asset.itemID == subAsset.itemID).fetch(1) 
                     if prevItem:
                         b = prevItem[0]
+                        if b.typeName == None:# add name of item if not known #TODO remove this eventually
+                            b.typeName = Item.query(Item.typeID == subAsset.typeID).get().typeName
+                            b.put()
                     else :
                         try: # rawQuantity attribute is weird(:ccp:), it seems only "assembled" items have it...
                             rawQuantity = subAsset.rawQuantity
@@ -241,6 +245,7 @@ def worker_asset():
                         b.itemID =subAsset.itemID
                         b.locationID = asset.locationID # stacked containers have no location(:ccp:) take location of parent
                         b.typeID = subAsset.typeID
+                        b.typeName = Item.query(Item.typeID == subAsset.typeID).get().typeName
                         b.quantity = subAsset.quantity 
                         b.flag = subAsset.flag
                         b.singleton = bool(subAsset.singleton)

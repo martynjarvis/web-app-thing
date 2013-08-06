@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <script type='text/javascript' src='http://code.jquery.com/jquery-1.7.1.js'></script>
 
     <!-- Le styles -->
@@ -41,7 +40,7 @@
 
             //get the data to populate the typeahead (plus some) 
             //from your api, wherever that may be
-            $.getJSON( 'http://localhost:5000/_typeahead_data', { q: $("#searchinput").val() }, function ( data ) {   
+            $.getJSON( '{{url_for("typeahead_data")}}', { q: $("#searchinput").val() }, function ( data ) {   
                 //reset these containers
                 item_data = {};
                 item_names = [];

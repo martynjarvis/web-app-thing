@@ -65,8 +65,6 @@ def update_char_from_api(keyID,vCode):
         c.user = users.get_current_user()
         c.characterID=int(character.characterID)
         c.characterName=character.name
-        #c.corporationID=int(character.corporationID)
-        #c.corporationName=character.corporationName
         c.put()
         charList.append(c.key)
     return charList
@@ -81,11 +79,9 @@ def api_add():
     if request.method == 'POST':
         if request.form['api_id']=="" or request.form['api_vcode']=="":
             return render_template('api_add.html', error='Invalid API')
-        
         charList = update_char_from_api(int(request.form['api_id']),vCode=request.form['api_vcode'])
         if not charList :
             render_template('api_add.html', error="Error:")
-
         a = Api(user = users.get_current_user(),
                 keyID = int(request.form['api_id']),
                 vCode=request.form['api_vcode'],
@@ -104,7 +100,6 @@ def api_refresh(apiKey):
         flash('API related error','error')
     return redirect(url_for('api'))
         
-        
 @app.route('/characters')
 @login_required
 def characters():
@@ -112,14 +107,12 @@ def characters():
     chars = Character.query().filter(Character.user == users.get_current_user())
     return render_template('characters.html', title="Characters", data=chars)
 
-
 @app.route('/transactions')
 @login_required
 def transactions():
     ''' List transactions in db for this user'''
     data = Transaction.query().order(-Transaction.transactionID).filter(Transaction.user == users.get_current_user()).fetch(100)
     return render_template('transactions.html', title="Transactions", data=data )
-    
     
 @app.route('/orders')
 @login_required
@@ -145,3 +138,4 @@ def item(typeID):
     transactions = Transaction.query().filter(Transaction.user == users.get_current_user()).filter(Transaction.typeID == typeID).fetch()
     assets       = Asset.query().filter(Asset.user == users.get_current_user()).filter(Asset.typeID == typeID).fetch()
     return render_template('item.html', title=item.typeName, item=item,orders=orders,transactions=transactions,assets=assets)
+

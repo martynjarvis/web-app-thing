@@ -200,12 +200,7 @@ def worker_asset():
             for asset in AssetList.assets :
                 updated.append(asset.itemID)
                 prevItem = previousItems.filter(Asset.itemID == asset.itemID).fetch(1) 
-                if prevItem: # item already exists, no need to add it
-                    a = prevItem[0]
-                    if a.typeName == None:# add name of item if not known #TODO remove this eventually
-                        a.typeName = Item.query(Item.typeID == asset.typeID).get().typeName
-                        a.put()
-                else : # item does not exist, add it
+                if not prevItem: # item does not exist, add it
                     try: # rawQuantity attribute is weird(:ccp:), it seems only "assembled" items have it...
                         rawQuantity = asset.rawQuantity
                     except AttributeError, e: 
@@ -224,6 +219,7 @@ def worker_asset():
                     
                 # now check for child assets inside this asset
                 # this is fine for now, but we could go another order deeper. (item in container in ship for example)
+                # smart thing to do is put this in a recirical function
                 try: 
                     contents = asset.contents
                 except AttributeError, e:  # no child assets
@@ -231,12 +227,7 @@ def worker_asset():
                 for subAsset in contents: # child assets, pass parent id and location
                     updated.append(subAsset.itemID)
                     prevItem = previousItems.filter(Asset.itemID == subAsset.itemID).fetch(1) 
-                    if prevItem:
-                        b = prevItem[0]
-                        if b.typeName == None:# add name of item if not known #TODO remove this eventually
-                            b.typeName = Item.query(Item.typeID == subAsset.typeID).get().typeName
-                            b.put()
-                    else :
+                    if not prevItem:
                         try: # rawQuantity attribute is weird(:ccp:), it seems only "assembled" items have it...
                             rawQuantity = subAsset.rawQuantity
                         except AttributeError, e: 

@@ -70,17 +70,24 @@ class Asset(ndb.Model):
     rawQuantity = ndb.IntegerProperty(indexed=False)
     character = ndb.KeyProperty(Character)
     user = ndb.UserProperty(required = True)
-
-
-    # think de normalised
-    # typeID, typeVolume, jitaVol, jitaSell, jitaBuy, karanVol,karanSell,karanBuy
     
 class Item(ndb.Model):
     typeID = ndb.IntegerProperty()
     typeName=ndb.StringProperty()
     volume=ndb.FloatProperty(indexed=False)
     marketGroupID = ndb.IntegerProperty()
+    buy = ndb.FloatProperty(indexed=False)
+    sell = ndb.FloatProperty(indexed=False)
+    #updated = ndb.DateTimeProperty(indexed=False)
     
     
-    
-    
+# class history(ndb.Model):
+    # typeID = ndb.IntegerProperty()
+    # typeName=ndb.StringProperty(indexed=False)
+    # regionID = ndb.IntegerProperty()
+    # date = ndb.DateTimeProperty(indexed=False)
+    # lowPrice = ndb.FloatProperty(indexed=False)
+    # highPrice = ndb.FloatProperty(indexed=False)
+    # avgPrice = ndb.FloatProperty(indexed=False)
+    # volume = ndb.IntegerProperty(indexed=False)
+    # orders = ndb.IntegerProperty(indexed=False)

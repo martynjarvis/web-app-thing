@@ -3,12 +3,16 @@ from models import Api,Character,Transaction,Order,Cache,Asset,Item
 
 from google.appengine.ext import ndb
 from google.appengine.api import users
+from google.appengine.api import taskqueue
+from google.appengine.datastore.datastore_query import Cursor
 
 from flask import request
 
 from eveapi import EVEAPIConnection
 from eveapi import Error as apiError
 
+import json
+import urllib2
 import datetime
     
 @app.route('/tasks/transactions')
@@ -256,3 +260,63 @@ def worker_asset():
                         cachedUntil=datetime.datetime.fromtimestamp(AssetList._meta.cachedUntil))
             c.put()
     return '0'
+    
+@app.route('/tasks/prices', methods=['GET', 'POST'])
+def worker_prices():
+    url = 'http://api.eve-marketdata.com/api/item_prices2.json?char_name=scruff_decima&region_ids=10000002&buysell=s&type_ids='
+    
+    # add typeIDs to url depending on how this is called
+    if request.method == 'GET':# first called from app engine cron job
+        items, nextCurs, more = Item.query().fetch_page(100)
+    
+    elif request.method == 'POST':# task queue, 
+        if request.form.get("cur"): # cursur for next page of results of typeid
+            curs = Cursor(urlsafe=request.form.get('cur'))
+            items, nextCurs, more = Item.query().fetch_page(100,start_cursor=curs)
+        else:
+            print "Error: no cursor"
+            return '0'# something wrong
+     
+    typeIDs = []
+    for item in items:
+        typeIDs.append(str(item.typeID))
+    url += ','.join(typeIDs)
+       
+    try: 
+        response = urllib2.urlopen(url)
+    except Exception, e:
+        print "Error retieving url : " + str(url) + "\n" + str(e)
+        return
+         
+    data = response.read() 
+    parsedData = json.loads(data)
+    result = parsedData["emd"]["result"]
+    itemList = []
+
+    for row in result:
+        a = row["row"]
+        typeID = int(a["typeID"])
+        
+        for item in items:
+            if item.typeID == typeID:
+                item.sell = float(a["price"])
+                itemList.append(item)
+    ndb.put_multi(itemList)
+
+    if more and nextCurs:
+        # if we have more to fetch append it to task queue
+        taskqueue.add(url='/tasks/prices', params={'cur':  nextCurs.urlsafe()})
+    
+    
+    return '0'
+    
+   
+    
+    
+    
+    
+    
+    
+    
+    
+    

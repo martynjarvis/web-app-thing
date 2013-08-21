@@ -39,7 +39,7 @@ class Transaction(ndb.Model):
     
 class Order(ndb.Model):
     orderID	= ndb.IntegerProperty()
-    #charID	= ndb.IntegerProperty()
+    charID	= ndb.IntegerProperty()
     stationID = ndb.IntegerProperty(indexed=False)
     # ? stationName=ndb.StringProperty(indexed=False)
     # ? region?

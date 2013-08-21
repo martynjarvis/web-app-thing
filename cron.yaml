@@ -8,3 +8,6 @@ cron:
 - description: assets
   url: /tasks/assets
   schedule: every 30 mins
+- description: prices
+  url: /tasks/prices
+  schedule: every day 12:00

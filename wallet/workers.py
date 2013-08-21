@@ -133,6 +133,7 @@ def worker_order():
                     if o.typeName == None:# add name of item if not known
                         o.typeName = Item.query(Item.typeID == order.typeID).get().typeName
                     o.orderID	  = order.orderID	
+                    o.charID      = order.charID
                     o.stationID   = order.stationID 
                     o.volEntered  = order.volEntered 
                     o.volRemaining= order.volRemaining 

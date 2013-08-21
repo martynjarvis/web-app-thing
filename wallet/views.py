@@ -1,6 +1,6 @@
 from wallet import app
 from models import Api,Character,Transaction,Order,Asset,Item
-from decorators import login_required
+from decorators import login_required,trust_required
 
 from google.appengine.ext import ndb
 from google.appengine.api import users
@@ -128,8 +128,8 @@ def assets():
     data = Asset.query().filter(Asset.user == users.get_current_user()).fetch()
     return render_template('assets.html', title="Assets", data=data )
     
-
 @app.route('/item/<typeID>')
+@login_required
 def item(typeID):
     ''' List orders,transactions and assets'''
     typeID = int(typeID)
@@ -139,3 +139,22 @@ def item(typeID):
     assets       = Asset.query().filter(Asset.user == users.get_current_user()).filter(Asset.typeID == typeID).fetch()
     return render_template('item.html', title=item.typeName, item=item,orders=orders,transactions=transactions,assets=assets)
 
+
+@app.route('/update')
+@app.route('/update/<importCost>')
+@trust_required
+def order_update(importCost=0):
+    '''Scans through items character currently has on market'''
+    charID = int(request.headers["Eve_Charid"])
+    orders = Order.query().filter(Order.charID == charID).fetch()
+    data = []
+    typeIDs = [] # to keep track of repeats
+    for order in orders: # not ideal
+        item = Item.query().filter(Item.typeID == order.typeID).get()
+        if not item.typeID in typeIDs :
+            typeIDs.append(item.typeID)
+            data.append([order.typeID,order.typeName,item.sell,item.sell+importCost*item.volume])
+    return render_template('update.html', title="Update Orders", data=data, import_cost=importCost,  bid=0 )
+
+    
+    

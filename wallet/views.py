@@ -13,9 +13,6 @@ from eveapi import Error as api_error
 import datetime
 import hashlib
 
-#TODO
-# market information, obviously can't add orders as I have on mysql
-
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)
@@ -139,7 +136,6 @@ def item(typeID):
     assets       = Asset.query().filter(Asset.user == users.get_current_user()).filter(Asset.typeID == typeID).fetch()
     return render_template('item.html', title=item.typeName, item=item,orders=orders,transactions=transactions,assets=assets)
 
-
 @app.route('/update')
 @app.route('/update/<importCost>')
 @trust_required
@@ -156,5 +152,35 @@ def order_update(importCost=0):
             data.append([order.typeID,order.typeName,item.sell,item.sell+importCost*item.volume])
     return render_template('update.html', title="Update Orders", data=data, import_cost=importCost,  bid=0 )
 
+@trust_required
+@app.route('/list', methods=['GET', 'POST'])
+def list_tool():
+    '''tool for quickly listing items'''
+    if request.method == 'POST':
+        importCost = float(request.form['cost'])
+        stuff = request.form['stuff']
+        data = []
+        typeIDs = [] # to keep track of repeats
+        for line in stuff.split('\n'):
+            typeName = line.split('\t')[0]
+            item = Item.query().filter(Item.typeName == typeName).get()
+            if item and not item.typeID in typeIDs :
+                typeIDs.append(item.typeID)
+                data.append([item.typeID,item.typeName,item.sell,item.sell+importCost*item.volume])
+        data.sort(key=lambda x: x[1]) # sort by name  
+        return render_template('update.html', title="Update Orders", data=data, import_cost=importCost,  bid=0 )
+    else :
+        return render_template('list_tool.html', title="List Tool")#, data=data, import_cost=import_cost )
+        
+@app.route('/search', methods=['POST'])
+def search():
+    '''Returns a list of items matching search term'''
+    if int(request.form['search_id']) > 0 : # autocomplete from typeahead
+        return redirect(url_for('item',typeID=int(request.form['search_id'])))
+    q = str(request.form['search_term'])
+    data = Item.query().filter(Item.typeName>=q).filter(Item.typeName<q+ u"\ufffd").fetch(10)
+    return render_template('search.html', title=request.form['search_term'], searchData=data, searchTerm=q)   
     
-    
+
+        
+        

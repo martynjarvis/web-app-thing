@@ -3,7 +3,7 @@
     <div class="row">
         <div class="span8 offset2">
             <div class="page-header">
-              <h1>Search <small> Market items found matching: {{search_term}} </small></h1>
+              <h1>Search <small> Market items found matching: {{searchTerm}} </small></h1>
             </div> 
 
             <table class="table table-striped">
@@ -12,10 +12,10 @@
                  <th scope="col">Item Name</th>
               </thead>
               <tbody>
-                   {% for row in search_data %}
+                   {% for item in searchData %}
                     </tr> 
-                    <td><img src="http://image.eveonline.com/Type/{{row[0]}}_32.png" class="img-polaroid"></td>
-                    <td><a href="/item/{{row[0]}}">{{row[1]}}</a></td>
+                    <td><img src="http://image.eveonline.com/Type/{{item.typeID}}_32.png" class="img-polaroid"></td>
+                    <td><a href="/item/{{item.typeID}}">{{item.typeName}}</a></td>
                     </tr> 
                     {% endfor %}
               

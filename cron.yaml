@@ -1,13 +1,14 @@
 cron:
 - description: transactions
   url: /tasks/transactions
-  schedule: every 5 mins
+  schedule: every 4 mins
 - description: orders
   url: /tasks/orders
-  schedule: every 10 mins
+  schedule: every 4 mins
 - description: assets
   url: /tasks/assets
-  schedule: every 30 mins
+  schedule: every 4 mins
 - description: prices
   url: /tasks/prices
   schedule: every day 12:00
+

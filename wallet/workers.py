@@ -189,7 +189,7 @@ def worker_asset():
             # Asset list 
             try:
                 AssetList = auth.AssetList()
-            except api_error, e:
+            except apiError, e:
                 print "eveapi returned the following error when querying assets:"
                 print "code:", e.code
                 print "message:", e.message

@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/highcharts-more.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+<script type="text/javascript">
+    var chart; // globally available
+    $(document).ready(function() {
+        chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'chart_div',
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false
+            },
+            title: {
+                text: '{{ session.username }}'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage}%</b>',
+                percentageDecimals: 1
+            },        
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        color: '#000000',
+                        connectorColor: '#000000',
+                        formatter: function() {
+                            return '<b>'+ this.point.name +'</b>: $'+ Highcharts.numberFormat(this.point.y, 0); 
+                        }
+                    }
+                }
+            },
+            series: [{
+                type: 'pie',
+                name: 'Current ISK',
+                data: [
+                {% for char in data %}
+                    {% if char.wallet != None %} 
+                    {
+                        name: '{{char.characterName}}: Wallet',
+                        y: {{char.wallet}},
+                        color: '#2D823C'
+                    },
+                    {% endif %}
+                    {% if char.sell != None %} 
+                    {
+                        name: '{{char.characterName}}: Sell Orders',
+                        y: {{char.sell}},
+                        color: '#AA433B'
+                    },
+                    {% endif %}
+                    {% if char.buy != None %} 
+                    {
+                        name: '{{char.characterName}}: Buy Orders',
+                        y: {{char.buy}},
+                        color: '#AA883B'
+                    },
+                    {% endif %}
+                    {% if char.assets != None %} 
+                    {
+                        name: '{{char.characterName}}: Assets',
+                        y: {{char.assets}},
+                        color: '#313F73'
+                    },
+                    {% endif %}
+                {% endfor %}
+                ]
+         }]
+        });
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="page-header">
+                <h1>Overview <small>{{ session.username }}</small></h1>
+            </div>
+        </div><!--/span--> 
+    </div><!--/row-->  
+
+    <div class="row-fluid">
+        <div class="span12">
+            <h2>Net Worth <small>{{'{:20,.2f}'.format(100)}}</small></h2>
+            <div id="chart_div" style="height: 400px;"></div>
+        </div><!--/span-->   
+    </div><!--/row-->    
+      
+{% endblock %}

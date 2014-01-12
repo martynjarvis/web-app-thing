@@ -1,4 +1,4 @@
-application: s~wallet-thing
+application: e~wallet-thing
 version: 1
 runtime: python27
 threadsafe: true
@@ -15,7 +15,7 @@ handlers:
 - url: /static/datatables/css
   static_dir: wallet/static/datatables/css
   
-- url: .*
+- url: /.*
   script: main.app
   
 builtins:

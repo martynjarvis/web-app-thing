@@ -85,8 +85,12 @@ $(document).ready(function(){
                         <div id="chart_div" style="height: 400px;"></div>
                     </div>
                     <div class="tab-pane" id="tabinfo">
-                        {{item.typeName}}
+                        {{item.typeName}}<br>
+                        {% if item.sell %}  
                         {{'{:20,.2f}'.format(item.sell)}}
+                        {% else %}
+                        No Market Data
+                        {% endif %}  
                     </div>
                     <div class="tab-pane" id="taborder">
                         <table class="table" id="tableorder">     

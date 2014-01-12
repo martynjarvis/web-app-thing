@@ -97,6 +97,13 @@ def api_refresh(apiKey):
         flash('API related error','error')
     return redirect(url_for('api'))
         
+@app.route('/overview')
+@login_required
+def overview():
+    ''' List characters in db linked to this user '''
+    chars = Character.query().filter(Character.user == users.get_current_user())
+    return render_template('overview.html', title="Overview", data=chars)
+        
 @app.route('/characters')
 @login_required
 def characters():
@@ -131,6 +138,8 @@ def item(typeID):
     ''' List orders,transactions and assets'''
     typeID = int(typeID)
     item         = Item.query().filter(Item.typeID == typeID).get()
+    if item is None:
+        return redirect(url_for('index')) # TODO change this tosomewhere useful
     orders       = Order.query().filter(Order.user == users.get_current_user()).filter(Order.typeID == typeID).fetch()
     transactions = Transaction.query().filter(Transaction.user == users.get_current_user()).filter(Transaction.typeID == typeID).fetch()
     assets       = Asset.query().filter(Asset.user == users.get_current_user()).filter(Asset.typeID == typeID).fetch()

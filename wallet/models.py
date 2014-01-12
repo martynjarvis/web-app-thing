@@ -7,6 +7,10 @@ class Character(ndb.Model):
     #corporationID=ndb.IntegerProperty()
     #corporationName=ndb.StringProperty()
     user = ndb.UserProperty(required = True)
+    wallet = ndb.FloatProperty(indexed=False)
+    sell = ndb.FloatProperty(indexed=False)
+    buy = ndb.FloatProperty(indexed=False)
+    assets = ndb.FloatProperty(indexed=False)
 
 class Api(ndb.Model):
     keyID = ndb.IntegerProperty()
@@ -59,7 +63,17 @@ class Order(ndb.Model):
     character = ndb.KeyProperty(Character)
     user = ndb.UserProperty(required = True)
     
+class Item(ndb.Model):
+    typeID = ndb.IntegerProperty()
+    typeName=ndb.StringProperty()
+    volume=ndb.FloatProperty(indexed=False)
+    marketGroupID = ndb.IntegerProperty()
+    buy = ndb.FloatProperty(indexed=False)
+    sell = ndb.FloatProperty(indexed=False)
+    #updated = ndb.DateTimeProperty(indexed=False)
+    
 class Asset(ndb.Model):
+    itemKey = ndb.KeyProperty(Item)
     itemID = ndb.IntegerProperty()
     locationID = ndb.IntegerProperty(indexed=False)
     typeID = ndb.IntegerProperty()
@@ -71,23 +85,4 @@ class Asset(ndb.Model):
     character = ndb.KeyProperty(Character)
     user = ndb.UserProperty(required = True)
     
-class Item(ndb.Model):
-    typeID = ndb.IntegerProperty()
-    typeName=ndb.StringProperty()
-    volume=ndb.FloatProperty(indexed=False)
-    marketGroupID = ndb.IntegerProperty()
-    buy = ndb.FloatProperty(indexed=False)
-    sell = ndb.FloatProperty(indexed=False)
-    #updated = ndb.DateTimeProperty(indexed=False)
-    
-    
-# class history(ndb.Model):
-    # typeID = ndb.IntegerProperty()
-    # typeName=ndb.StringProperty(indexed=False)
-    # regionID = ndb.IntegerProperty()
-    # date = ndb.DateTimeProperty(indexed=False)
-    # lowPrice = ndb.FloatProperty(indexed=False)
-    # highPrice = ndb.FloatProperty(indexed=False)
-    # avgPrice = ndb.FloatProperty(indexed=False)
-    # volume = ndb.IntegerProperty(indexed=False)
-    # orders = ndb.IntegerProperty(indexed=False)
+

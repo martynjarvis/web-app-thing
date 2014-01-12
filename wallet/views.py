@@ -31,7 +31,7 @@ def login():
 def index():
     ''' Standard home page '''
     if users.get_current_user():
-        return redirect(url_for('api'))
+        return redirect(url_for('overview'))
     return render_template('index.html', title="Home")
 
 @app.route('/api')

@@ -17,181 +17,172 @@ import datetime
     
 # TODO add docstrings to all these functions
 
-# TODO refactor to have a single api function that checks to see what is and isn't cached, and updates expired
-    
-@app.route('/tasks/transactions')
-def worker_transaction():
-    apis = Api.query()
-    for api in apis.iter():
-        for chara in api.characters: 
-            # check if page will still be cached
-            cache = Cache.query(Cache.api == api.key,
-                                Cache.character == chara,
-                                Cache.page == request.path).get()
-            if cache:
-                if datetime.datetime.now() < cache[0].cachedUntil + datetime.timedelta(seconds=30) :
-                    continue # cached
-                else :
-                    cache[0].key.delete()  # cache expired
-                    
-            # find previous transaction 
-            previousTransaction = Transaction.query().order(-Transaction.transactionID).filter(Transaction.character == chara).fetch(1,projection=[Transaction.transactionID])
-            previousID = 0
-            if previousTransaction:
-                previousID = previousTransaction[0].transactionID
-            
-            # Create API object with auth and char reference
-            auth = EVEAPIConnection().auth(keyID=api.keyID, vCode=api.vCode).character(chara.get().characterID)
-        
-            # query eve api
-            try:
-                WalletTransactions = auth.WalletTransactions()
-            except apiError, e:
-                print "eveapi returned the following error when querying transactions:"
-                print "code:", e.code
-                print "message:", e.message
-                return
-            except Exception, e:
-                print "Something went horribly wrong:" + str(e)
-                return
-               
-            # add transactions
-            transactionList = []
-            for transaction in WalletTransactions.transactions :
-                if transaction.transactionID > previousID: 
-                    t = Transaction(
-                        transactionDateTime = datetime.datetime.fromtimestamp(transaction.transactionDateTime),
-                        transactionID = transaction.transactionID,
-                        quantity = transaction.quantity,
-                        typeName = str(transaction.typeName),
-                        typeID = transaction.typeID,
-                        price = transaction.price,
-                        #clientID = transaction.clientID,
-                        #clientName =  str(transaction.clientName),
-                        stationID = transaction.stationID,
-                        stationName = str(transaction.stationName),
-                        transactionType = transaction.transactionType,
-                        #transactionFor = transaction.transactionFor,
-                        #journalTransactionID = transaction.journalTransactionID,
-                        character = chara,
-                        user = chara.get().user
-                        )
-                    transactionList.append(t)
-            ndb.put_multi(transactionList)
-            
-            # update cache
-            c = Cache ( character = chara,
-                        api = api.key,
-                        page = request.path,
-                        cachedUntil=datetime.datetime.fromtimestamp(WalletTransactions._meta.cachedUntil))
-            c.put()
-    return '0'
-        
-@app.route('/tasks/orders')
-def worker_order():
-    apis = Api.query()
-    for api in apis.iter():
-        for charKey in api.characters: 
-            # check if page will still be cached
-            cache = Cache.query(Cache.api == api.key,
-                                Cache.character == charKey,
-                                Cache.page == request.path).get()
-            if cache:
-                if datetime.datetime.now() < cache[0].cachedUntil + datetime.timedelta(seconds=30)  :
-                    continue # cached
-                else :
-                    cache[0].key.delete()  # cache expired
+# TODO optimise with async puts
 
-            
-            # Market Orders
-            # Market orders api will only return orders that are active, or
-            # expired/fullfilled orders that were PLACED within the last 7 days.
-            # Here, I keep track of what orders have been returned then query
-            # the missing orders, (Orders that were fulfilled but not recent)
-                 
-            # running total on orders
-            buy = 0.0;
-            sell = 0.0;
-            
-            # get character item
+@app.route('/tasks/api')
+def worker_api():
+    tasks = [update_balance, update_transactions, update_orders, update_assets]
+    for apiEntity in Api.query():
+        for charKey in apiEntity.characters: 
+        
+            # Character item
             charEntity = charKey.get()
+             # eve api connection
+            auth = EVEAPIConnection().auth(keyID=apiEntity.keyID, vCode=apiEntity.vCode).character(charEntity.characterID)
             
-            # get new orders
-            auth = EVEAPIConnection().auth(keyID=api.keyID, vCode=api.vCode).character(charEntity.characterID)
-            try:
-                MarketOrders = auth.MarketOrders() 
-            except apiError, e:
-                print "eveapi returned the following error when querying market orders:"
-                print "code: ", e.code
-                print "message:", e.message
-                return
-            except Exception, e:
-                print "Something went horribly wrong:" + str(e)
-                return
-               
-            # get old orders,  
-            previousOrders = Order.query(Order.character == charKey)
-            updated = []
-            
-            for order in MarketOrders.orders :  
-                updated.append(order.orderID)
-                prevOrder = previousOrders.filter(Order.orderID == order.orderID).get()
-                if prevOrder:
-                    o = prevOrder[0]  # existing order
-                else :
-                    o = Order(user = charEntity.user)  # new order
-                    
-                if order.orderState  == 0: # still active
-                    if o.typeName == None:# add name of item if not known
-                        o.typeName = Item.query(Item.typeID == order.typeID).get().typeName
-                    o.orderID	  = order.orderID	
-                    o.charID      = order.charID
-                    o.stationID   = order.stationID 
-                    o.volEntered  = order.volEntered 
-                    o.volRemaining= order.volRemaining 
-                    o.typeID      = order.typeID 
-                    o.duration    = order.duration 
-                    o.escrow      = order.escrow 
-                    o.price       = order.price 
-                    o.bid         = bool(order.bid)
-                    o.issued      = datetime.datetime.fromtimestamp(order.issued)
-                    o.character   = charKey
-                    o.put() #  I think this is fine if the item already exists, no extra writes will be made
-                    if bool(order.bid):
-                        buy += order.volRemaining * order.price 
-                    else:
-                        sell += order.volRemaining * order.price 
-                else : # fulfilled/cancelled/expired
-                    if o.key: # if saved 
-                        o.key.delete()
-                    
-            # find and update missing orders
-            for order in previousOrders.iter():
-                if not order.orderID in updated: # has the order not been updated
-                    missingOrder = auth.MarketOrders(orderID=order.orderID).orders[0]
-                    if missingOrder.orderState > 0:
-                        order.key.delete() # order was fulfilled
-                    else:
-                        order.volRemaining= missingOrder.volRemaining 
-                        order.price       = missingOrder.price 
-                        order.issued      = datetime.datetime.fromtimestamp(missingOrder.issued)
-                        if bool(missingOrder.price .bid):
-                            buy += missingOrder.price.volRemaining * missingOrder.price.price 
-                        else:
-                            sell += missingOrder.price.volRemaining * missingOrder.price.price 
-            # update cache
-            c = Cache ( character = charKey,
-                        api = api.key,
-                        page = request.path,
-                        cachedUntil=datetime.datetime.fromtimestamp(MarketOrders._meta.cachedUntil))
-            c.put()
-            
-            # update wallet
-            charEntity.sell = sell
-            charEntity.buy = buy
-            charEntity.put()
-            
+            for task in tasks:
+                # check if page will still be cached
+                cache = Cache.query(Cache.api == apiEntity.key,
+                                    Cache.character == charKey,
+                                    Cache.page == task.__name__).get()
+                if cache:
+                    if datetime.datetime.now() < cache.cachedUntil + datetime.timedelta(seconds=30)  :
+                        continue   # cached
+                    else :  # cache expired
+                        cache.key.delete()  
+                cachedUntil = task(auth,charEntity)
+                c = Cache ( character = charKey,
+                            api = apiEntity.key,
+                            page = task.__name__,
+                            cachedUntil=cachedUntil)
+                c.put()
     return '0'
+
+def update_balance(auth,charEntity):
+    try:
+        accountBalance = auth.AccountBalance() 
+    except api_error, e:
+        logging.error("eveapi returned the following error when querying account balance: %s, %s", e.code, e.message)
+        return 0
+    except Exception, e:
+        logging.error("Something went horribly wrong: %s", str(e))
+        return 0
+            
+    # update wallet
+    charEntity.wallet = accountBalance.accounts[0].balance # Characters only have 1 account, (corps?)
+    charEntity.put()
+    return datetime.datetime.fromtimestamp(accountBalance._meta.cachedUntil)
+
+def update_transactions(auth,charEntity):
+    try:
+        walletTransactions = auth.WalletTransactions()
+    except api_error, e:
+        logging.error("eveapi returned the following error when querying wallet transactions: %s, %s", e.code, e.message)
+        return 0
+    except Exception, e:
+        logging.error("Something went horribly wrong: %s", str(e))
+        return 0
+                    
+    # find previous transaction 
+    # TODO, think about this some more
+    previousTransaction = Transaction.query()
+    previousTransaction = previousTransaction.order(-Transaction.transactionID)
+    previousTransaction = previousTransaction.filter(Transaction.character == charEntity.key)
+    previousTransaction = previousTransaction.fetch(1,projection=[Transaction.transactionID])
+    
+    previousID = 0
+    if previousTransaction:
+        previousID = previousTransaction[0].transactionID
+
+    # add transactions
+    transactionList = []
+    for transaction in walletTransactions.transactions :
+        if transaction.transactionID > previousID: 
+            itemEntity = Item.query(Item.typeID == transaction.typeID).get()
+            t = Transaction(
+                transactionDateTime = datetime.datetime.fromtimestamp(transaction.transactionDateTime),
+                transactionID = transaction.transactionID,
+                quantity = transaction.quantity,
+                typeName = str(transaction.typeName),
+                typeID = transaction.typeID,
+                price = transaction.price,
+                stationID = transaction.stationID,
+                stationName = str(transaction.stationName),
+                transactionType = transaction.transactionType,
+                itemKey = itemEntity.key,
+                character = charEntity.key,
+                user = charEntity.user
+                )
+            transactionList.append(t)
+    ndb.put_multi(transactionList)
+
+    return datetime.datetime.fromtimestamp(walletTransactions._meta.cachedUntil)
+
+
+def update_orders(auth,charEntity):
+    try:
+        marketOrders = auth.MarketOrders()
+    except api_error, e:
+        logging.error("eveapi returned the following error when querying market orders: %s, %s", e.code, e.message)
+        return 0
+    except Exception, e:
+        logging.error("Something went horribly wrong: %s", str(e))
+        return 0         
+        
+    # get old orders,  
+    previousOrders = Order.query(Order.character == charEntity.key)
+    
+    # keep track of what I update
+    updated = []
+    
+    # running total on orders
+    buy = 0.0;
+    sell = 0.0;
+
+    # orders returned by api
+    for order in marketOrders.orders :  
+        updated.append(order.orderID)
+        prevOrder = previousOrders.filter(Order.orderID == order.orderID).get()
+        if prevOrder:
+            o = prevOrder  # existing order
+        else :
+            o = Order(user = charEntity.user)  # new order
+
+        if order.orderState  == 0: # still active
+            if o.typeName == None:# add name of item if not known
+                o.typeName = Item.query(Item.typeID == order.typeID).get().typeName
+            o.orderID     = order.orderID
+            o.charID      = order.charID
+            o.stationID   = order.stationID 
+            o.volEntered  = order.volEntered 
+            o.volRemaining= order.volRemaining 
+            o.typeID      = order.typeID 
+            o.duration    = order.duration 
+            o.escrow      = order.escrow 
+            o.price       = order.price 
+            o.bid         = bool(order.bid)
+            o.issued      = datetime.datetime.fromtimestamp(order.issued)
+            o.character   = charEntity.key
+            o.put() #  I think this is fine if the item already exists, no extra writes will be made
+            if bool(order.bid):
+                buy += order.volRemaining * order.price 
+            else:
+                sell += order.volRemaining * order.price 
+        else : # fulfilled/cancelled/expired
+            if o.key: # if saved 
+                o.key.delete()
+
+    # find and update orders missing from api
+    for order in previousOrders:
+        if not order.orderID in updated: # has the order not been updated
+            missingOrder = auth.marketOrders(orderID=order.orderID).orders[0]
+            if missingOrder.orderState > 0:
+                order.key.delete() # order was fulfilled
+            else:
+                order.volRemaining= missingOrder.volRemaining 
+                order.price       = missingOrder.price 
+                order.issued      = datetime.datetime.fromtimestamp(missingOrder.issued)
+                if bool(missingOrder.price .bid):
+                    buy += missingOrder.price.volRemaining * missingOrder.price.price 
+                else:
+                    sell += missingOrder.price.volRemaining * missingOrder.price.price 
+
+    # update wallet
+    charEntity.sell = sell
+    charEntity.buy = buy
+    charEntity.put()   
+                
+    return datetime.datetime.fromtimestamp(marketOrders._meta.cachedUntil)
     
 def add_asset(previousItems,container,updated):
     assetWorth = 0.0
@@ -234,113 +225,36 @@ def add_asset(previousItems,container,updated):
     else:  # add child assets
         return assetWorth + add_asset(previousItems,contents,updated)
 
+def update_assets(auth,charEntity):
+    try:
+        assetList = auth.AssetList()
+    except api_error, e:
+        logging.error("eveapi returned the following error when querying asset list: %s, %s", e.code, e.message)
+        return 0
+    except Exception, e:
+        logging.error("Something went horribly wrong: %s", str(e))
+        return 0    
+        
+    # keep track of what items I've seen and updated
+    updated = []
+            
+    # and what items are already added
+    previousItems = Asset.query(Asset.character == charEntity.key)
     
-@app.route('/tasks/assets')
-def worker_asset():
-    apis = Api.query()
-    for api in apis.iter():
-        for charKey in api.characters:  
-            # check if page will still be cached
-            cache = Cache.query(Cache.api == api.key,
-                                Cache.character == charKey,
-                                Cache.page == request.path).get()
-            if cache:
-                if datetime.datetime.now() < cache[0].cachedUntil + datetime.timedelta(seconds=30)  :
-                    continue # cached
-                else : # cache expired
-                    cache[0].key.delete() 
-            
-            # get character item
-            charEntity = charKey.get()
-            
-            # eve api connection
-            auth = EVEAPIConnection().auth(keyID=api.keyID, vCode=api.vCode).character(charEntity.characterID)
-
-            # Asset list 
-            try:
-                AssetList = auth.AssetList()
-            except apiError, e:
-                print "eveapi returned the following error when querying assets:"
-                print "code:", e.code
-                print "message:", e.message
-                return
-            except Exception, e:
-                print "Something went horribly wrong:" + str(e)
-                return
-
-            # keep track of what items I've seen and updated
-            updated = []
-            
-            # and what items are already added
-            previousItems = Asset.query(Asset.character == charKey)
-            
-            # add assets to db and keep running total on assets worth
-            assetWorth = add_asset(previousItems,AssetList.assets,updated)
-            
-            # remove missing items (sold, destroyed, moved etc)
-            for asset in previousItems:
-                if not asset.itemID in updated: # old item was not found
-                    asset.key.delete() 
-
-            # update cache
-            c = Cache(character = charKey,
-                      api = api.key,
-                      page = request.path,
-                      cachedUntil=datetime.datetime.fromtimestamp(AssetList._meta.cachedUntil))
-            c.put()
-            
-            # update wallet
-            charEntity.assets = assetWorth
-            charEntity.put()
-            
-    return '0'
+    # add assets to db and keep running total on assets worth
+    assetWorth = add_asset(previousItems,assetList.assets,updated)
     
+    # remove missing items (sold, destroyed, moved etc)
+    for asset in previousItems:
+        if not asset.itemID in updated: # old item was not found
+            asset.key.delete() 
     
-@app.route('/tasks/balance')
-def worker_balance():
-    apis = Api.query()
-    for api in apis.iter():
-        for charKey in api.characters:  
-            # check if page will still be cached
-            cache = Cache.query(Cache.api == api.key,
-                                Cache.character == charKey,
-                                Cache.page == request.path).get()
-            if cache:
-                if datetime.datetime.now() < cache.cachedUntil + datetime.timedelta(seconds=30)  :
-                    continue # cached
-                else : # cache expired
-                    cache.key.delete() 
-            
-            # get character item
-            charEntity = charKey.get()
-            
-            # eve api connection
-            auth = EVEAPIConnection().auth(keyID=api.keyID, vCode=api.vCode).character(charEntity.characterID)
-            # Wallet balances
-            try:
-                accountBalance = auth.AccountBalance() 
-            except api_error, e:
-                print "eveapi returned the following error when querying account balance:"
-                print "code:", e.code
-                print "message:", e.message
-                return
-            except Exception, e:
-                print "Something went horribly wrong:", str(e)
-                return
-                
-            # update cache
-            c = Cache(character = charKey,
-                      api = api.key,
-                      page = request.path,
-                      cachedUntil=datetime.datetime.fromtimestamp(accountBalance._meta.cachedUntil))
-            c.put()
-            
-            # update wallet
-            charEntity.wallet = accountBalance.accounts[0].balance #  not for chars only 1 account, not sure how this will be handled with corps
-            charEntity.put()
-    return '0'
-
+    # update wallet
+    charEntity.assets = assetWorth
+    charEntity.put()
     
+    return datetime.datetime.fromtimestamp(assetList._meta.cachedUntil)
+        
 @app.route('/tasks/prices', methods=['GET', 'POST'])
 def worker_prices():
     url = 'http://api.eve-marketdata.com/api/item_prices2.json?char_name=scruff_decima&region_ids=10000002&buysell=s&type_ids='

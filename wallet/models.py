@@ -1,6 +1,16 @@
 from google.appengine.ext import ndb
 from google.appengine.api import users
 
+# TODO: need consistency between type and item (change item class to type)
+    
+class Item(ndb.Model):
+    typeID = ndb.IntegerProperty()
+    typeName=ndb.StringProperty()
+    volume=ndb.FloatProperty(indexed=False)
+    marketGroupID = ndb.IntegerProperty()
+    buy = ndb.FloatProperty(indexed=False)
+    sell = ndb.FloatProperty(indexed=False)
+    
 class Character(ndb.Model):
     characterID=ndb.IntegerProperty()
     characterName=ndb.StringProperty(indexed=False)
@@ -25,6 +35,7 @@ class Cache(ndb.Model): # keeps track of what needs to be updated
     cachedUntil=ndb.DateTimeProperty(indexed=False)
     
 class Transaction(ndb.Model):
+    itemKey = ndb.KeyProperty(Item)
     transactionDateTime=ndb.DateTimeProperty(indexed=False)
     transactionID=ndb.IntegerProperty()
     quantity=ndb.IntegerProperty(indexed=False)
@@ -42,6 +53,7 @@ class Transaction(ndb.Model):
     user = ndb.UserProperty(required = True)
     
 class Order(ndb.Model):
+    itemKey = ndb.KeyProperty(Item)
     orderID	= ndb.IntegerProperty()
     charID	= ndb.IntegerProperty()
     stationID = ndb.IntegerProperty(indexed=False)
@@ -62,15 +74,7 @@ class Order(ndb.Model):
     issued = ndb.DateTimeProperty(indexed=False)
     character = ndb.KeyProperty(Character)
     user = ndb.UserProperty(required = True)
-    
-class Item(ndb.Model):
-    typeID = ndb.IntegerProperty()
-    typeName=ndb.StringProperty()
-    volume=ndb.FloatProperty(indexed=False)
-    marketGroupID = ndb.IntegerProperty()
-    buy = ndb.FloatProperty(indexed=False)
-    sell = ndb.FloatProperty(indexed=False)
-    #updated = ndb.DateTimeProperty(indexed=False)
+
     
 class Asset(ndb.Model):
     itemKey = ndb.KeyProperty(Item)

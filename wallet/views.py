@@ -13,6 +13,10 @@ from eveapi import Error as api_error
 import datetime
 import hashlib
 
+# TODO charactor page (similar to item page)
+
+# TODO add corp apis
+
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)

@@ -184,7 +184,7 @@ def update_orders(auth,charEntity):
                 
     return datetime.datetime.fromtimestamp(marketOrders._meta.cachedUntil)
     
-def add_asset(previousItems,container,updated):
+def add_asset(charEntity,previousItems,container,updated):
     assetWorth = 0.0
     
     for asset in container :
@@ -212,7 +212,7 @@ def add_asset(previousItems,container,updated):
             a.flag = asset.flag
             a.singleton = bool(asset.singleton)
             a.rawQuantity = rawQuantity
-            a.character = charKey
+            a.character = charEntity.key
             a.put()
         if rawQuantity is None or rawQuantity > -2: # not a bpc
             assetWorth += itemEntity.sell*asset.quantity 
@@ -223,7 +223,7 @@ def add_asset(previousItems,container,updated):
     except AttributeError, e:  # no child assets
         return assetWorth 
     else:  # add child assets
-        return assetWorth + add_asset(previousItems,contents,updated)
+        return assetWorth + add_asset(charEntity,previousItems,contents,updated)
 
 def update_assets(auth,charEntity):
     try:
@@ -242,7 +242,7 @@ def update_assets(auth,charEntity):
     previousItems = Asset.query(Asset.character == charEntity.key)
     
     # add assets to db and keep running total on assets worth
-    assetWorth = add_asset(previousItems,assetList.assets,updated)
+    assetWorth = add_asset(charEntity,previousItems,assetList.assets,updated)
     
     # remove missing items (sold, destroyed, moved etc)
     for asset in previousItems:

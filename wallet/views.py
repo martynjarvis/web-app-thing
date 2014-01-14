@@ -1,5 +1,5 @@
 from wallet import app
-from models import Api,Character,Transaction,Order,Asset,Item
+from models import Api,Character,Corporation,Transaction,Order,Asset,Item
 from decorators import login_required,trust_required
 
 from google.appengine.ext import ndb
@@ -12,10 +12,12 @@ from eveapi import Error as api_error
 
 import datetime
 import hashlib
+import logging
 
 # TODO charactor page (similar to item page)
 
 # TODO add corp apis
+# market orders, same
 
 @app.route('/logout')
 def logout():
@@ -45,22 +47,24 @@ def api():
     apis = Api.query().filter(Api.user == users.get_current_user())
     return render_template('api.html', title="APIs", data=apis)
   
-def update_char_from_api(keyID,vCode):
-    apiCon = EVEAPIConnection()
-    auth = apiCon.auth(keyID=keyID, vCode=vCode)
+
+def test_api(auth):
     try: # Try calling api with given account
-        account_status = auth.account.AccountStatus()
+        APIKeyInfo = auth.account.APIKeyInfo()
     except api_error, e:
         flash('API related error','error')
-        return 
+        return
     except Exception, e:
         flash('unknown error','error')
-        return 
+        return
+    return APIKeyInfo.key.type 
+        
+def update_char_from_api(auth):
     charList = []
     for character in auth.account.Characters().characters:
-        q = Character.query().filter(Character.characterID == character.characterID).fetch(1)
+        q = Character.query().filter(Character.characterID == character.characterID).get()
         if q:
-            c = q[0]
+            c = q
         else :
             c = Character()
         c.user = users.get_current_user()
@@ -69,6 +73,21 @@ def update_char_from_api(keyID,vCode):
         c.put()
         charList.append(c.key)
     return charList
+    
+def update_corp_from_api(auth):
+    charList = []
+    corporationSheet = auth.corp.CorporationSheet()
+    q = Corporation.query().filter(Corporation.corporationID == corporationSheet.corporationID).get()
+    if q:
+        c = q
+    else :
+        c = Corporation()
+    c.user = users.get_current_user()
+    c.corporationID=int(corporationSheet.corporationID)
+    c.corporationName=corporationSheet.corporationName
+    c.ticker=corporationSheet.ticker
+    c.put()
+    return c.key
     
 @app.route('/api_add', methods=['GET', 'POST'])
 @login_required
@@ -80,13 +99,24 @@ def api_add():
     if request.method == 'POST':
         if request.form['api_id']=="" or request.form['api_vcode']=="":
             return render_template('api_add.html', error='Invalid API')
-        charList = update_char_from_api(int(request.form['api_id']),vCode=request.form['api_vcode'])
-        if not charList :
-            render_template('api_add.html', error="Error:")
+        keyID = int(request.form['api_id'])
+        vCode=request.form['api_vcode']
+        auth = EVEAPIConnection().auth(keyID=keyID, vCode=vCode)
+        type = test_api(auth)
+        if type is None:
+            return render_template('api_add.html', error="Error:")
+            
+        charList = update_char_from_api(auth)
+        corp = None
+        if type == 'Corporation':
+            corp = update_corp_from_api(auth)
+
         a = Api(user = users.get_current_user(),
                 keyID = int(request.form['api_id']),
                 vCode=request.form['api_vcode'],
-                characters = charList )
+                characters = charList,
+                corporation = corp,
+                type = type)
         a.put()
         return redirect(url_for('api'))
 
@@ -96,7 +126,8 @@ def api_refresh(apiKey):
     ''' Refreshes an existing API to the db and adds new characters '''
     api = ndb.Key(urlsafe=apiKey).get()
     if api:
-        a = update_char_from_api(api.keyID,api.vCode)
+        auth = EVEAPIConnection().auth(keyID=api.keyID, vCode=api.vCode)
+        a = update_char_from_api(auth)
     else :
         flash('API related error','error')
     return redirect(url_for('api'))
@@ -106,14 +137,22 @@ def api_refresh(apiKey):
 def overview():
     ''' List characters in db linked to this user '''
     chars = Character.query().filter(Character.user == users.get_current_user())
-    return render_template('overview.html', title="Overview", data=chars)
+    corps = Corporation.query().filter(Corporation.user == users.get_current_user())
+    return render_template('overview.html', title="Overview", data={'chars':chars,'corps':corps})
         
 @app.route('/characters')
 @login_required
 def characters():
     ''' List characters in db linked to this user '''
     chars = Character.query().filter(Character.user == users.get_current_user())
-    return render_template('characters.html', title="Characters", data=chars)
+    return render_template('characters.html', title="Characters", data=chars)  
+    
+@app.route('/corporations')
+@login_required
+def corporations():
+    ''' List characters in db linked to this user '''
+    corps = Corporation.query().filter(Corporation.user == users.get_current_user())
+    return render_template('corporations.html', title="Corporations", data=corps)
 
 @app.route('/transactions')
 @login_required

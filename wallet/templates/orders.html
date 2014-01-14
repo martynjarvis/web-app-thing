@@ -28,6 +28,7 @@ $(document).ready(function(){
             
             <table class="table" id="example">     
                 <thead>
+                    <th scope="col">Owner</th>
                     <th scope="col">Character</th>
                     <th scope="col">b/s</th>
                     <th scope="col">Date</th>
@@ -40,7 +41,8 @@ $(document).ready(function(){
                 <tbody>
                     {% for row in data %}  
                     <tr> 
-                    <td><a href="/char/{{row.character.get().characterID}}">{{row.character.get().characterName}}</a></td>
+                    <td>{{row.owner.get().name()}}</a></td>
+                    <td><a href="/char/{{row.charID}}">{{row.charName}}</a></td>
                     <td>{{row.bid}}</td>
                     <td>{{row.issued}}</td>
                     <td><a href="/item/{{row.typeID}}">{{row.typeName}}</a></td>

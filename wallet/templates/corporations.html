@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row">
+        <div class="span8 offset2">
+            <div class="page-header">
+              <h1>Corporations <small> Eve corporations linked to this account: </small></h1>
+            </div>          
+
+            <table class="table">
+                <thead>
+                    <th scope="col">Logo</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Ticker</th>
+                </thead>
+                <tbody>
+                    {% for corp in data %}  
+                        <tr> 
+                        <td> <img src="http://image.eveonline.com/Corporation/{{corp.corporationID}}_64.png" class="img-polaroid"></td>
+                        <td>{{corp.corporationName}}</td>
+                        <td>{{corp.ticker}}</td>
+                        </tr> 
+                    {% endfor %} 
+                <tbody>
+            </table>
+        </div><!--/span-->
+    </div><!--/row-->
+{% endblock %}
+

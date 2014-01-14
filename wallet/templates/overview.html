@@ -43,32 +43,62 @@
                 type: 'pie',
                 name: 'Current ISK',
                 data: [
-                {% for char in data %}
-                    {% if char.wallet != None %} 
+                {% for char in data.chars %}
+                    {% if char.wallet > 0.0 %} 
                     {
                         name: '{{char.characterName}}: Wallet',
                         y: {{char.wallet}},
                         color: '#2D823C'
                     },
                     {% endif %}
-                    {% if char.sell != None %} 
+                    {% if char.sell > 0.0  %} 
                     {
                         name: '{{char.characterName}}: Sell Orders',
                         y: {{char.sell}},
                         color: '#AA433B'
                     },
                     {% endif %}
-                    {% if char.buy != None %} 
+                    {% if char.buy > 0.0 %} 
                     {
                         name: '{{char.characterName}}: Buy Orders',
                         y: {{char.buy}},
                         color: '#AA883B'
                     },
                     {% endif %}
-                    {% if char.assets != None %} 
+                    {% if char.assets > 0.0 %} 
                     {
                         name: '{{char.characterName}}: Assets',
                         y: {{char.assets}},
+                        color: '#313F73'
+                    },
+                    {% endif %}
+                {% endfor %}
+                {% for corp in data.corps %}
+                    {% if corp.wallet > 0.0 %} 
+                    {
+                        name: '{{corp.corporationName}}: Wallet',
+                        y: {{corp.wallet}},
+                        color: '#2D823C'
+                    },
+                    {% endif %}
+                    {% if corp.sell > 0.0  %} 
+                    {
+                        name: '{{corp.corporationName}}: Sell Orders',
+                        y: {{corp.sell}},
+                        color: '#AA433B'
+                    },
+                    {% endif %}
+                    {% if corp.buy > 0.0 %} 
+                    {
+                        name: '{{corp.corporationName}}: Buy Orders',
+                        y: {{corp.buy}},
+                        color: '#AA883B'
+                    },
+                    {% endif %}
+                    {% if corp.assets > 0.0 %} 
+                    {
+                        name: '{{corp.corporationName}}: Assets',
+                        y: {{corp.assets}},
                         color: '#313F73'
                     },
                     {% endif %}

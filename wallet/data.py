@@ -11,7 +11,7 @@ def typeahead_data():
     data = Item.query().filter(Item.typeName>=q).filter(Item.typeName<q+ u"\ufffd").fetch(4)
     return jsonify(result=[(x.typeID,x.typeName) for x in data])
     
-
+# hack to load eve item data
 @app.route('/data/loadevedata')
 def load_eve_data():
     with open('./wallet/static/evedata.csv') as f:

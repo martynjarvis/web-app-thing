@@ -1,6 +1,7 @@
 from google.appengine.ext import ndb
 from google.appengine.api import users
 
+import datetime
 # TODO: need consistency between type and item (change item class to type)
     
 class Item(ndb.Model):
@@ -14,25 +15,54 @@ class Item(ndb.Model):
 class Character(ndb.Model):
     characterID=ndb.IntegerProperty()
     characterName=ndb.StringProperty(indexed=False)
-    #corporationID=ndb.IntegerProperty()
-    #corporationName=ndb.StringProperty()
     user = ndb.UserProperty(required = True)
     wallet = ndb.FloatProperty(indexed=False)
     sell = ndb.FloatProperty(indexed=False)
     buy = ndb.FloatProperty(indexed=False)
     assets = ndb.FloatProperty(indexed=False)
+    def name(self):
+        return self.characterName
 
+class Corporation(ndb.Model):
+    corporationID=ndb.IntegerProperty()
+    corporationName=ndb.StringProperty(indexed=False)
+    ticker=ndb.StringProperty(indexed=False)
+    user = ndb.UserProperty(required = True)
+    wallet = ndb.FloatProperty(indexed=False)
+    sell = ndb.FloatProperty(indexed=False)
+    buy = ndb.FloatProperty(indexed=False)
+    assets = ndb.FloatProperty(indexed=False)
+    def name(self):
+        return self.corporationName
+    
+    
 class Api(ndb.Model):
     keyID = ndb.IntegerProperty()
     vCode = ndb.StringProperty(indexed=False)
+    type = ndb.StringProperty(indexed=False)
     characters = ndb.KeyProperty(kind=Character,repeated = True,indexed=False)
+    corporation = ndb.KeyProperty(kind=Corporation,indexed=False)
     user = ndb.UserProperty(required = True)
     
 class Cache(ndb.Model): # keeps track of what needs to be updated
-    character = ndb.KeyProperty(kind=Character)
-    api = ndb.KeyProperty(kind=Api)
+    entityKey = ndb.KeyProperty()
     page = ndb.StringProperty()
     cachedUntil=ndb.DateTimeProperty(indexed=False)
+    @classmethod
+    def run(cls,task,auth,entity):
+        cache = Cache.query(Cache.entityKey == entity.key,Cache.page == task.__name__).get()
+        if cache:
+            if (cache.cachedUntil) and datetime.datetime.now() < cache.cachedUntil + datetime.timedelta(seconds=30)  :
+                return  # cached
+            else :  # cache expired
+                cache.key.delete()  
+        cachedUntil = task(auth,entity)
+        c = Cache ( entityKey = entity.key,
+                    page = task.__name__,
+                    cachedUntil=cachedUntil)
+        c.put()
+        
+    # TODO do cache searching and updating here
     
 class Transaction(ndb.Model):
     itemKey = ndb.KeyProperty(Item)
@@ -56,6 +86,7 @@ class Order(ndb.Model):
     itemKey = ndb.KeyProperty(Item)
     orderID	= ndb.IntegerProperty()
     charID	= ndb.IntegerProperty()
+    charName	= ndb.StringProperty(indexed=False)
     stationID = ndb.IntegerProperty(indexed=False)
     # ? stationName=ndb.StringProperty(indexed=False)
     # ? region?
@@ -72,7 +103,7 @@ class Order(ndb.Model):
     price = ndb.FloatProperty(indexed=False)
     bid = ndb.BooleanProperty(indexed=False)
     issued = ndb.DateTimeProperty(indexed=False)
-    character = ndb.KeyProperty(Character)
+    owner = ndb.KeyProperty()
     user = ndb.UserProperty(required = True)
 
     

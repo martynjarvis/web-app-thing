@@ -231,81 +231,81 @@
 578	Adaptive Invulnerability Field I	20	1696
 580	ECM Burst I	5	678
 581	Passive Targeter I	25	672
-582	Bantam	20000	61
-583	Condor	18000	61
-584	Griffin	19400	61
-585	Slasher	17400	64
-586	Probe	19500	64
-587	Rifter	27289	64
-588	Reaper	15800	1819
-589	Executioner	28100	72
-590	Inquisitor	28700	72
-591	Tormentor	24398	72
-592	Navitas	10000	77
-593	Tristan	26500	77
-594	Incursus	29500	77
-595	Gallente Police Ship	20400	\N
-596	Impairor	28100	1816
-597	Punisher	28600	72
-598	Breacher	20000	64
-599	Burst	17100	64
-600	Minmatar Peacekeeper Ship	12000	\N
-601	Ibis	15000	1817
-602	Kestrel	19700	61
-603	Merlin	16500	61
-605	Heron	18900	61
-606	Velator	24500	1818
-607	Imicus	21500	77
-608	Atron	22500	77
-609	Maulus	23000	77
-610	Wraith	13000	\N
-611	Specter	13400	\N
-613	Devourer	19100	\N
-614	Fury	26000	\N
-615	Immolator	17400	1619
-616	Medusa	17500	\N
-617	Echo	17660	1619
-618	Lynx	22500	\N
-619	Swordspine	21120	\N
-620	Osprey	107000	75
-621	Caracal	92000	75
-622	Stabber	80000	73
-623	Moa	101000	75
-624	Maller	118000	74
-625	Augoror	115000	74
-626	Vexor	115000	76
-627	Thorax	112000	76
-628	Arbitrator	120000	74
-629	Rupture	96000	73
-630	Bellicose	85000	73
-631	Scythe	89000	73
-632	Blackbird	96000	75
-633	Celestis	116000	76
-634	Exequror	113000	76
-635	Opux Luxury Yacht	115000	\N
-638	Raven	486000	80
-639	Tempest	450000	78
-640	Scorpion	468000	80
-641	Megathron	486000	81
-642	Apocalypse	495000	79
-643	Armageddon	486000	79
-644	Typhoon	414000	78
-645	Dominix	454500	81
-647	Eidolon	441000	\N
-648	Badger	250000	84
-649	Tayra	270000	84
-650	Nereus	240000	83
-651	Hoarder	400000	82
-652	Mammoth	255000	82
-653	Wreathe	225000	82
-654	Kryos	245000	83
-655	Epithal	250000	83
-656	Miasmos	265000	83
-657	Iteron Mark V	275000	83
-658	Visitant	240000	\N
-670	Capsule	1000	\N
-671	Erebus	145500000	815
-672	Caldari Shuttle	5000	396
+582	Bantam	2500	61
+583	Condor	2500	61
+584	Griffin	2500	61
+585	Slasher	2500	64
+586	Probe	2500	64
+587	Rifter	2500	64
+588	Reaper	2500	1819
+589	Executioner	2500	72
+590	Inquisitor	2500	72
+591	Tormentor	2500	72
+592	Navitas	2500	77
+593	Tristan	2500	77
+594	Incursus	2500	77
+595	Gallente Police Ship	2500	\N
+596	Impairor	2500	1816
+597	Punisher	2500	72
+598	Breacher	2500	64
+599	Burst	2500	64
+600	Minmatar Peacekeeper Ship	2500	\N
+601	Ibis	2500	1817
+602	Kestrel	2500	61
+603	Merlin	2500	61
+605	Heron	2500	61
+606	Velator	2500	1818
+607	Imicus	2500	77
+608	Atron	2500	77
+609	Maulus	2500	77
+610	Wraith	2500	\N
+611	Specter	2500	\N
+613	Devourer	2500	\N
+614	Fury	2500	\N
+615	Immolator	2500	1619
+616	Medusa	2500	\N
+617	Echo	2500	1619
+618	Lynx	2500	\N
+619	Swordspine	2500	\N
+620	Osprey	10000	75
+621	Caracal	10000	75
+622	Stabber	10000	73
+623	Moa	10000	75
+624	Maller	10000	74
+625	Augoror	10000	74
+626	Vexor	10000	76
+627	Thorax	10000	76
+628	Arbitrator	10000	74
+629	Rupture	10000	73
+630	Bellicose	10000	73
+631	Scythe	10000	73
+632	Blackbird	10000	75
+633	Celestis	10000	76
+634	Exequror	10000	76
+635	Opux Luxury Yacht	10000	\N
+638	Raven	50000	80
+639	Tempest	50000	78
+640	Scorpion	50000	80
+641	Megathron	50000	81
+642	Apocalypse	50000	79
+643	Armageddon	50000	79
+644	Typhoon	50000	78
+645	Dominix	50000	81
+647	Eidolon	50000	\N
+648	Badger	20000	84
+649	Tayra	20000	84
+650	Nereus	20000	83
+651	Hoarder	20000	82
+652	Mammoth	20000	82
+653	Wreathe	20000	82
+654	Kryos	20000	83
+655	Epithal	20000	83
+656	Miasmos	20000	83
+657	Iteron Mark V	20000	83
+658	Visitant	20000	\N
+670	Capsule	500	\N
+671	Erebus	10000000	815
+672	Caldari Shuttle	500	396
 681	Clone Grade Beta Blueprint	0.01	\N
 682	Clone Grade Gamma Blueprint	0.01	\N
 683	Bantam Blueprint	0.01	261
@@ -580,7 +580,7 @@
 1230	Veldspar	0.1	518
 1231	Hemorphite	3	528
 1232	Dark Ochre	8	522
-1233	Polaris Enigma Frigate	20400	\N
+1233	Polaris Enigma Frigate	2500	\N
 1236	Overdrive Injector System II	5	1087
 1237	Overdrive Injector System II Blueprint	0.01	\N
 1240	Basic Reinforced Bulkheads	5	1195
@@ -791,15 +791,15 @@
 1877	Rapid Light Missile Launcher II	10	641
 1878	Rapid Light Missile Launcher II Blueprint	0.01	\N
 1893	Basic Heat Sink	5	647
-1896	Concord Police Frigate	20400	\N
-1898	Concord SWAT Frigate	20400	\N
-1900	Concord Army Frigate	20400	\N
-1902	Concord Special Ops Frigate	20400	\N
-1904	Concord Police Cruiser	101000	\N
-1912	Concord Police Battleship	486000	\N
-1914	Concord Special Ops Battleship	486000	\N
-1916	Concord SWAT Battleship	486000	\N
-1918	Concord Army Battleship	486000	\N
+1896	Concord Police Frigate	2500	\N
+1898	Concord SWAT Frigate	2500	\N
+1900	Concord Army Frigate	2500	\N
+1902	Concord Special Ops Frigate	2500	\N
+1904	Concord Police Cruiser	10000	\N
+1912	Concord Police Battleship	50000	\N
+1914	Concord Special Ops Battleship	50000	\N
+1916	Concord SWAT Battleship	50000	\N
+1918	Concord Army Battleship	50000	\N
 1926	Amarr Station Hub	0	\N
 1927	Amarr Station Military	0	\N
 1928	Amarr Industrial Station	0	\N
@@ -807,7 +807,7 @@
 1930	Amarr Mining Station	0	\N
 1931	Amarr Research Station	0	\N
 1932	Amarr Trade Post	0	\N
-1944	Bestower	260000	85
+1944	Bestower	20000	85
 1945	Bestower Blueprint	0.01	285
 1946	Basic RADAR Backup Array	5	722
 1947	ECCM - Radar I	5	729
@@ -841,7 +841,7 @@
 2003	ECCM - Magnetometric I	5	727
 2004	ECCM - Gravimetric I	5	725
 2005	ECCM - Omni I	5	728
-2006	Omen	118000	74
+2006	Omen	10000	74
 2007	Omen Blueprint	0.01	274
 2008	Cynosural Navigation	400000	1282
 2009	Supercapital Construction Facilities	200000	1282
@@ -908,7 +908,7 @@
 2075	Consolidated Holdings Commander Access Key	0.01	\N
 2076	Gate Key	0.1	\N
 2077	Amarr Frigate Container	0	\N
-2078	Zephyr	5000	1619
+2078	Zephyr	500	1619
 2082	Genolution Core Augmentation CA-1	1	618
 2083	Prototype Iris Probe Launcher	5	\N
 2093	Kidnapped Citizens	1	\N
@@ -975,7 +975,7 @@
 2158	Elite Plasma Command Center	1600	\N
 2159	Limited Storm Command Center	100	\N
 2160	Standard Storm Command Center	200	\N
-2161	Crucifier	28100	72
+2161	Crucifier	2500	72
 2162	Crucifier Blueprint	0.01	272
 2163	CONCORD Collection Vessel	0	\N
 2165	Haunter Cruise Missile	0.05	\N
@@ -1540,9 +1540,9 @@
 2831	Serpentis Fortress	100000000	\N
 2832	Blood Raider Fortress	100000000	\N
 2833	1000 Aurum Token	0.01	1427
-2834	Utu	29500	1623
+2834	Utu	2500	1623
 2835	Utu Blueprint	0.01	\N
-2836	Adrestia	112000	1621
+2836	Adrestia	10000	1621
 2837	Adrestia Blueprint	0.01	\N
 2838	Standard Cerebral Accelerator	1	\N
 2839	Cerebral Accelerator Blueprint	0.01	\N
@@ -1565,7 +1565,7 @@
 2860	The Seven Holding Cells	1200	\N
 2861	Crate of Manportable Electromagnetic Pulse Weapons	250	\N
 2862	Special Forces Weapons and Equipment 	25	\N
-2863	Primae	270000	1614
+2863	Primae	20000	1614
 2864	Primae Blueprint	0.01	\N
 2865	1200mm Artillery Cannon II	20	579
 2866	1200mm Artillery Cannon II Blueprint	0.01	\N
@@ -1693,7 +1693,7 @@
 2995	Blue Paradise	60	\N
 2996	Crate of Blue Paradise	500	\N
 2997	Crate of Refined C-86 Epoxy Resin	10	\N
-2998	Noctis	270000	1390
+2998	Noctis	20000	1390
 2999	Amarr Marine Counter-Boarding Team	30	\N
 3000	Group of Angel Cartel VIPs	10	\N
 3001	Dual Light Pulse Laser II	5	570
@@ -2180,11 +2180,11 @@
 3511	Gang booster test NPC	100100	\N
 3512	Focused Medium Pulse Laser II	10	572
 3513	Focused Medium Pulse Laser II Blueprint	0.01	\N
-3514	Revenant	62000000	1392
+3514	Revenant	1000000	1392
 3515	Revenant Blueprint	0.01	\N
-3516	Malice	28600	1623
+3516	Malice	2500	1623
 3517	Malice Blueprint	0.01	\N
-3518	Vangel	118000	1621
+3518	Vangel	10000	1621
 3519	Vangel Blueprint	0.01	\N
 3520	Heavy Pulse Laser II	10	572
 3521	Heavy Pulse Laser II Blueprint	0.01	\N
@@ -2198,7 +2198,7 @@
 3529	Medium Armor Repairer I Blueprint	0.01	1536
 3530	Medium Armor Repairer II	10	1050
 3531	Medium Armor Repairer II Blueprint	0.01	\N
-3532	Echelon	28100	1619
+3532	Echelon	2500	1619
 3533	Echelon Blueprint	0.01	\N
 3534	Capital Inefficient Armor Repair Unit	4000	1052
 3535	Capital Inefficient Armor Repair Unit Blueprint	0.01	\N
@@ -2291,7 +2291,7 @@
 3625	Rohan Shadrak's Bellicose	0	\N
 3626	Sansha Station Ruins	0	\N
 3627	Construction Materials	70	\N
-3628	Nation	62000000	\N
+3628	Nation	1000000	\N
 3629	Amarr Academy Office	27500	\N
 3630	Amarr Crucifier Frigate	0	\N
 3631	Amarr Executioner Frigate	0	\N
@@ -2408,12 +2408,12 @@
 3748	Strain Infester Alvi	60	\N
 3749	Decimator Alvi	60	\N
 3750	Infester Alvi	60	\N
-3751	SOCT 1	17400	\N
+3751	SOCT 1	2500	\N
 3752	SOCT 1 Blueprint	0.01	\N
-3753	SOCT 2	17400	\N
+3753	SOCT 2	2500	\N
 3754	SOCT 2 Blueprint	0.01	\N
 3755	Jove Frigate	0.01	\N
-3756	Gnosis	101000	1698
+3756	Gnosis	15000	1698
 3757	Minmatar Burst Frigate	0	\N
 3758	Jove Cruiser	0.01	\N
 3759	Minmatar Probe Frigate	0	\N
@@ -2421,11 +2421,11 @@
 3761	Minmatar Slasher Frigate	0	\N
 3762	Minmatar Vigil  Frigate	0	\N
 3763	Minmatar Thrasher Destroyer	0	\N
-3764	Leviathan	132500000	814
+3764	Leviathan	10000000	814
 3765	Leviathan Blueprint	0.01	885
-3766	Vigil	17400	64
+3766	Vigil	2500	64
 3767	Vigil Blueprint	0.01	264
-3768	Amarr Police Frigate	18100	\N
+3768	Amarr Police Frigate	2500	\N
 3769	Amarr Police Frigate Blueprint	0.01	\N
 3770	Minmatar Bellicose Cruiser	0	\N
 3771	Ectoplasm	0.5	20
@@ -2518,7 +2518,7 @@
 3875	Stargate (Gallente System)	10000000	\N
 3876	Stargate (Gallente Border)	1000000000	\N
 3877	Stargate (Minmatar Constellation)	10000000	\N
-3878	Phantom	80000	\N
+3878	Phantom	10000	\N
 3880	Ripped Superstructure	0	\N
 3881	Ruined Monument	0	\N
 3882	Exsanguinator 	118000	\N
@@ -2617,7 +2617,7 @@
 4002	Women's 'Minima' Heels	0.1	1404
 4003	Women's 'Greave' Knee-Boots	0.1	1404
 4004	Women's 'Mystrioso' Boots	0.1	1404
-4005	Scorpion Ishukone Watch	468000	1620
+4005	Scorpion Ishukone Watch	50000	1620
 4006	Scorpion Ishukone Watch Blueprint	0.01	\N
 4007	Minmatar Station LCO	0	\N
 4008	Men's 'Lockstep' Boots	0.1	1400
@@ -2897,15 +2897,15 @@
 4299	Small Remote Hull Repairer II	5	1060
 4300	Small Remote Hull Repairer II Blueprint	0.01	\N
 4301	Outgrowth Rogue Drone Hive Pass Key	0.1	\N
-4302	Oracle	234000	470
+4302	Oracle	15000	470
 4303	Research Abstract: Project Tesseract	0.1	\N
 4304	Research Abstract: Project Theseus	0.1	\N
 4305	Oracle Blueprint	0.01	589
-4306	Naga	252000	471
+4306	Naga	15000	471
 4307	Naga Blueprint	0.01	590
-4308	Talos	270000	472
+4308	Talos	15000	472
 4309	Talos Blueprint	0.01	591
-4310	Tornado	216000	473
+4310	Tornado	15000	473
 4311	Tornado Blueprint	0.01	592
 4312	Gallente Fuel Block	5	1413
 4313	Gallente Fuel Block Blueprint	0.01	1412
@@ -2946,7 +2946,7 @@
 4359	QA Jump Bridge	1	\N
 4360	QA ECCM	1	\N
 4361	QA Fuel Control Tower	1	\N
-4363	Miasmos Quafe Ultra Edition	265000	1614
+4363	Miasmos Quafe Ultra Edition	20000	1614
 4364	Miasmos Quafe Ultra Edition Blueprint	0.01	\N
 4365	Men's 'Quafe' T-shirt YC114	0.1	1398
 4366	Women's 'Quafe' T-shirt YC114	0.1	1406
@@ -2967,7 +2967,7 @@
 4385	Micro Jump Drive Operation	0.01	374
 4386	Mobile Large Jump Disruptor I	585	405
 4387	Mobile Large Jump Disruptor I Blueprint	0.01	\N
-4388	Miasmos Quafe Ultramarine Edition	265000	1614
+4388	Miasmos Quafe Ultramarine Edition	20000	1614
 4389	Miasmos Quafe Ultramarine Edition Blueprint	0.01	\N
 4390	Pax Ammaria	0.1	\N
 4391	Large Ancillary Shield Booster	25	611
@@ -3637,12 +3637,12 @@
 9848	Robotics	6	1336
 9850	Spirits	0.2	492
 9852	Tobacco	0.2	492
-9854	Polaris Inspector Frigate	20400	\N
+9854	Polaris Inspector Frigate	2500	\N
 9856	Amarr Class A Starport	0	\N
 9857	Amarr Class B Starport	0	\N
-9858	Polaris Centurion TEST	20400	\N
-9860	Polaris Legatus Frigate	20400	\N
-9862	Polaris Centurion Frigate	20400	\N
+9858	Polaris Centurion TEST	2500	\N
+9860	Polaris Legatus Frigate	2500	\N
+9862	Polaris Centurion Frigate	2500	\N
 9866	Angel Serpentis	0	\N
 9867	Heaven	0	\N
 9868	Concord Starbase	0	\N
@@ -4038,13 +4038,13 @@
 11000	Convoy Protector	19400	\N
 11001	Convoy Guard	19700	\N
 11002	Convoy Sentry	16500	\N
-11011	Guardian-Vexor	115000	1699
+11011	Guardian-Vexor	10000	1699
 11012	Guardian-Vexor Blueprint	0.01	\N
 11013	Drug Contact List	0.1	\N
 11014	Command Processor I	5	1639
 11015	Test	0.01	\N
 11017	Skirmish Warfare Link - Interdiction Maneuvers I	60	1637
-11019	Cockroach	100	\N
+11019	Cockroach	2500	\N
 11021	Angel Thug	26005	\N
 11022	Angel Ruffian	17660	\N
 11023	Angel Ambusher	19100	\N
@@ -4106,11 +4106,11 @@
 11126	CONCORD SWAT Commander	1080000	\N
 11127	DED Army Commander	1080000	\N
 11128	DED Special Operation Commander	1080000	\N
-11129	Gallente Shuttle	5000	395
+11129	Gallente Shuttle	500	395
 11130	Gallente Shuttle Blueprint	0.01	417
-11132	Minmatar Shuttle	5000	394
+11132	Minmatar Shuttle	500	394
 11133	Minmatar Shuttle Blueprint	0.01	418
-11134	Amarr Shuttle	5000	393
+11134	Amarr Shuttle	500	393
 11135	Amarr Shuttle Blueprint	0.01	415
 11136	Concord Billboard	1	\N
 11137	Imperial Navy Fleet Marshall	1100000	\N
@@ -4122,35 +4122,35 @@
 11169	Fragmented Cathedral III	100000000	\N
 11170	Fragmented Cathedral IV	100000000	\N
 11171	Fragmented Cathedral V	100000000	\N
-11172	Helios	23000	423
+11172	Helios	2500	423
 11173	Helios Blueprint	0.01	428
-11174	Keres	23000	1068
+11174	Keres	2500	1068
 11175	Keres Blueprint	0.01	\N
-11176	Crow	18000	401
+11176	Crow	2500	401
 11177	Crow Blueprint	0.01	411
-11178	Raptor	18000	401
+11178	Raptor	2500	401
 11179	Raptor Blueprint	0.01	411
-11182	Cheetah	17400	424
+11182	Cheetah	2500	424
 11183	Cheetah Blueprint	0.01	429
-11184	Crusader	28100	400
+11184	Crusader	2500	400
 11185	Crusader Blueprint	0.01	410
-11186	Malediction	28100	400
+11186	Malediction	2500	400
 11187	Malediction Blueprint	0.01	410
-11188	Anathema	28100	421
+11188	Anathema	2500	421
 11189	Anathema Blueprint	0.01	425
-11190	Sentinel	28100	1066
+11190	Sentinel	2500	1066
 11191	Sentinel Blueprint	0.01	\N
-11192	Buzzard	19400	422
+11192	Buzzard	2500	422
 11193	Buzzard Blueprint	0.01	427
-11194	Kitsune	19400	1067
+11194	Kitsune	2500	1067
 11195	Kitsune Blueprint	0.01	\N
-11196	Claw	17400	403
+11196	Claw	2500	403
 11197	Claw Blueprint	0.01	413
-11198	Stiletto	17400	403
+11198	Stiletto	2500	403
 11199	Stiletto Blueprint	0.01	413
-11200	Taranis	22500	402
+11200	Taranis	2500	402
 11201	Taranis Blueprint	0.01	412
-11202	Ares	22500	402
+11202	Ares	2500	402
 11203	Ares Blueprint	0.01	412
 11204	Advanced Energy Grid Upgrades	0.01	\N
 11206	Advanced Shield Upgrades	0.01	\N
@@ -4252,35 +4252,35 @@
 11358	Medium Remote Armor Repairer I Blueprint	0.01	1539
 11359	Large Remote Armor Repairer I	50	1057
 11360	Large Remote Armor Repairer I Blueprint	0.01	1539
-11365	Vengeance	28600	433
+11365	Vengeance	2500	433
 11366	Vengeance Blueprint	0.01	459
 11367	map Landmark	0	\N
 11369	Particle Acceleration Superstructure	0	\N
 11370	Prototype Cloaking Device I	100	675
-11371	Wolf	27289	436
+11371	Wolf	2500	436
 11372	Wolf Blueprint	0.01	463
-11373	Blade	28600	\N
+11373	Blade	2500	\N
 11374	Blade Blueprint	0.01	\N
-11375	Erinye	28100	\N
+11375	Erinye	2500	\N
 11376	Erinye Blueprint	0.01	\N
-11377	Nemesis	28100	423
+11377	Nemesis	2500	423
 11378	Nemesis Blueprint	0.01	428
-11379	Hawk	16500	434
+11379	Hawk	2500	434
 11380	Hawk Blueprint	0.01	461
-11381	Harpy	16500	434
+11381	Harpy	2500	434
 11382	Harpy Blueprint	0.01	461
-11383	Gatherer	28100	\N
+11383	Gatherer	2500	\N
 11384	Gatherer Blueprint	0.01	\N
-11387	Hyena	17400	1069
+11387	Hyena	2500	1069
 11388	Hyena Blueprint	0.01	\N
-11389	Kishar	28100	\N
+11389	Kishar	2500	\N
 11390	Kishar Blueprint	0.01	\N
-11393	Retribution	28600	433
+11393	Retribution	2500	433
 11394	Retribution Blueprint	0.01	459
 11395	Deep Core Mining	0.01	1323
 11396	Mercoxit	40	530
 11399	Morphite	0.01	18
-11400	Jaguar	27289	436
+11400	Jaguar	2500	436
 11401	Jaguar Blueprint	0.01	463
 11433	High Energy Physics	0.01	375
 11441	Plasma Physics	0.01	375
@@ -4390,7 +4390,7 @@
 11563	Micro Auxiliary Power Core I	20	660
 11564	Micro Auxiliary Power Core I Blueprint	0.01	1559
 11566	Thermic Shield Compensation	0.01	1747
-11567	Avatar	155000000	813
+11567	Avatar	10000000	813
 11568	Avatar Blueprint	0.01	884
 11569	Armored Warfare Specialist	0.01	370
 11572	Skirmish Warfare Specialist	0.01	370
@@ -4643,74 +4643,74 @@
 11933	Guristas Obliterator	1080000	\N
 11934	Guristas Dismantler	1040000	\N
 11935	Guristas Extinguisher	22000000	\N
-11936	Apocalypse Imperial Issue	495000	1620
+11936	Apocalypse Imperial Issue	50000	1620
 11937	Apocalypse Imperial Issue Blueprint	0.01	\N
-11938	Armageddon Imperial Issue	486000	1620
+11938	Armageddon Imperial Issue	50000	1620
 11939	Armageddon Imperial Issue Blueprint	0.01	\N
-11940	Gold Magnate	28100	1619
-11942	Silver Magnate	28100	1619
+11940	Gold Magnate	2500	1619
+11942	Silver Magnate	2500	1619
 11944	Synthetic Coffee	0.2	492
 11947	Khanid Fighter	18100	\N
 11948	Khanid Officer	115000	\N
-11957	Falcon	96000	830
+11957	Falcon	10000	830
 11958	Falcon Blueprint	0.01	901
-11959	Rook	96000	830
+11959	Rook	10000	830
 11960	Rook Blueprint	0.01	901
-11961	Huginn	85000	836
+11961	Huginn	10000	836
 11962	Huginn Blueprint	0.01	903
-11963	Rapier	85000	836
+11963	Rapier	10000	836
 11964	Rapier Blueprint	0.01	903
-11965	Pilgrim	120000	827
+11965	Pilgrim	10000	827
 11966	Pilgrim Blueprint	0.01	900
-11969	Arazu	116000	833
+11969	Arazu	10000	833
 11970	Arazu Blueprint	0.01	902
-11971	Lachesis	116000	833
+11971	Lachesis	10000	833
 11972	Lachesis Blueprint	0.01	902
-11978	Scimitar	89000	441
+11978	Scimitar	10000	441
 11979	Scimitar Blueprint	0.01	446
-11985	Basilisk	107000	439
+11985	Basilisk	10000	439
 11986	Basilisk Blueprint	0.01	444
-11987	Guardian	115000	438
+11987	Guardian	10000	438
 11988	Guardian Blueprint	0.01	443
-11989	Oneiros	113000	440
+11989	Oneiros	10000	440
 11990	Oneiros Blueprint	0.01	445
-11993	Cerberus	92000	450
+11993	Cerberus	10000	450
 11994	Cerberus Blueprint	0.01	455
-11995	Onyx	92000	1072
+11995	Onyx	10000	1072
 11996	Onyx Blueprint	0.01	\N
-11999	Vagabond	80000	452
+11999	Vagabond	10000	452
 12000	Vagabond Blueprint	0.01	457
-12003	Zealot	118000	449
+12003	Zealot	10000	449
 12004	Zealot Blueprint	0.01	454
-12005	Ishtar	115000	451
+12005	Ishtar	10000	451
 12006	Ishtar Blueprint	0.01	456
-12011	Eagle	101000	450
+12011	Eagle	10000	450
 12012	Eagle Blueprint	0.01	455
-12013	Broadsword	96000	1074
+12013	Broadsword	10000	1074
 12014	Broadsword Blueprint	0.01	\N
-12015	Muninn	96000	452
+12015	Muninn	10000	452
 12016	Muninn Blueprint	0.01	457
-12017	Devoter	118000	1071
+12017	Devoter	10000	1071
 12018	Devoter Blueprint	0.01	\N
-12019	Sacrilege	118000	449
+12019	Sacrilege	10000	449
 12020	Sacrilege Blueprint	0.01	454
-12021	Phobos	112000	1073
+12021	Phobos	10000	1073
 12022	Phobos Blueprint	0.01	\N
-12023	Deimos	112000	451
+12023	Deimos	10000	451
 12024	Deimos Blueprint	0.01	456
 12028	Storage Bin	1200	\N
 12029	Khanid Elite Fighter	28700	\N
 12031	Manticore Blueprint	0.01	427
-12032	Manticore	28100	422
-12034	Hound	28100	424
+12032	Manticore	2500	422
+12034	Hound	2500	424
 12035	Hound Blueprint	0.01	429
-12036	Dagger	28100	\N
+12036	Dagger	2500	\N
 12037	Dagger Blueprint	0.01	\N
-12038	Purifier	28100	421
+12038	Purifier	2500	421
 12041	Purifier Blueprint	0.01	425
-12042	Ishkur	29500	435
+12042	Ishkur	2500	435
 12043	Ishkur Blueprint	0.01	462
-12044	Enyo	29500	435
+12044	Enyo	2500	435
 12045	Enyo Blueprint	0.01	462
 12046	Ammatar Slave Trader	120000	\N
 12047	Khanid Slave Trader	120000	\N
@@ -5010,7 +5010,7 @@
 12718	Huge Active Stealth System I Blueprint	0.01	\N
 12729	Crane	195000	631
 12730	Crane Blueprint	0.01	636
-12731	Bustard	290000	631
+12731	Bustard	20000	631
 12732	Bustard Blueprint	0.01	636
 12733	Prorator	200000	630
 12734	Prorator Blueprint	0.01	635
@@ -5018,11 +5018,11 @@
 12736	Prowler Blueprint	0.01	638
 12743	Viator	190000	632
 12744	Viator Blueprint	0.01	637
-12745	Occator	290000	632
+12745	Occator	20000	632
 12746	Occator Blueprint	0.01	637
-12747	Mastodon	285000	633
+12747	Mastodon	20000	633
 12748	Mastodon Blueprint	0.01	638
-12753	Impel	300000	630
+12753	Impel	20000	630
 12754	Impel Blueprint	0.01	635
 12761	Quake L	0.025	854
 12762	Quake L Blueprint	0.01	\N
@@ -5163,7 +5163,7 @@
 13166	Inherent Implants 'Lancer' Gunnery RF-903	1	1501
 13200	Large EM Forcefield	100000000	\N
 13201	Testgaur	109000	\N
-13202	Megathron Federate Issue	486000	1620
+13202	Megathron Federate Issue	50000	1620
 13203	Megathron Federate Issue Blueprint	0.01	\N
 13204	Sacred Bricks	0.1	\N
 13205	Heart Stone	0.1	\N
@@ -6948,21 +6948,21 @@
 16222	Light Missile Battery	1150	\N
 16223	Shield Generation Array	1	\N
 16226	Kurzon Destroyer	980000	\N
-16227	Ferox	252000	471
+16227	Ferox	15000	471
 16228	Ferox Blueprint	0.01	590
-16229	Brutix	270000	472
+16229	Brutix	15000	472
 16230	Brutix Blueprint	0.01	591
-16231	Cyclone	216000	473
+16231	Cyclone	15000	473
 16232	Cyclone Blueprint	0.01	592
-16233	Prophecy	234000	470
+16233	Prophecy	15000	470
 16234	Prophecy Blueprint	0.01	589
-16236	Coercer	47000	465
+16236	Coercer	5000	465
 16237	Coercer Blueprint	0.01	583
-16238	Cormorant	52000	466
+16238	Cormorant	5000	466
 16239	Cormorant Blueprint	0.01	584
-16240	Catalyst	55000	467
+16240	Catalyst	5000	467
 16241	Catalyst Blueprint	0.01	585
-16242	Thrasher	43000	468
+16242	Thrasher	5000	468
 16243	Thrasher Blueprint	0.01	586
 16244	Sarum Spider	28700	\N
 16245	Zainou 'Gnome' Shield Upgrades SU-605	1	1480
@@ -7870,7 +7870,7 @@
 17356	Magpulse Thruster Blueprint	0.01	1593
 17357	Photon Microprocessor Blueprint	0.01	1594
 17359	Linear Shield Emitter Blueprint	0.01	1592
-17360	Immovable Enigma	20400	\N
+17360	Immovable Enigma	2500	\N
 17363	Small Audit Log Secure Container	100	1652
 17364	Medium Audit Log Secure Container	325	1652
 17365	Large Audit Log Secure Container	650	1652
@@ -7932,11 +7932,11 @@
 17470	Concentrated Veldspar	0.1	518
 17471	Dense Veldspar	0.1	518
 17475	Radioactive Waste	1	\N
-17476	Covetor	200000	494
+17476	Covetor	3750	494
 17477	Covetor Blueprint	0.01	497
-17478	Retriever	150000	494
+17478	Retriever	3750	494
 17479	Retriever Blueprint	0.01	497
-17480	Procurer	100000	494
+17480	Procurer	3750	494
 17481	Procurer Blueprint	0.01	497
 17482	Strip Miner I	25	1040
 17483	Strip Miner I Blueprint	0.01	338
@@ -8062,7 +8062,7 @@
 17615	Corpus Crimson Commander	118000	\N
 17616	Mul-Zatath Gatekeeper	118000	\N
 17617	QA Speed Limiter Module	1	\N
-17619	Caldari Navy Hookbill	16500	1366
+17619	Caldari Navy Hookbill	2500	1366
 17620	Caldari Navy Hookbill Blueprint	0.01	\N
 17621	Corporate Hangar Array	4000	506
 17622	Jenmai Hirokan	16500	\N
@@ -8077,9 +8077,9 @@
 17631	Deadspace Synchronization HQ	100000000	\N
 17632	CreoCorp Main Factory	100000000	\N
 17633	UNUSED_HabMod_Residential_LCS	100000000	\N
-17634	Caracal Navy Issue	101000	1370
+17634	Caracal Navy Issue	10000	1370
 17635	Caracal Navy Issue Blueprint	0.01	\N
-17636	Raven Navy Issue	486000	1379
+17636	Raven Navy Issue	50000	1379
 17637	Raven Navy Issue Blueprint	0.01	\N
 17638	Sentinel Bloodraider	1000	\N
 17639	Taisu Magdesh's Insignia	0.1	\N
@@ -8141,35 +8141,35 @@
 17695	Xray XL Blueprint	0.01	599
 17696	Old System Scanner	5	\N
 17701	Tracking Array	4000	\N
-17703	Imperial Navy Slicer	16500	1366
+17703	Imperial Navy Slicer	2500	1366
 17704	Imperial Navy Slicer Blueprint	0.01	\N
-17705	Khanid Navy Frigate	16500	\N
+17705	Khanid Navy Frigate	2500	\N
 17706	Khanid Navy Frigate Blueprint	0.01	\N
-17707	Mordus Frigate	16500	\N
+17707	Mordus Frigate	2500	\N
 17708	Mordus Frigate Blueprint	0.01	\N
-17709	Omen Navy Issue	101000	1370
+17709	Omen Navy Issue	10000	1370
 17710	Omen Navy Issue Blueprint	0.01	\N
-17713	Stabber Fleet Issue	101000	1370
+17713	Stabber Fleet Issue	10000	1370
 17714	Stabber Fleet Issue Blueprint	0.01	\N
-17715	Gila	101000	1371
+17715	Gila	10000	1371
 17716	Gila Blueprint	0.01	\N
-17718	Phantasm	101000	1371
+17718	Phantasm	10000	1371
 17719	Phantasm Blueprint	0.01	\N
-17720	Cynabal	101000	1371
+17720	Cynabal	10000	1371
 17721	Cynabal Blueprint	0.01	\N
-17722	Vigilant	101000	1371
+17722	Vigilant	10000	1371
 17723	Vigilant Blueprint	0.01	\N
-17726	Apocalypse Navy Issue	495000	1379
+17726	Apocalypse Navy Issue	50000	1379
 17727	Apocalypse Navy Issue Blueprint	0.01	\N
-17728	Megathron Navy Issue	486000	1379
+17728	Megathron Navy Issue	50000	1379
 17729	Megathron Navy Issue Blueprint	0.01	\N
-17732	Tempest Fleet Issue	486000	1379
+17732	Tempest Fleet Issue	50000	1379
 17733	Tempest Fleet Issue Blueprint	0.01	\N
-17736	Nightmare	486000	1380
+17736	Nightmare	50000	1380
 17737	Nightmare Blueprint	0.01	\N
-17738	Machariel	595000	1380
+17738	Machariel	50000	1380
 17739	Machariel Blueprint	0.01	\N
-17740	Vindicator	486000	1380
+17740	Vindicator	50000	1380
 17741	Vindicator Blueprint	0.01	\N
 17742	Uleen Bloodsworn	28600	\N
 17743	Uleen Bloodsworn's Tag	0.1	750
@@ -8222,7 +8222,7 @@
 17801	Akori's Insignia	0.1	\N
 17802	Ibrahim's Insignia	0.1	\N
 17803	Karothas's Insignia	0.1	\N
-17812	Republic Fleet Firetail	16500	1366
+17812	Republic Fleet Firetail	2500	1366
 17813	Republic Fleet Firetail Blueprint	0.01	\N
 17814	Minmatar UUC Nexus Chip	0.1	738
 17815	Minmatar UUA Nexus Chip	0.1	738
@@ -8249,9 +8249,9 @@
 17838	Federation Navy Armor Thermic Hardener	5	1678
 17839	Federation Navy Armor Thermic Hardener Blueprint	0.01	\N
 17840	Zor's DNA	0.1	752
-17841	Federation Navy Comet	16500	1366
+17841	Federation Navy Comet	2500	1366
 17842	Federation Navy Comet Blueprint	0.01	\N
-17843	Vexor Navy Issue	112000	1370
+17843	Vexor Navy Issue	10000	1370
 17844	Vexor Navy Issue Blueprint	0.01	\N
 17846	Lazarus Trezun	26500	\N
 17847	Lazarus's Tag	0.1	750
@@ -8316,21 +8316,21 @@
 17913	Modulated Strip Miner II Blueprint	0.01	\N
 17916	Tritan's Forked Key	0.1	\N
 17917	Rogue Pirate Grunt	17400	\N
-17918	Rattlesnake	486000	1380
+17918	Rattlesnake	50000	1380
 17919	Rattlesnake Blueprint	0.01	\N
-17920	Bhaalgorn	486000	1380
+17920	Bhaalgorn	50000	1380
 17921	Bhaalgorn Blueprint	0.01	\N
-17922	Ashimmu	118000	1371
+17922	Ashimmu	10000	1371
 17923	Ashimmu Blueprint	0.01	\N
-17924	Succubus	28600	1365
+17924	Succubus	2500	1365
 17925	Succubus Blueprint	0.01	\N
-17926	Cruor	28600	1365
+17926	Cruor	2500	1365
 17927	Cruor Blueprint	0.01	\N
-17928	Daredevil	26500	1365
+17928	Daredevil	2500	1365
 17929	Daredevil Blueprint	0.01	\N
-17930	Worm	16500	1365
+17930	Worm	2500	1365
 17931	Worm Blueprint	0.01	\N
-17932	Dramiel	27289	1365
+17932	Dramiel	2500	1365
 17933	Dramiel Blueprint	0.01	\N
 17938	Core Probe Launcher I	5	712
 17939	Core Probe Launcher I Blueprint	0.01	1198
@@ -9052,13 +9052,13 @@
 19715	Habitation Module	100000000	\N
 19716	Habitation Module	100000000	\N
 19719	Transport Ships	0.01	377
-19720	Revelation	18500000	762
+19720	Revelation	1000000	762
 19721	Revelation Blueprint	0.01	783
-19722	Naglfar	15500000	765
+19722	Naglfar	1000000	765
 19723	Naglfar Blueprint	0.01	786
-19724	Moros	17550000	764
+19724	Moros	1000000	764
 19725	Moros Blueprint	0.01	785
-19726	Phoenix	16250000	763
+19726	Phoenix	1000000	763
 19727	Phoenix Blueprint	0.01	784
 19728	Deadspace Signature	1	\N
 19729	Gallente Bunker_UDI	100000000	\N
@@ -9071,7 +9071,7 @@
 19740	Cruise Missile Launcher II Blueprint	0.01	\N
 19742	Infested station ruins	100000000	\N
 19743	Extremely Powerful EM Forcefield	100000000	\N
-19744	Sigil	230000	85
+19744	Sigil	20000	85
 19745	Sigil Blueprint	0.01	285
 19746	Dust Storm Environment	0	\N
 19747	Lightning Storm Environment	0	\N
@@ -9205,7 +9205,7 @@
 20117	Datacore - Advanced Starship Engineering 	1	\N
 20121	Crystal Alpha	1	618
 20124	Siege Warfare Link - Active Shielding I	60	1636
-20125	Curse	120000	827
+20125	Curse	10000	827
 20126	Curse Blueprint	0.01	900
 20127	Stealth Bombers Fake Skill	0.01	\N
 20128	Civilian Pulse Crystal	1	\N
@@ -9231,13 +9231,13 @@
 20176	Academy	4000	\N
 20177	Asteroid Deadspace Mining Colony	1	\N
 20182	Secured Drone Bunker	100000000	\N
-20183	Providence	18500000	767
+20183	Providence	1000000	767
 20184	Providence Blueprint	0.01	788
-20185	Charon	16250000	768
+20185	Charon	1000000	768
 20186	Charon Blueprint	0.01	789
-20187	Obelisk	17550000	769
+20187	Obelisk	1000000	769
 20188	Obelisk Blueprint	0.01	790
-20189	Fenrir	15500000	770
+20189	Fenrir	1000000	770
 20190	Fenrir Blueprint	0.01	791
 20196	Blood Raider Chapel	100000000	\N
 20197	QA Shield Extender	1	\N
@@ -9858,7 +9858,7 @@
 21094	Cynosural Field I	5	\N
 21095	Cynosural Field I Blueprint	0.01	\N
 21096	Cynosural Field Generator I	50	1641
-21097	Goru's Shuttle	5000	1631
+21097	Goru's Shuttle	500	1631
 21098	Goru's Shuttle Blueprint	0.01	\N
 21099	Kazka Loot Container	1200	\N
 21101	RabaRaba ChooChoo	101000	\N
@@ -10240,7 +10240,7 @@
 21625	Kusan Niemenen's Missile Launcher	2	\N
 21626	Propel Dynamics Dogtag	0.1	\N
 21627	Gas/Storage Silo	100000000	\N
-21628	Guristas Shuttle	5000	1631
+21628	Guristas Shuttle	500	1631
 21629	Guristas Shuttle Blueprint	0.01	\N
 21630	Bounty Hunter Drukhar	101000	\N
 21631	Construction Workers	3	\N
@@ -10856,37 +10856,37 @@
 22343	Nefantar_Debris_Mission2	27500	\N
 22390	Nikmar Jyran's Retribution	0	\N
 22391	Taspar Zolankor's Retribution	0	\N
-22428	Redeemer	486000	1076
+22428	Redeemer	50000	1076
 22429	Redeemer Blueprint	0.01	\N
-22430	Sin	454500	1078
+22430	Sin	50000	1078
 22431	Sin Blueprint	0.01	\N
-22436	Widow	468000	1077
+22436	Widow	50000	1077
 22437	Widow Blueprint	0.01	\N
-22440	Panther	414000	1079
+22440	Panther	50000	1079
 22441	Panther Blueprint	0.01	\N
-22442	Eos	270000	831
+22442	Eos	15000	831
 22443	Eos Blueprint	0.01	898
-22444	Sleipnir	216000	834
+22444	Sleipnir	15000	834
 22445	Sleipnir Blueprint	0.01	899
-22446	Vulture	252000	828
+22446	Vulture	15000	828
 22447	Vulture Blueprint	0.01	897
-22448	Absolution	234000	825
+22448	Absolution	15000	825
 22449	Absolution Blueprint	0.01	896
-22452	Heretic	47000	826
+22452	Heretic	5000	826
 22453	Heretic Blueprint	0.01	892
-22456	Sabre	43000	835
+22456	Sabre	5000	835
 22457	Sabre Blueprint	0.01	895
-22460	Eris	55000	832
+22460	Eris	5000	832
 22461	Eris Blueprint	0.01	894
-22464	Flycatcher	52000	829
+22464	Flycatcher	5000	829
 22465	Flycatcher Blueprint	0.01	893
-22466	Astarte	270000	831
+22466	Astarte	15000	831
 22467	Astarte Blueprint	0.01	898
-22468	Claymore	216000	834
+22468	Claymore	15000	834
 22469	Claymore Blueprint	0.01	899
-22470	Nighthawk	252000	828
+22470	Nighthawk	15000	828
 22471	Nighthawk Blueprint	0.01	897
-22474	Damnation	234000	825
+22474	Damnation	15000	825
 22475	Damnation Blueprint	0.01	896
 22476	Warp Prohibitor I	5	\N
 22477	Warp Prohibitor I Blueprint	0.01	\N
@@ -10898,11 +10898,11 @@
 22541	Mining Drone Specialization	0.01	\N
 22542	Mining Laser Upgrade I	5	935
 22543	Mining Laser Upgrade I Blueprint	0.01	937
-22544	Hulk	200000	874
+22544	Hulk	3750	874
 22545	Hulk Blueprint	0.01	904
-22546	Skiff	100000	874
+22546	Skiff	3750	874
 22547	Skiff Blueprint	0.01	904
-22548	Mackinaw	150000	874
+22548	Mackinaw	3750	874
 22549	Mackinaw Blueprint	0.01	904
 22551	Exhumers	0.01	377
 22552	Mining Director	0.01	370
@@ -11116,7 +11116,7 @@
 22847	Minmatar Civilians	5	\N
 22848	Gallente Sentry Gun - Training	1000	\N
 22849	Drifting Cask - Minmatar Training Facility	1200	\N
-22852	Hel	51000000	821
+22852	Hel	1000000	821
 22853	Hel Blueprint	0.01	891
 22857	Domination Shatterer	16450	\N
 22858	Domination Defacer	16450	\N
@@ -11892,7 +11892,7 @@
 23754	Broken Blue Crystal Asteroid	0	\N
 23755	Broken Metallic Crystal Asteroid	0	\N
 23756	Broken Orange Crystal Asteroid	0	\N
-23757	Archon	13950000	818
+23757	Archon	1000000	818
 23758	Archon Blueprint	0.01	888
 23759	FA-14 Templar	5000	\N
 23760	FA-14 Templar Blueprint	0.01	\N
@@ -11908,7 +11908,7 @@
 23770	Nakkito Ihadechi's Condor	0	\N
 23771	Furas Vaupero's Merlin	0	\N
 23772	Ontaa Jila's Harpy	0	\N
-23773	Ragnarok	100000000	816
+23773	Ragnarok	10000000	816
 23774	Ragnarok Blueprint	0.01	887
 23775	Cosmos Crucifier	0	\N
 23776	Cosmos Maller	0	\N
@@ -12035,15 +12035,15 @@
 23907	Shiny Sentry Key	0.1	\N
 23908	Core Serpentis Sentry	100000000	\N
 23909	Komni History (1 of 2)	1	\N
-23911	Thanatos	13095000	820
+23911	Thanatos	1000000	820
 23912	Thanatos Blueprint	0.01	890
-23913	Nyx	58200000	820
+23913	Nyx	1000000	820
 23914	Nyx Blueprint	0.01	890
-23915	Chimera	11925000	819
+23915	Chimera	1000000	819
 23916	Chimera Blueprint	0.01	889
-23917	Wyvern	53000000	819
+23917	Wyvern	1000000	819
 23918	Wyvern Blueprint	0.01	889
-23919	Aeon	62000000	818
+23919	Aeon	1000000	818
 23920	Aeon Blueprint	0.01	888
 23921	Strain Annihilator Alvum	60	\N
 23922	Strain Devastator Alvum	60	\N
@@ -12517,7 +12517,7 @@
 24479	Inferno Javelin Rocket	0.005	928
 24480	LCO Spatial Rift	0	\N
 24482	Key to the Labyrinth	0.1	\N
-24483	Nidhoggur	11250000	821
+24483	Nidhoggur	1000000	821
 24484	Nidhoggur Blueprint	0.01	891
 24485	Aurora Gamma	1	\N
 24486	Inferno Rage Heavy Assault Missile	0.015	973
@@ -12677,21 +12677,21 @@
 24683	Maphante Interceptor	28100	\N
 24684	Biochemical Reactor Array	4000	490
 24685	LCS Stargate (Minmatar 1)	100000000	\N
-24688	Rokh	486000	80
+24688	Rokh	50000	80
 24689	Rokh Blueprint	0.01	280
-24690	Hyperion	495000	81
+24690	Hyperion	50000	81
 24691	Hyperion Blueprint	0.01	281
-24692	Abaddon	495000	79
+24692	Abaddon	50000	79
 24693	Abaddon Blueprint	0.01	279
-24694	Maelstrom	472500	78
+24694	Maelstrom	50000	78
 24695	Maelstrom Blueprint	0.01	278
-24696	Harbinger	234000	470
+24696	Harbinger	15000	470
 24697	Harbinger Blueprint	0.01	589
-24698	Drake	252000	471
+24698	Drake	15000	471
 24699	Drake Blueprint	0.01	590
-24700	Myrmidon	270000	472
+24700	Myrmidon	15000	472
 24701	Myrmidon Blueprint	0.01	591
-24702	Hurricane	216000	473
+24702	Hurricane	15000	473
 24703	Hurricane Blueprint	0.01	592
 24706	Newly Constructed Acceleration Gate	0	\N
 24707	Caldari Graduation Certificate	0.1	\N
@@ -13248,7 +13248,7 @@
 25556	Incognito Data Interface	1	980
 25557	Jamur Fatimar	1150000	\N
 25559	Blood Raider Fleet Stronghold	1000	\N
-25560	Opux Dragoon Yacht	115000	\N
+25560	Opux Dragoon Yacht	10000	\N
 25561	Signal Distortion Amplifier I	5	967
 25562	Signal Distortion Amplifier I Blueprint	0.01	1567
 25563	Signal Distortion Amplifier II	5	967
@@ -14260,8 +14260,8 @@
 26818	Serpentis Regional Baron - Arain Percourt	1140000	\N
 26832	Captain Blood Raven	1150000	\N
 26833	Serpentis Holder	1140000	\N
-26840	Raven State Issue	486000	1620
-26842	Tempest Tribal Issue	486000	1620
+26840	Raven State Issue	50000	1620
+26842	Tempest Tribal Issue	50000	1620
 26843	Tempest Tournament Issue TEST Blueprint	0.01	\N
 26844	Rubin Sozar	19000000	\N
 26846	Okelle Alash	5	\N
@@ -14591,13 +14591,13 @@
 27296	Blood Resilient Destroyer	28600	\N
 27297	Guristas Resilient Destroyer	16500	\N
 27298	Serpentis Resilient Destroyer	26500	\N
-27299	Civilian Amarr Shuttle	5000	\N
+27299	Civilian Amarr Shuttle	500	\N
 27300	Civilian Amarr Shuttle Blueprint	0.01	\N
-27301	Civilian Caldari Shuttle	5000	\N
+27301	Civilian Caldari Shuttle	500	\N
 27302	Civilian Caldari Shuttle Blueprint	0.01	\N
-27303	Civilian Gallente Shuttle	5000	\N
+27303	Civilian Gallente Shuttle	500	\N
 27304	Civilian Gallente Shuttle Blueprint	0.01	\N
-27305	Civilian Minmatar Shuttle	5000	\N
+27305	Civilian Minmatar Shuttle	500	\N
 27306	Civilian Minmatar Shuttle Blueprint	0.01	\N
 27308	Abandoned Wreck	27500	\N
 27309	Station Warehouse Container Blueprint	0.01	1008
@@ -15407,7 +15407,7 @@
 28339	Republic Fleet Depleted Uranium XL Blueprint	0.01	\N
 28340	LCS Drug Lab_noloot	0	\N
 28351	Advanced Mobile Laboratory	3000	933
-28352	Rorqual	14500000	1048
+28352	Rorqual	1000000	1048
 28353	Rorqual Blueprint	0.01	1046
 28356	Cosmic Anomaly	1	\N
 28359	Alliance Tournament Silver Medal	0.1	\N
@@ -15628,7 +15628,7 @@
 28603	Rorqual Wreck	27500	\N
 28604	Tournament Observation	0.01	\N
 28605	Advanced Mobile Laboratory Blueprint	0.01	1359
-28606	Orca	10250000	1048
+28606	Orca	500000	1048
 28607	Orca Blueprint	0.01	1046
 28608	Asteroid Station - 1 - Strong HP	100000000	\N
 28609	Heavy Interdiction Cruisers	0.01	377
@@ -15660,11 +15660,11 @@
 28654	Warp Disruption Field Generator I	50	1085
 28655	Warp Disruption Field Generator I Blueprint	0.01	1572
 28656	Black Ops	0.01	377
-28659	Paladin	495000	1081
+28659	Paladin	50000	1081
 28660	Paladin Blueprint	0.01	\N
-28661	Kronos	486000	1083
+28661	Kronos	50000	1083
 28662	Kronos Blueprint	0.01	\N
-28665	Vargur	450000	1084
+28665	Vargur	50000	1084
 28666	Vargur Blueprint	0.01	\N
 28667	Marauders	0.01	377
 28668	Nanite Repair Paste	0.01	1103
@@ -15708,7 +15708,7 @@
 28707	Synth Mindflood Booster Reaction	1	981
 28708	Synth Sooth Sayer Booster Reaction	1	981
 28709	Synth X-Instinct Booster Reaction	1	981
-28710	Golem	486000	1082
+28710	Golem	50000	1082
 28711	Golem Blueprint	0.01	\N
 28729	Legion ECM Ion Field Projector	5	715
 28730	Legion ECM Ion Field Projector Blueprint	0.01	\N
@@ -15811,13 +15811,13 @@
 28841	Cargo Container - Encoded Data Chip	27500	\N
 28842	Amarr Sympathizer	1	\N
 28843	Altered Datacore - Mechanical Engineering	0.1	\N
-28844	Rhea	16250000	1091
+28844	Rhea	1000000	1091
 28845	Rhea Blueprint	0.01	\N
-28846	Nomad	15500000	1093
+28846	Nomad	1000000	1093
 28847	Nomad Blueprint	0.01	\N
-28848	Anshar	17550000	1092
+28848	Anshar	1000000	1092
 28849	Anshar Blueprint	0.01	\N
-28850	Ark	18500000	1090
+28850	Ark	1000000	1090
 28851	Ark Blueprint	0.01	\N
 28852	Ancient Starbase Ruins	27500	\N
 28854	Communications Tower	100000000	\N
@@ -16138,14 +16138,14 @@
 29245	Minmatar Frigate Vessel	21120	\N
 29246	Corpse of Enlil Bel	1	\N
 29247	Loyalty Points	0	\N
-29248	Magnate	22100	72
+29248	Magnate	2500	72
 29249	Magnate Blueprint	0.01	272
 29250	LCO Large EM Forcefield	100000000	\N
 29251	LCO Starbase Explosion Dampening Array	4000	\N
 29253	Political Envoy	2	\N
 29262	Fuel Depot	100000000	\N
 29263	Geeral Tash-Murkon	1.5	\N
-29266	Apotheosis	17400	1618
+29266	Apotheosis	500	1618
 29267	Apotheosis Blueprint	0.01	\N
 29268	Major Effects	0.2	\N
 29269	Major's Son	1	\N
@@ -16184,21 +16184,21 @@
 29323	Wrecked Caldari Station	1	\N
 29324	Cargo Container - Broken Mining Equipment	27500	\N
 29325	Starbase Auxiliary Power Array II	100	\N
-29328	Amarr Media Shuttle	5000	\N
+29328	Amarr Media Shuttle	500	\N
 29329	Amarr Media Shuttle Blueprint	0.01	\N
-29330	Caldari Media Shuttle	5000	\N
+29330	Caldari Media Shuttle	500	\N
 29331	Caldari Media Shuttle Blueprint	0.01	\N
-29332	Gallente Media Shuttle	5000	\N
+29332	Gallente Media Shuttle	500	\N
 29333	Gallente Media Shuttle Blueprint	0.01	\N
-29334	Minmatar Media Shuttle	5000	\N
+29334	Minmatar Media Shuttle	500	\N
 29335	Minmatar Media Shuttle Blueprint	0.01	\N
-29336	Scythe Fleet Issue	89000	1370
-29337	Augoror Navy Issue	101000	1370
+29336	Scythe Fleet Issue	10000	1370
+29337	Augoror Navy Issue	10000	1370
 29338	Augoror Navy Issue Blueprint	0.01	\N
 29339	Scythe Fleet Issue Blueprint	0.01	\N
-29340	Osprey Navy Issue	107000	1370
+29340	Osprey Navy Issue	10000	1370
 29341	Osprey Navy Issue Blueprint	0.01	\N
-29344	Exequror Navy Issue	112000	1370
+29344	Exequror Navy Issue	10000	1370
 29345	Exequror Navy Issue Blueprint	0.01	\N
 29346	Starbase Auxiliary Power Array III	100	\N
 29347	Mission Faction Vessels Wreck	27500	\N
@@ -16623,13 +16623,13 @@
 29980	Proteus Defensive - Nanobot Injector	40	1129
 29981	Proteus Defensive - Augmented Plating	40	1129
 29982	Proteus Defensive - Warfare Processor	40	1129
-29984	Tengu	92000	1140
+29984	Tengu	5000	1140
 29985	Tengu Blueprint	0.01	\N
-29986	Legion	118000	1139
+29986	Legion	5000	1139
 29987	Legion Blueprint	0.01	\N
-29988	Proteus	115000	1141
+29988	Proteus	5000	1141
 29989	Proteus Blueprint	0.01	\N
-29990	Loki	80000	1142
+29990	Loki	5000	1142
 29991	Loki Blueprint	0.01	\N
 29992	Optimized Nano-engines	10	1147
 29993	Optimized Nano-Engines Blueprint	0.01	1191
@@ -17256,7 +17256,7 @@
 30839	Civilian Damage Control	5	\N
 30840	Civilian Damage Control Blueprint	0.01	\N
 30841	Lear Evanus' Apocalypse	0	\N
-30842	Interbus Shuttle	5000	1618
+30842	Interbus Shuttle	500	1618
 30843	Interbus Shuttle Blueprint	0.01	\N
 30844	Pulsar Effect Beacon Class 1	20	\N
 30845	Black Hole Effect Beacon Class 1	20	\N
@@ -18399,9 +18399,9 @@
 32204	Wildfire Khumaak	0.3	\N
 32205	Central Burial Tomb	27500	\N
 32206	Defiants Storage Facility	27500	\N
-32207	Freki	27289	1623
+32207	Freki	2500	1623
 32208	Freki Blueprint	0.01	\N
-32209	Mimir	96000	1621
+32209	Mimir	10000	1621
 32210	Mimir Blueprint	0.01	\N
 32211	Archives	27500	\N
 32216	LCO Amarr Cathedral	0	\N
@@ -18480,13 +18480,13 @@
 32300	QA Territorial Claim Unit	1	\N
 32302	QA Sovereignty Blockade Unit	1	\N
 32304	Harkan's Apocalypse	0	\N
-32305	Armageddon Navy Issue	486000	1379
+32305	Armageddon Navy Issue	50000	1379
 32306	Armageddon Navy Issue Blueprint	0.01	\N
-32307	Dominix Navy Issue	454500	1379
+32307	Dominix Navy Issue	50000	1379
 32308	Dominix Navy Issue Blueprint	0.01	\N
-32309	Scorpion Navy Issue	468000	1379
+32309	Scorpion Navy Issue	50000	1379
 32310	Scorpion Navy Issue Blueprint	0.01	\N
-32311	Typhoon Fleet Issue	414000	1379
+32311	Typhoon Fleet Issue	50000	1379
 32312	Typhoon Fleet Issue Blueprint	0.01	\N
 32313	QA Infrastructure Hub	1	\N
 32325	Cyclops	5000	1310
@@ -18714,9 +18714,9 @@
 32785	Rohan Shadrak's Bellicose	99000	\N
 32786	Patrikia Noirild's Reaper	21120	\N
 32787	Salvage Drone I	5	1646
-32788	Cambion	16500	1623
+32788	Cambion	2500	1623
 32789	Cambion Blueprint	0.01	\N
-32790	Etana	107000	1624
+32790	Etana	10000	1624
 32791	Etana Blueprint	0.01	\N
 32792	100 Aurum Token	0.01	1427
 32793	500 Aurum Token	0.01	1427
@@ -18730,7 +18730,7 @@
 32804	Tactical Hybrid S Blueprint	0.01	1601
 32809	Ammatar Navy Thermic Plating	5	1665
 32810	Ammatar Navy Thermic Plating Blueprint	0.01	\N
-32811	Miasmos Amastris Edition	265000	1614
+32811	Miasmos Amastris Edition	20000	1614
 32812	Miasmos Amastris Edition Blueprint	0.01	\N
 32817	Medium Mercoxit Mining Crystal Optimization I	10	1783
 32818	Medium Mercoxit Mining Crystal Optimization I Blueprint	0.01	1799
@@ -18755,15 +18755,15 @@
 32837	Unrefined Fernite Alloy Reaction	1	508
 32838	Unrefined Crystallite Alloy Reaction	1	508
 32839	Quest Survey Probe I Blueprint	0.01	1521
-32840	InterBus Catalyst	55000	1613
+32840	InterBus Catalyst	5000	1613
 32841	InterBus Catalyst Blueprint	0.01	\N
-32842	Intaki Syndicate Catalyst	55000	1613
+32842	Intaki Syndicate Catalyst	5000	1613
 32843	Intaki Syndicate Catalyst Blueprint	0.01	\N
-32844	Inner Zone Shipping Catalyst	55000	1613
+32844	Inner Zone Shipping Catalyst	5000	1613
 32845	Inner Zone Shipping Catalyst Blueprint	0.01	\N
-32846	Quafe Catalyst	55000	1613
+32846	Quafe Catalyst	5000	1613
 32847	Quafe Catalyst Blueprint	0.01	\N
-32848	Aliastra Catalyst	55000	1613
+32848	Aliastra Catalyst	5000	1613
 32849	Aliastra Catalyst Blueprint	0.01	\N
 32853	SPZ-3 "Torch" Laser Sight Combat Ocular Enhancer (right/black)	0.1	1408
 32854	Discovery Survey Probe I Blueprint	0.01	1521
@@ -18783,15 +18783,15 @@
 32869	Medium Audit Log Secure Container Blueprint	0.01	1008
 32870	Large Audit Log Secure Container Blueprint	0.01	1008
 32871	Station Vault Container Blueprint	0.01	1008
-32872	Algos	55000	467
+32872	Algos	5000	467
 32873	Algos Blueprint	0.01	585
-32874	Dragoon	47000	465
+32874	Dragoon	5000	465
 32875	Dragoon Blueprint	0.01	583
-32876	Corax	52000	466
+32876	Corax	5000	466
 32877	Corax Blueprint	0.01	584
-32878	Talwar	43000	468
+32878	Talwar	5000	468
 32879	Talwar Blueprint	0.01	586
-32880	Venture	29500	1616
+32880	Venture	2500	1616
 32881	Venture Blueprint	0.01	1617
 32884	District Satellite	1	\N
 32885	Empire Emissary Medallion	0.1	\N
@@ -18858,13 +18858,13 @@
 32973	Federation Battlecruiser	26500	\N
 32974	Republic Battlecruiser	16450	\N
 32982	Salvage Drone I Blueprint	0.01	1643
-32983	Sukuuvestaa Heron	18900	1619
+32983	Sukuuvestaa Heron	2500	1619
 32984	Sukuuvestaa Heron Blueprint	0.01	\N
-32985	Inner Zone Shipping Imicus	21500	1619
+32985	Inner Zone Shipping Imicus	2500	1619
 32986	Inner Zone Shipping Imicus Blueprint	0.01	\N
-32987	Sarum Magnate	22100	1619
+32987	Sarum Magnate	2500	1619
 32988	Sarum Magnate Blueprint	0.01	\N
-32989	Vherokior Probe	19500	1619
+32989	Vherokior Probe	2500	1619
 32990	Vherokior Probe Blueprint	0.01	\N
 32993	Sodium Firework CXIV	0.1	1663
 32994	Barium Firework CXIV	0.1	1663
@@ -18946,11 +18946,11 @@
 33076	Small Ancillary Armor Repairer	5	1049
 33077	Small Ancillary Armor Repairer Blueprint	0.01	1536
 33078	Armor Layering	0.01	1745
-33079	Hematos	28100	1619
+33079	Hematos	2500	1619
 33080	Hematos Blueprint	0.01	\N
-33081	Taipan	15000	1619
+33081	Taipan	2500	1619
 33082	Taipan Blueprint	0.01	\N
-33083	Violator	24500	1619
+33083	Violator	2500	1619
 33084	Violator Blueprint	0.01	\N
 33087	Advanced Cerebral Accelerator	1	\N
 33088	Advanced Cerebral Accelerator Blueprint	0.01	\N
@@ -18962,7 +18962,7 @@
 33096	Caldari Battlecruiser	0.01	377
 33097	Gallente Battlecruiser	0.01	377
 33098	Minmatar Battlecruiser	0.01	377
-33099	Nefantar Thrasher	43000	1613
+33099	Nefantar Thrasher	5000	1613
 33101	Medium Ancillary Armor Repairer	10	1050
 33102	Medium Ancillary Armor Repairer Blueprint	0.01	1536
 33103	Large Ancillary Armor Repairer	50	1051
@@ -19002,13 +19002,13 @@
 33148	Parts Container	27500	\N
 33149	Personal Hangar Array	4000	1702
 33150	Personal Hangar Array Blueprint	0.01	1701
-33151	Brutix Navy Issue	270000	1704
+33151	Brutix Navy Issue	15000	1704
 33152	Brutix Navy Issue Blueprint	0.01	\N
-33153	Drake Navy Issue	252000	1704
+33153	Drake Navy Issue	15000	1704
 33154	Drake Navy Issue Blueprint	0.01	\N
-33155	Harbinger Navy Issue	234000	1704
+33155	Harbinger Navy Issue	15000	1704
 33156	Harbinger Navy Issue Blueprint	0.01	\N
-33157	Hurricane Fleet Issue	216000	1704
+33157	Hurricane Fleet Issue	15000	1704
 33158	Hurricane Fleet Issue Blueprint	0.01	\N
 33159	Equipment Container	27500	\N
 33160	Scraps Container	27500	\N
@@ -19033,7 +19033,7 @@
 33187	Angel Mainframe	27500	\N
 33188	Angel Info Shard	27500	\N
 33189	Guristas Clone Soldier Negotiator	101000	\N
-33190	Tash-Murkon Magnate	22100	1619
+33190	Tash-Murkon Magnate	2500	1619
 33191	Tash-Murkon Magnate Blueprint	0.01	\N
 33195	Spatial Attunement Unit	1	1820
 33196	Spatial Attunement Unit Blueprint	0.01	\N
@@ -19152,7 +19152,7 @@
 33325	Optimized Esoteric Attainment	1	1742
 33326	Optimized Incognito Attainment	1	1743
 33327	Gnosis Blueprint	0	\N
-33328	Capsule - Genolution 'Auroral' 197-variant	1000	\N
+33328	Capsule - Genolution 'Auroral' 197-variant	500	\N
 33329	Genolution 'Auroral' AU-79	1	1814
 33330	Navy Cap Booster 25	0.75	139
 33332	Navy Cap Booster 50	1.5	139
@@ -19197,9 +19197,9 @@
 33392	Alliance Tournament X: HUN Reloaded	0.01	1812
 33393	Genolution Core Augmentation CA-3	1	620
 33394	Genolution Core Augmentation CA-4	1	619
-33395	Moracha	100000	1837
+33395	Moracha	10000	1837
 33396	Moracha Blueprint	0.01	\N
-33397	Chremoas	28000	1838
+33397	Chremoas	2500	1838
 33398	Chremoas Blueprint	0.01	\N
 33399	Infomorph Synchronizing	0.01	1746
 33400	Bastion Module I	200	801
@@ -19234,11 +19234,11 @@
 33465	Vepas' Modified Rapid Heavy Missile Launcher	20	1827
 33466	YO-5000 Rapid Heavy Missile Launcher	20	1827
 33467	Customs Code Expertise	0.01	378
-33468	Astero	16500	1365
+33468	Astero	2500	1365
 33469	Astero Blueprint	0.01	\N
-33470	Stratios	101000	1371
+33470	Stratios	10000	1371
 33471	Stratios Blueprint	0.01	\N
-33472	Nestor	486000	\N
+33472	Nestor	50000	\N
 33473	Nestor Blueprint	0.01	\N
 33474	Mobile Depot	50	1831
 33475	Mobile Tractor Unit	100	1833
@@ -19274,7 +19274,7 @@
 33509	Serpentis Watcher	112000	\N
 33510	Serpentis Sentry	112000	\N
 33512	QA Agility Booster	1	\N
-33513	Leopard	5000	\N
+33513	Leopard	500	\N
 33514	Republic Justice Shuttle Blueprint	0.01	\N
 33515	Small Mobile Siphon Unit Blueprint	0.01	1834
 33516	Ascendancy Alpha	1	618
@@ -19307,7 +19307,7 @@
 33550	Women's 'Phanca' Cybernetic Arm (right)	0.1	1836
 33551	Men's 'Phanca' Cybernetic Arm (left)	0.1	1836
 33552	Men's 'Phanca' Cybernetic Arm (right)	0.1	1836
-33553	Stratios Emergency Responder	101000	\N
+33553	Stratios Emergency Responder	10000	\N
 33554	Sanctuary Stratios Blueprint	0.01	\N
 33555	Low-grade Ascendancy Alpha	1	618
 33556	Low-grade Ascendancy Alpha Blueprint	0.01	\N

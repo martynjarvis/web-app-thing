@@ -2,6 +2,7 @@ from google.appengine.ext import ndb
 from google.appengine.api import users
 
 import datetime
+import urllib2
 # TODO: need consistency between type and item (change item class to type)
     
 class Item(ndb.Model):
@@ -11,7 +12,19 @@ class Item(ndb.Model):
     marketGroupID = ndb.IntegerProperty()
     buy = ndb.FloatProperty(indexed=False)
     sell = ndb.FloatProperty(indexed=False)
-    
+
+class MarketStat(ndb.Model):
+    typeID = ndb.IntegerProperty()
+    volume = ndb.IntegerProperty(indexed=False)
+    avg = ndb.FloatProperty(indexed=False)
+    max = ndb.FloatProperty(indexed=False)
+    min = ndb.FloatProperty(indexed=False)
+    stddev = ndb.FloatProperty(indexed=False)
+    median = ndb.FloatProperty(indexed=False)
+    percentile = ndb.FloatProperty(indexed=False)
+    retreived=ndb.DateTimeProperty(indexed=False)
+
+
 class Character(ndb.Model):
     characterID=ndb.IntegerProperty()
     characterName=ndb.StringProperty(indexed=False)

@@ -24,6 +24,8 @@ import logging
 
 # after fixing model and task, fix view pages
 
+# TODO cache.run should be a decorator
+
 @app.route('/tasks/hack')
 def worker_hack():
     [order.key.delete() for order in Order.query()]

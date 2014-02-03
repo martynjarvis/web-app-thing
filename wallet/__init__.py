@@ -5,5 +5,5 @@ app = Flask('wallet')
 app.config.from_object('wallet.settings')
  
 import views
-import workers
+# import workers
 import data

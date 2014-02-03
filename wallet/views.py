@@ -2,9 +2,6 @@ from wallet import app
 # from models import Api,Character,Corporation,Transaction,Order,Asset,Item
 # from decorators import login_required,trust_required
 
-# from google.appengine.ext import ndb
-# from google.appengine.api import users
-
 from flask import render_template, flash, url_for, redirect, request, session
 
 from eveapi import EVEAPIConnection

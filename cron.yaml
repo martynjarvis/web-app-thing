@@ -1,8 +1,0 @@
-cron:
-- description: api
-  url: /tasks/api
-  schedule: every 5 mins
-- description: prices
-  url: /tasks/prices
-  schedule: every day 12:00
-

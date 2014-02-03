@@ -1,20 +1,14 @@
-# from wallet import app
-# from models import Api,Character,Transaction,Order,Cache,Asset,Item
+from wallet import app,db
+import decorators
+import models
 
-# from google.appengine.ext import ndb
-# from google.appengine.api import users
-# from google.appengine.api import taskqueue
-# from google.appengine.datastore.datastore_query import Cursor
-
-# from flask import request
-
-# from eveapi import EVEAPIConnection
-# from eveapi import Error as apiError
+from eveapi import EVEAPIConnection
+from eveapi import Error as apiError
 
 # import json
 # import urllib2
-# import datetime
-# import logging
+import datetime
+import logging
     
 # TODO, make all these functions work with corp s
 
@@ -32,11 +26,11 @@
     # [cache.key.delete() for cache in Cache.query()]
     # return '0'
         
-# @app.route('/tasks/api')
-# def worker_api():
-    # #tasks = [update_balance, update_transactions, update_orders, update_assets]
-    # tasks = [update_balance,update_orders]
-    # for apiEntity in Api.query():
+@app.route('/tasks/api')
+def worker_api():
+    #tasks = [update_balance, update_transactions, update_orders, update_assets]
+    tasks = [update_balance]
+    for api in  db.session.query(models.Api).all():
         # if apiEntity.corporation: # corporation key
             # corpEntity = apiEntity.corporation.get()
             # auth = EVEAPIConnection().auth(keyID=apiEntity.keyID, vCode=apiEntity.vCode).corp
@@ -44,28 +38,27 @@
                 # Cache.run(task,auth,corpEntity)
 
         # else:    # char key
-            # for charKey in apiEntity.characters: 
-                # charEntity = charKey.get()
-                # auth = EVEAPIConnection().auth(keyID=apiEntity.keyID, vCode=apiEntity.vCode).character(charEntity.characterID)
-                # for task in tasks:
-                    # Cache.run(task,auth,charEntity)
+        for character in api.characters: 
+            auth = EVEAPIConnection().auth(keyID=api.id, vCode=api.vCode).character(character.id)
+            for task in tasks:
+                task(auth=auth,entity=character)
+    db.session.commit()
+    return '0'
 
-    # return '0'
-
-# def update_balance(auth,entity):
-    # try:
-        # accountBalance = auth.AccountBalance() 
-    # except apiError, e:
-        # logging.error("eveapi returned the following error when querying account balance: %s, %s", e.code, e.message)
-        # return 
-    # except Exception, e:
-        # logging.error("Something went horribly wrong: %s", str(e))
-        # return 
-            
-    # # update wallet
-    # entity.wallet = accountBalance.accounts[0].balance # Characters only have 1 account, (corps?)
-    # entity.put()
-    # return datetime.datetime.fromtimestamp(accountBalance._meta.cachedUntil)
+@decorators.cache
+def update_balance(auth,entity):
+    try:
+        accountBalance = auth.AccountBalance() 
+    except apiError, e:
+        logging.error("eveapi returned the following error when querying account balance: %s, %s", e.code, e.message)
+        return 
+    except Exception, e:
+        logging.error("Something went horribly wrong: %s", str(e))
+        return 
+        
+    # update wallet
+    entity.balance = accountBalance.accounts[0].balance # Characters only have 1 account, (corps?)
+    return datetime.datetime.fromtimestamp(accountBalance._meta.cachedUntil)
 
 # def update_transactions(auth,charEntity):
     # try:

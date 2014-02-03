@@ -1,20 +1,17 @@
+from wallet import db
+
 from functools import wraps
-from google.appengine.api import users
-from flask import redirect, request, session, render_template
+from flask import redirect, request, session, render_template, url_for
+from models import Cache
+import datetime
 
 def login_required(func):
     @wraps(func)
     def decorated_view(*args, **kwargs):
-        if not users.get_current_user():
-            session['logged_in'] = False
-            session['username'] = None
-            return redirect(users.create_login_url(request.url))
-        # TODO, don't do this every page view it is dumb
-        session['logged_in'] = True
-        session['username'] = users.get_current_user().nickname()
+        if 'user' not in session: # this is bad TODO
+            return redirect(url_for('login'))
         return func(*args, **kwargs)
     return decorated_view
-    
     
 def trust_required(func):
     @wraps(func)
@@ -24,3 +21,18 @@ def trust_required(func):
         return func(*args, **kwargs)
     return decorated_view
     
+    
+def cache(func):
+    @wraps(func)
+    def decorated_view(*args, **kwargs):
+        cache = Cache.get(kwargs['entity'].name,func.__name__)
+        if cache is None:
+            cache = Cache(kwargs['entity'].name,func.__name__)
+            db.session.add(cache)
+        if cache.cachedUntil is None or cache.cachedUntil < datetime.datetime.now():
+            cachedUntil = func(*args, **kwargs)
+            cache.cachedUntil = cachedUntil
+            return
+        else:
+            return 
+    return decorated_view

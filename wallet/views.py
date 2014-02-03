@@ -1,11 +1,12 @@
-from wallet import app
-# from models import Api,Character,Corporation,Transaction,Order,Asset,Item
-# from decorators import login_required,trust_required
+from wallet import app,db
+
+import models
+import decorators
 
 from flask import render_template, flash, url_for, redirect, request, session
 
-from eveapi import EVEAPIConnection
-from eveapi import Error as api_error
+# from eveapi import EVEAPIConnection
+# from eveapi import Error as api_error
 
 import datetime
 import hashlib
@@ -16,106 +17,72 @@ import logging
 # TODO add corp apis
 # market orders, same
 
-# @app.route('/logout')
-# def logout():
-    # session.pop('logged_in', None)
-    # session.pop('username', None)
-    # flash('You were logged out','warning')
-    # return redirect(users.create_logout_url(url_for('index')))
+@app.route('/logout')
+def logout():
+    session.pop('user', None)
+    return redirect(url_for('index'))
     
-# @app.route('/login', methods=['GET', 'POST'])
-# def login():
-    # if not users.get_current_user():
-        # return redirect(users.create_login_url(url_for('index')))
-    # else:
-        # return redirect(url_for('index'))
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        user = models.User.auth(request.form['username'],request.form['password'])
+        if user is not None:
+            session['user'] = user.id
+            flash('You were logged in','success')
+            return redirect(url_for('index'))  
+        flash('Incorrect username or password','error')
+    return render_template('login.html')
     
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        if request.form['password1']==request.form['password2'] :
+            user = models.User(request.form['username'],request.form['email'],request.form['password1'])
+            db.session.add(user)
+            db.session.commit()  #TODO, deal with erro
+            return redirect(url_for('index'))
+        flash('Incorrect username or password','error')
+    return render_template('register.html')
+
 @app.route('/')
 def index():
     ''' Standard home page '''
-    # if users.get_current_user():
-        # return redirect(url_for('overview'))
+    #if 'user' in session:
+    #    return redirect(url_for('overview'))
     return render_template('index.html', title="Home")
 
-# @app.route('/api')
-# @login_required
-# def api():
-    # ''' List of APIs '''
-    # apis = Api.query().filter(Api.user == users.get_current_user())
-    # return render_template('api.html', title="APIs", data=apis)
-  
-
-# def test_api(auth):
-    # try: # Try calling api with given account
-        # APIKeyInfo = auth.account.APIKeyInfo()
-    # except api_error, e:
-        # flash('API related error','error')
-        # return
-    # except Exception, e:
-        # flash('unknown error','error')
-        # return
-    # return APIKeyInfo.key.type 
+@app.route('/api')
+@decorators.login_required
+def api():
+    ''' List of APIs '''
+    user = models.User.get(session['user'])
+    return render_template('api.html', title="APIs", data=user.apis)
+    
+@app.route('/api_add', methods=['GET', 'POST'])
+@decorators.login_required
+def api_add():
+    ''' Adds an API to the db'''
+    if request.method == 'GET':
+        return render_template('api_add.html')
+    if request.method == 'POST':
+        if request.form['api_id']=="" or request.form['api_vcode']=="":
+            flash('Invalid API','error')
+            return render_template('api_add.html')
+        api = models.Api(request.form['api_id'],request.form['api_vcode'],session['user'])
+        if api.update() > 0 :
+            flash('API Error','error')
+            return render_template('api_add.html')
+        else : 
+            db.session.add(api)
+        db.session.commit()
+        return redirect(url_for('api'))
         
-# def update_char_from_api(auth):
-    # charList = []
-    # for character in auth.account.Characters().characters:
-        # q = Character.query().filter(Character.characterID == character.characterID).get()
-        # if q:
-            # c = q
-        # else :
-            # c = Character()
-        # c.user = users.get_current_user()
-        # c.characterID=int(character.characterID)
-        # c.characterName=character.name
-        # c.put()
-        # charList.append(c.key)
-    # return charList
-    
-# def update_corp_from_api(auth):
-    # charList = []
-    # corporationSheet = auth.corp.CorporationSheet()
-    # q = Corporation.query().filter(Corporation.corporationID == corporationSheet.corporationID).get()
-    # if q:
-        # c = q
-    # else :
-        # c = Corporation()
-    # c.user = users.get_current_user()
-    # c.corporationID=int(corporationSheet.corporationID)
-    # c.corporationName=corporationSheet.corporationName
-    # c.ticker=corporationSheet.ticker
-    # c.put()
-    # return c.key
-    
-# @app.route('/api_add', methods=['GET', 'POST'])
-# @login_required
-# def api_add():
-    # ''' Adds an API to the db'''
-    # error = None
-    # if request.method == 'GET':
-        # return render_template('api_add.html',error=error)
-    # if request.method == 'POST':
-        # if request.form['api_id']=="" or request.form['api_vcode']=="":
-            # return render_template('api_add.html', error='Invalid API')
-        # keyID = int(request.form['api_id'])
-        # vCode=request.form['api_vcode']
-        # auth = EVEAPIConnection().auth(keyID=keyID, vCode=vCode)
-        # type = test_api(auth)
-        # if type is None:
-            # return render_template('api_add.html', error="Error:")
-            
-        # charList = update_char_from_api(auth)
-        # corp = None
-        # if type == 'Corporation':
-            # corp = update_corp_from_api(auth)
-
-        # a = Api(user = users.get_current_user(),
-                # keyID = int(request.form['api_id']),
-                # vCode=request.form['api_vcode'],
-                # characters = charList,
-                # corporation = corp,
-                # type = type)
-        # a.put()
-        # return redirect(url_for('api'))
+@app.route('/characters')
+@decorators.login_required
+def characters():
+    ''' List characters in db linked to this user '''
+    chars = db.session.query(models.Character).join(models.Api.characters).filter(models.Api.userId==session['user']).all()
+    return render_template('characters.html', title="Characters", data=chars)  
 
 # @app.route('/api_refresh/<apiKey>')
 # @login_required
@@ -137,12 +104,6 @@ def index():
     # corps = Corporation.query().filter(Corporation.user == users.get_current_user())
     # return render_template('overview.html', title="Overview", data={'chars':chars,'corps':corps})
         
-# @app.route('/characters')
-# @login_required
-# def characters():
-    # ''' List characters in db linked to this user '''
-    # chars = Character.query().filter(Character.user == users.get_current_user())
-    # return render_template('characters.html', title="Characters", data=chars)  
     
 # @app.route('/corporations')
 # @login_required

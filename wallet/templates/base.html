@@ -89,7 +89,7 @@
             <!-- Everything you want hidden at 940px or less, place within here -->
             <div class="nav-collapse">
 
-                {% if session.logged_in %}
+                {% if session.user  %}
                 <ul class="nav pull-left">
                     <li><a href="/overview">Overview</a></li>
                     <li><a href="/orders">Orders</a></li>
@@ -106,7 +106,7 @@
                 </ul>
                 {% endif %}
                 <ul class="nav pull-right">
-                    {% if not session.logged_in %}
+                    {% if not session.user  %}
                     <li><a href="/login">Login</a></li>
                     {% else %}   
                     
@@ -131,7 +131,7 @@
                     <li class="dropdown" id="user-menu">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#user-menu">
                             <i class="icon-user"></i>
-                            {{ session.username }} 
+                            {{ session.user }} 
                             <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">

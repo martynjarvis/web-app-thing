@@ -40,7 +40,7 @@ $(document).ready(function(){
                 <tbody>
                     {% for row in data %}  
                     <tr> 
-                    <td><a href="/char/{{row.character.get().characterID}}">{{row.character.get().characterName}}</a></td>
+                    <td><a href="/char/{{row.charID}}">{{row.charID}}</a></td>
                     <td>{{row.transactionType}}</td>
                     <td>{{row.transactionDateTime}}</td>
                     <td><a href="/item/{{row.typeID}}">{{row.typeName}}</a></td>

@@ -9,16 +9,14 @@ from eveapi import Error as apiError
 # import urllib2
 import datetime
 import logging
+
+ROWCOUNT = 50
     
 # TODO, make all these functions work with corp s
 
 # TODO add docstrings to all these functions
 
-# TODO optimise with async puts
-
 # after fixing model and task, fix view pages
-
-# TODO cache.run should be a decorator
 
 # @app.route('/tasks/hack')
 # def worker_hack():
@@ -29,7 +27,7 @@ import logging
 @app.route('/tasks/api')
 def worker_api():
     #tasks = [update_balance, update_transactions, update_orders, update_assets]
-    tasks = [update_balance]
+    tasks = [update_transactions]
     for api in  db.session.query(models.Api).all():
         # if apiEntity.corporation: # corporation key
             # corpEntity = apiEntity.corporation.get()
@@ -60,66 +58,33 @@ def update_balance(auth,entity):
     entity.balance = accountBalance.accounts[0].balance # Characters only have 1 account, (corps?)
     return datetime.datetime.fromtimestamp(accountBalance._meta.cachedUntil)
 
-# def update_transactions(auth,charEntity):
-    # try:
-        # walletTransactions = auth.WalletTransactions()
-    # except apiError, e:
-        # logging.error("eveapi returned the following error when querying wallet transactions: %s, %s", e.code, e.message)
-        # return
-    # except Exception, e:
-        # logging.error("Something went horribly wrong: %s", str(e))
-        # return
-        
-    # # walk through journal
-    # # fromID = None
-    # # in a loop
-        # # request n transactions
-        # # count transactions returned r
-        # # start count on number orders added x
-        # # for each transactions 
-        # #   if transactions in db
-        # #       continue
-        # #    else
-        # #       add order
-        # #       increment x
-        # # if r < n (last page) return
-        # # if x==0 (no new orders) return
-        # # fromID = min transactionID
+def update_transactions(auth,entity):
+    transaction_list = []
+    retVal = None
     
-    # # find previous transaction 
-    # # TODO, think about this some more
-    # previousTransaction = Transaction.query()
-    # previousTransaction = previousTransaction.order(-Transaction.transactionID)
-    # previousTransaction = previousTransaction.filter(Transaction.character == charEntity.key)
-    # previousTransaction = previousTransaction.fetch(1,projection=[Transaction.transactionID])
+    fromId = 0  # seems to work
+    new = ROWCOUNT
+    while new>0:
+        new = 0
+        try:
+            walletTransactions = auth.WalletTransactions(rowCount=ROWCOUNT, fromID=fromId)
+        except apiError, e:
+            logging.error("eveapi returned the following error when querying wallet transactions: %s, %s", e.code, e.message)
+            return
+        except Exception, e:
+            logging.error("Something went horribly wrong: %s", str(e))
+            return
+            
+        for transaction in walletTransactions.transactions :
+            if not models.Transaction.inDB(transaction.transactionID):
+                transaction_list.append(models.Transaction(transaction,entity))
+                new+=1
+            fromId = transaction.transactionID
+        retVal =  datetime.datetime.fromtimestamp(walletTransactions._meta.cachedUntil)
     
-    # previousID = 0
-    # if previousTransaction:
-        # previousID = previousTransaction[0].transactionID
+    db.session.add_all(transaction_list)
+    return retVal
 
-    # # add transactions
-    # transactionList = []
-    # for transaction in walletTransactions.transactions :
-        # if transaction.transactionID > previousID: 
-            # itemEntity = Item.query(Item.typeID == transaction.typeID).get()
-            # t = Transaction(
-                # transactionDateTime = datetime.datetime.fromtimestamp(transaction.transactionDateTime),
-                # transactionID = transaction.transactionID,
-                # quantity = transaction.quantity,
-                # typeName = str(transaction.typeName),
-                # typeID = transaction.typeID,
-                # price = transaction.price,
-                # stationID = transaction.stationID,
-                # stationName = str(transaction.stationName),
-                # transactionType = transaction.transactionType,
-                # itemKey = itemEntity.key,
-                # character = charEntity.key, # change back to characterID, add 'owner' field ?
-                # user = charEntity.user
-                # )
-            # transactionList.append(t)
-    # ndb.put_multi(transactionList)
-
-    # return datetime.datetime.fromtimestamp(walletTransactions._meta.cachedUntil)
 
 
 # def update_orders(auth,entity):

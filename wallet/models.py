@@ -1,6 +1,9 @@
 from wallet import db
+from sqlalchemy.sql import exists
 
 APITYPES = {'Account':1, 'Character':2, 'Corporation':3}
+TRANSACTIONTYPE = {'buy':1, 'sell':2}
+TRANSACTIONFOR = {'personal':1, 'corporation':2}
 DTPATTERN = '%Y-%m-%d %H:%M:%S'
 import eveapi
 import datetime
@@ -80,36 +83,7 @@ class Api(db.Model):
             if character is None:
                 character = Character(row.characterID,row.characterName)
             self.characters.append(character)  
-
         return 0
-
-class Character(db.Model):
-    __tablename__ = 'Character'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), unique=True)
-    corporationID = db.Column(db.Integer)
-    corporationName = db.Column(db.String(80))
-    balance = db.Column(db.Float)
-    
-    def __init__(self,id,name):
-        self.id = int(id)
-        self.name = name
-        
-   
-class Cache(db.Model): # keeps track of what needs to be updated
-    __tablename__ = 'Cache'
-    key = db.Column(db.String(80), primary_key=True)
-    page = db.Column(db.String(80), primary_key=True)
-    cachedUntil=db.Column(db.DateTime)
-    def __init__(self,key,page):
-        self.key = key
-        self.page = page
-        self.cachedUntil = None
-  
-    @classmethod
-    def get(cls,key,page):
-        return db.session.query(Cache).filter(Cache.key==key).filter(Cache.page==page).first()
-        
         
 # def update_corp_from_api(auth):
     # charList = []
@@ -125,17 +99,88 @@ class Cache(db.Model): # keeps track of what needs to be updated
     # c.ticker=corporationSheet.ticker
     # c.put()
     # return c.key   
-
+        
+class Character(db.Model):
+    __tablename__ = 'Character'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), unique=True)
+    corporationID = db.Column(db.Integer)
+    corporationName = db.Column(db.String(80))
+    balance = db.Column(db.Float)
     
-# def test_api(auth):
+    transactions = db.relationship("Transaction", backref="character")
+    
+    def __init__(self,id,name):
+        self.id = int(id)
+        self.name = name
+        
+# class Corporation(ndb.Model):
+    # corporationID=ndb.IntegerProperty()
+    # corporationName=ndb.StringProperty(indexed=False)
+    # ticker=ndb.StringProperty(indexed=False)
+    # user = ndb.UserProperty(required = True)
+    # wallet = ndb.FloatProperty(indexed=False)
+    # sell = ndb.FloatProperty(indexed=False)
+    # buy = ndb.FloatProperty(indexed=False)
+    # assets = ndb.FloatProperty(indexed=False)
+    # def name(self):
+        # return self.corporationName
 
-    # except api_error, e:
-        # flash('API related error','error')
-        # return
-    # except Exception, e:
-        # flash('unknown error','error')
-        # return
-    # return APIKeyInfo.key.type 
+class Cache(db.Model): # keeps track of what needs to be updated
+    __tablename__ = 'Cache'
+    key = db.Column(db.String(80), primary_key=True)
+    page = db.Column(db.String(80), primary_key=True)
+    cachedUntil=db.Column(db.DateTime)
+    def __init__(self,key,page):
+        self.key = key
+        self.page = page
+        self.cachedUntil = None
+  
+    @classmethod
+    def get(cls,key,page):
+        return db.session.query(Cache).filter(Cache.key==key).filter(Cache.page==page).first()
+
+
+class Transaction(db.Model):
+    __tablename__ = 'Transaction'
+    id = db.Column(db.Integer, primary_key=True)
+    transactionDateTime = db.Column(db.DateTime)
+    quantity = db.Column(db.Integer)
+    typeName = db.Column(db.String(80))
+    typeID = db.Column(db.Integer)
+    price = db.Column(db.Float)
+    clientID = db.Column(db.Integer)
+    clientName = db.Column(db.String(80))
+    stationID = db.Column(db.Integer)
+    stationName = db.Column(db.String(80))
+    transactionType = db.Column(db.Integer)
+    transactionFor = db.Column(db.Integer)
+    journalTransactionID = db.Column(db.BigInteger)
+    
+    charID = db.Column(db.Integer, db.ForeignKey('Character.id'))
+    
+    def __init__(self,transaction,char):
+        self.id = int(transaction.transactionID)
+        self.transactionDateTime = datetime.datetime.fromtimestamp(transaction.transactionDateTime)
+        self.quantity = int(transaction.quantity)
+        self.typeName = str(transaction.typeName)
+        self.typeID = int(transaction.typeID)
+        self.price = float(transaction.price)
+        self.clientID  = int(transaction.clientID)
+        self.clientName = str(transaction.clientName)
+        self.stationID = int(transaction.stationID)
+        self.stationName = str(transaction.stationName)
+        self.transactionType = TRANSACTIONTYPE[transaction.transactionType]
+        self.transactionFor = TRANSACTIONFOR[transaction.transactionFor]
+        self.journalTransactionID = transaction.journalTransactionID
+        self.charID = char.id
+        
+    @classmethod
+    def inDB(cls,id):
+        return db.session.query(exists().where(Transaction.id == id)).scalar()
+    
+    
+    
 # class Item(ndb.Model):
     # typeID = ndb.IntegerProperty()
     # typeName=ndb.StringProperty()
@@ -157,39 +202,12 @@ class Cache(db.Model): # keeps track of what needs to be updated
 
 
 
-# class Corporation(ndb.Model):
-    # corporationID=ndb.IntegerProperty()
-    # corporationName=ndb.StringProperty(indexed=False)
-    # ticker=ndb.StringProperty(indexed=False)
-    # user = ndb.UserProperty(required = True)
-    # wallet = ndb.FloatProperty(indexed=False)
-    # sell = ndb.FloatProperty(indexed=False)
-    # buy = ndb.FloatProperty(indexed=False)
-    # assets = ndb.FloatProperty(indexed=False)
-    # def name(self):
-        # return self.corporationName
-    
+
     
 
 
     
-# class Transaction(ndb.Model):
-    # itemKey = ndb.KeyProperty(Item)
-    # transactionDateTime=ndb.DateTimeProperty(indexed=False)
-    # transactionID=ndb.IntegerProperty()
-    # quantity=ndb.IntegerProperty(indexed=False)
-    # typeName=ndb.StringProperty(indexed=False)
-    # typeID=ndb.IntegerProperty()
-    # price=ndb.FloatProperty(indexed=False)
-    # #clientID=ndb.IntegerProperty()#
-    # #clientName=ndb.StringProperty()#
-    # stationID=ndb.IntegerProperty(indexed=False)
-    # stationName=ndb.StringProperty(indexed=False)
-    # transactionType=ndb.StringProperty(indexed=False)
-    # #transactionFor=ndb.StringProperty()#
-    # #journalTransactionID=ndb.IntegerProperty()#
-    # character = ndb.KeyProperty(Character)
-    # user = ndb.UserProperty(required = True)
+
     
 # class Order(ndb.Model):
     # itemKey = ndb.KeyProperty(Item)

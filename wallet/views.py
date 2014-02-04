@@ -112,12 +112,11 @@ def characters():
     # corps = Corporation.query().filter(Corporation.user == users.get_current_user())
     # return render_template('corporations.html', title="Corporations", data=corps)
 
-# @app.route('/transactions')
-# @login_required
-# def transactions():
-    # ''' List transactions in db for this user'''
-    # data = Transaction.query().order(-Transaction.transactionID).filter(Transaction.user == users.get_current_user()).fetch(100)
-    # return render_template('transactions.html', title="Transactions", data=data )
+@app.route('/transactions')
+@decorators.login_required
+def transactions():
+    data = db.session.query(models.Transaction).join(models.Character).all()#join(models.Api.characters).filter(models.Api.userId==session['user']).all()
+    return render_template('transactions.html', title="Transactions", data=data ) #TODO this returns all transactions currently, need to think about this
     
 # @app.route('/orders')
 # @login_required

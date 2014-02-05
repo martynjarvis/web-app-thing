@@ -179,6 +179,35 @@ class Transaction(db.Model):
     def inDB(cls,id):
         return db.session.query(exists().where(Transaction.id == id)).scalar()
     
+        
+# class Order(ndb.Model):
+
+    # id	= ndb.IntegerProperty()
+    # charID = ndb.IntegerProperty()
+    # charName = ndb.StringProperty(indexed=False)
+    # stationID = ndb.IntegerProperty(indexed=False)
+    # # ? stationName=ndb.StringProperty(indexed=False)
+    # # ? region?
+    # volEntered = ndb.IntegerProperty(indexed=False)
+    # volRemaining = ndb.IntegerProperty(indexed=False)
+    # #minVolume = ndb.IntegerProperty()
+    # #orderState = ndb.IntegerProperty()
+    # typeID = ndb.IntegerProperty()
+    # typeName=ndb.StringProperty(indexed=False)
+    # #range = ndb.IntegerProperty()
+    # #accountKey = ndb.IntegerProperty()
+    # duration = ndb.IntegerProperty(indexed=False)
+    # escrow = ndb.FloatProperty(indexed=False)
+    # price = ndb.FloatProperty(indexed=False)
+    # bid = ndb.BooleanProperty(indexed=False)
+    # issued = ndb.DateTimeProperty(indexed=False)
+    # owner = ndb.KeyProperty()
+    # user = ndb.UserProperty(required = True)
+    
+    
+    
+    
+    
     
     
 # class Item(ndb.Model):
@@ -207,31 +236,6 @@ class Transaction(db.Model):
 
 
     
-
-    
-# class Order(ndb.Model):
-    # itemKey = ndb.KeyProperty(Item)
-    # orderID	= ndb.IntegerProperty()
-    # charID	= ndb.IntegerProperty()
-    # charName	= ndb.StringProperty(indexed=False)
-    # stationID = ndb.IntegerProperty(indexed=False)
-    # # ? stationName=ndb.StringProperty(indexed=False)
-    # # ? region?
-    # volEntered = ndb.IntegerProperty(indexed=False)
-    # volRemaining = ndb.IntegerProperty(indexed=False)
-    # #minVolume = ndb.IntegerProperty()
-    # #orderState = ndb.IntegerProperty()
-    # typeID = ndb.IntegerProperty()
-    # typeName=ndb.StringProperty(indexed=False)
-    # #range = ndb.IntegerProperty()
-    # #accountKey = ndb.IntegerProperty()
-    # duration = ndb.IntegerProperty(indexed=False)
-    # escrow = ndb.FloatProperty(indexed=False)
-    # price = ndb.FloatProperty(indexed=False)
-    # bid = ndb.BooleanProperty(indexed=False)
-    # issued = ndb.DateTimeProperty(indexed=False)
-    # owner = ndb.KeyProperty()
-    # user = ndb.UserProperty(required = True)
 
     
 # class Asset(ndb.Model):

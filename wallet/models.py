@@ -109,6 +109,7 @@ class Character(db.Model):
     balance = db.Column(db.Float)
     
     transactions = db.relationship("Transaction", backref="character")
+    orders = db.relationship("Order", backref="character")
     
     def __init__(self,id,name):
         self.id = int(id)
@@ -180,36 +181,62 @@ class Transaction(db.Model):
         return db.session.query(exists().where(Transaction.id == id)).scalar()
     
         
-# class Order(ndb.Model):
-
-    # id	= ndb.IntegerProperty()
-    # charID = ndb.IntegerProperty()
-    # charName = ndb.StringProperty(indexed=False)
-    # stationID = ndb.IntegerProperty(indexed=False)
-    # # ? stationName=ndb.StringProperty(indexed=False)
-    # # ? region?
-    # volEntered = ndb.IntegerProperty(indexed=False)
-    # volRemaining = ndb.IntegerProperty(indexed=False)
-    # #minVolume = ndb.IntegerProperty()
-    # #orderState = ndb.IntegerProperty()
-    # typeID = ndb.IntegerProperty()
-    # typeName=ndb.StringProperty(indexed=False)
-    # #range = ndb.IntegerProperty()
-    # #accountKey = ndb.IntegerProperty()
-    # duration = ndb.IntegerProperty(indexed=False)
-    # escrow = ndb.FloatProperty(indexed=False)
-    # price = ndb.FloatProperty(indexed=False)
-    # bid = ndb.BooleanProperty(indexed=False)
-    # issued = ndb.DateTimeProperty(indexed=False)
-    # owner = ndb.KeyProperty()
-    # user = ndb.UserProperty(required = True)
+class Order(db.Model):
+    __tablename__ = 'Order'
+    id = db.Column(db.Integer, primary_key=True)
+    stationID = db.Column(db.Integer)
+    volEntered = db.Column(db.Integer)
+    volRemaining = db.Column(db.Integer)
+    minVolume = db.Column(db.Integer)
+    orderState = db.Column(db.Integer) #Valid states: 0 = open/active, 1 = closed, 2 = expired (or fulfilled), 3 = cancelled, 4 = pending, 5 = character deleted. 
+    typeID = db.Column(db.Integer)
+    range = db.Column(db.Integer)
+    accountKey = db.Column(db.Integer) # Always 1000 for characters, but in the range 1000 to 1006 for corporations.
+    duration = db.Column(db.Integer)# How many days this order is good for. Expiration is issued + duration in days.
+    escrow = db.Column(db.Float)
+    price = db.Column(db.Float)
+    bid = db.Column(db.Boolean)
+    issued = db.Column(db.DateTime)
+    charID = db.Column(db.Integer, db.ForeignKey('Character.id')) # could cause problems if char is in corp, but no API
     
-    
-    
-    
-    
-    
-    
+    def __init__(self,order,char):
+        self.id = order.orderID
+        self.stationID = order.stationID
+        self.volEntered = order.volEntered
+        self.volRemaining = order.volRemaining
+        self.minVolume = order.minVolume
+        self.orderState = order.orderState
+        self.typeID = order.typeID
+        self.range = order.range
+        self.accountKey = order.accountKey
+        self.duration = order.duration
+        self.escrow = order.escrow
+        self.price = order.price
+        self.bid = order.bid
+        self.issued = datetime.datetime.fromtimestamp(order.issued)
+        self.charID = char.id   
+        
+    def update(self,order,char):
+        self.volRemaining = order.volRemaining
+        self.orderState = order.orderState
+        self.duration = order.duration
+        self.escrow = order.escrow
+        self.price = order.price
+        self.issued = datetime.datetime.fromtimestamp(order.issued)
+        
+    @classmethod
+    def getByID(cls,id):
+        return db.session.query(Order).filter(Order.id==id).first()
+        
+    @classmethod
+    def getMissingOrders(cls,char,updated):
+        retVal = []
+        for order in char.orders:
+            if order.id not in updated:
+                retVal.append(order)
+        return retVal
+        
+        
 # class Item(ndb.Model):
     # typeID = ndb.IntegerProperty()
     # typeName=ndb.StringProperty()

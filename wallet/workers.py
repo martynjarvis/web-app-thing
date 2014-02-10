@@ -17,17 +17,11 @@ ROWCOUNT = 50
 # TODO add docstrings to all these functions
 
 # after fixing model and task, fix view pages
-
-# @app.route('/tasks/hack')
-# def worker_hack():
-    # [order.key.delete() for order in Order.query()]
-    # [cache.key.delete() for cache in Cache.query()]
-    # return '0'
         
 @app.route('/tasks/api')
 def worker_api():
     #tasks = [update_balance, update_transactions, update_orders, update_assets]
-    tasks = [update_transactions]
+    tasks = [update_orders]
     for api in  db.session.query(models.Api).all():
         # if apiEntity.corporation: # corporation key
             # corpEntity = apiEntity.corporation.get()
@@ -80,90 +74,39 @@ def update_transactions(auth,entity):
                 transaction_list.append(models.Transaction(transaction,entity))
                 new+=1
             fromId = transaction.transactionID
-        retVal =  datetime.datetime.fromtimestamp(walletTransactions._meta.cachedUntil)
+        retVal = datetime.datetime.fromtimestamp(walletTransactions._meta.cachedUntil)
     
     db.session.add_all(transaction_list)
     return retVal
 
-
-
-# def update_orders(auth,entity):
-    # try:
-        # marketOrders = auth.MarketOrders()
-    # except apiError, e:
-        # logging.error("eveapi returned the following error when querying market orders: %s, %s", e.code, e.message)
-        # return 
-    # except Exception, e:
-        # logging.error("Something went horribly wrong: %s", str(e))
-        # return   
-
-    # # get old orders owned by this entity 
-    # previousOrders = Order.query(Order.owner == entity.key)
+def update_orders(auth,entity):
+    order_list = []
     
-    # # keep track of what I update
-    # updated = []
-    
-    # # running total on orders
-    # buy = 0.0;
-    # sell = 0.0;
+    try:
+        marketOrders = auth.MarketOrders()
+    except apiError, e:
+        logging.error("eveapi returned the following error when querying market orders: %s, %s", e.code, e.message)
+        return 
+    except Exception, e:
+        logging.error("Something went horribly wrong: %s", str(e))
+        return   
 
-    # # orders returned by api
-    # for order in marketOrders.orders :    
-        # updated.append(order.orderID)
-        # prevOrder = previousOrders.filter(Order.orderID == order.orderID).get()
-        # if prevOrder:
-            # o = prevOrder  # existing order
-        # else :
-            # o = Order(user = entity.user )  # new order
-            # character = Character.query(Character.characterID==order.charID).get()
-            # if character:
-                # o.charName = character.characterName
+    updated = []
 
-        # if order.orderState  == 0: # still active
-            # if o.typeName == None:# add name of item if not known
-                # o.typeName = Item.query(Item.typeID == order.typeID).get().typeName
-            # o.orderID = order.orderID
-            # o.charID = order.charID
-            # o.stationID = order.stationID 
-            # o.volEntered = order.volEntered 
-            # o.volRemaining = order.volRemaining 
-            # o.typeID = order.typeID 
-            # o.duration = order.duration 
-            # o.escrow = order.escrow 
-            # o.price = order.price 
-            # o.bid = bool(order.bid)
-            # o.issued = datetime.datetime.fromtimestamp(order.issued)
-            # o.owner = entity.key # change back to characterID, add 'owner' field ?
-            # o.put() #  I think this is fine if the item already exists, no extra writes will be made
-            # if bool(order.bid):
-                # buy += order.volRemaining * order.price 
-            # else:
-                # sell += order.volRemaining * order.price 
-        # else : # fulfilled/cancelled/expired
-            # if o.key: # if saved 
-                # o.key.delete()
+    # orders returned by api
+    for order in marketOrders.orders :    
+        thisOrder = models.Order.getByID(order.orderID)
+        if thisOrder is None:
+            order_list.append(models.Order(order,entity))
+        else:
+            thisOrder.update(order,entity)
+            updated.append(order.orderID)
 
-    # # find and update orders missing from api
-    # for order in previousOrders:
-        # if not order.orderID in updated: # has the order not been updated
-            # missingOrder = auth.marketOrders(orderID=order.orderID).orders[0]
-            # if missingOrder.orderState > 0:
-                # order.key.delete() # order was fulfilled
-            # else:
-                # order.volRemaining= missingOrder.volRemaining 
-                # order.price       = missingOrder.price 
-                # order.issued      = datetime.datetime.fromtimestamp(missingOrder.issued)
-                # if bool(missingOrder.price .bid):
-                    # buy += missingOrder.price.volRemaining * missingOrder.price.price 
-                # else:
-                    # sell += missingOrder.price.volRemaining * missingOrder.price.price 
-
-    # # update wallet
-    # entity.sell = sell
-    # entity.buy = buy
-    # entity.put()   
-                
-    # return datetime.datetime.fromtimestamp(marketOrders._meta.cachedUntil)
+    for order in models.Order.getMissingOrders(entity,updated):
+        order.update(auth.marketOrders(orderID=order.orderID).orders[0],entity)
+        
+    db.session.add_all(order_list)   
+    return datetime.datetime.fromtimestamp(marketOrders._meta.cachedUntil)
     
 # def add_asset(charEntity,previousItems,container,updated):
     # assetWorth = 0.0

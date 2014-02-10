@@ -118,12 +118,11 @@ def transactions():
     data = db.session.query(models.Transaction).join(models.Character).all()#join(models.Api.characters).filter(models.Api.userId==session['user']).all()
     return render_template('transactions.html', title="Transactions", data=data ) #TODO this returns all transactions currently, need to think about this
     
-# @app.route('/orders')
-# @login_required
-# def orders():
-    # ''' List transactions in db for this user'''
-    # data = Order.query().filter(Order.user == users.get_current_user()).fetch()
-    # return render_template('orders.html', title="Orders", data=data )
+@app.route('/orders')
+@decorators.login_required
+def orders():
+    data = db.session.query(models.Order).join(models.Character).all()
+    return render_template('orders.html', title="Orders", data=data )
     
 # @app.route('/assets')
 # @login_required

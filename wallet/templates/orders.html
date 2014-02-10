@@ -41,8 +41,8 @@ $(document).ready(function(){
                 <tbody>
                     {% for row in data %}  
                     <tr> 
-                    <td>{{row.owner.get().name()}}</a></td>
-                    <td><a href="/char/{{row.charID}}">{{row.charName}}</a></td>
+                    <td>{{row.charID}}</a></td>
+                    <td><a href="/char/{{row.charID}}">{{row.charID}}</a></td>
                     <td>{{row.bid}}</td>
                     <td>{{row.issued}}</td>
                     <td><a href="/item/{{row.typeID}}">{{row.typeName}}</a></td>

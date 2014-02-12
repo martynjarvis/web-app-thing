@@ -6,7 +6,6 @@ import settings
 app = Flask('wallet')
 app.config.from_object('wallet.settings')
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app) 
  
 import models

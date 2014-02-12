@@ -10,31 +10,29 @@ from eveapi import Error as apiError
 import datetime
 import logging
 
-ROWCOUNT = 50
-    
-# TODO, make all these functions work with corp s
+ROWCOUNT = 200
+
 
 # TODO add docstrings to all these functions
 
-# after fixing model and task, fix view pages
         
 @app.route('/tasks/api')
 def worker_api():
     #tasks = [update_balance, update_transactions, update_orders, update_assets]
     tasks = [update_orders]
-    for api in  db.session.query(models.Api).all():
-        # if apiEntity.corporation: # corporation key
-            # corpEntity = apiEntity.corporation.get()
-            # auth = EVEAPIConnection().auth(keyID=apiEntity.keyID, vCode=apiEntity.vCode).corp
-            # for task in tasks: 
-                # Cache.run(task,auth,corpEntity)
-
-        # else:    # char key
-        for character in api.characters: 
-            auth = EVEAPIConnection().auth(keyID=api.id, vCode=api.vCode).character(character.id)
+    for api in db.session.query(models.Api).all():
+        if api.corporation is not None: 
+            auth = EVEAPIConnection().auth(keyID=api.id, vCode=api.vCode).corp
             for task in tasks:
-                task(auth=auth,entity=character)
-    db.session.commit()
+                task(auth=auth,entity=api.corporation)                 
+                db.session.flush()  # TODO catch exceptions here
+        else:
+            for character in api.characters: 
+                auth = EVEAPIConnection().auth(keyID=api.id, vCode=api.vCode).character(character.id)
+                for task in tasks:
+                    task(auth=auth,entity=character)
+                    db.session.flush()
+    db.session.commit()            
     return '0'
 
 @decorators.cache
@@ -52,6 +50,7 @@ def update_balance(auth,entity):
     entity.balance = accountBalance.accounts[0].balance # Characters only have 1 account, (corps?)
     return datetime.datetime.fromtimestamp(accountBalance._meta.cachedUntil)
 
+@decorators.cache
 def update_transactions(auth,entity):
     transaction_list = []
     retVal = None
@@ -79,6 +78,7 @@ def update_transactions(auth,entity):
     db.session.add_all(transaction_list)
     return retVal
 
+
 def update_orders(auth,entity):
     order_list = []
     
@@ -103,7 +103,7 @@ def update_orders(auth,entity):
             updated.append(order.orderID)
 
     for order in models.Order.getMissingOrders(entity,updated):
-        order.update(auth.marketOrders(orderID=order.orderID).orders[0],entity)
+        order.update(auth.marketOrders(orderID=order.id).orders[0],entity)
         
     db.session.add_all(order_list)   
     return datetime.datetime.fromtimestamp(marketOrders._meta.cachedUntil)

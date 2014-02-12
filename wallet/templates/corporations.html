@@ -15,8 +15,8 @@
                 <tbody>
                     {% for corp in data %}  
                         <tr> 
-                        <td> <img src="http://image.eveonline.com/Corporation/{{corp.corporationID}}_64.png" class="img-polaroid"></td>
-                        <td>{{corp.corporationName}}</td>
+                        <td> <img src="http://image.eveonline.com/Corporation/{{corp.id}}_64.png" class="img-polaroid"></td>
+                        <td>{{corp.name}}</td>
                         <td>{{corp.ticker}}</td>
                         </tr> 
                     {% endfor %} 

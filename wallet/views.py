@@ -82,7 +82,14 @@ def api_add():
 def characters():
     ''' List characters in db linked to this user '''
     chars = db.session.query(models.Character).join(models.Api.characters).filter(models.Api.userId==session['user']).all()
-    return render_template('characters.html', title="Characters", data=chars)  
+    return render_template('characters.html', title="Characters", data=chars)    
+    
+@app.route('/corporations')
+@decorators.login_required
+def corporations():
+    ''' List corporations in db linked to this user '''
+    corps = db.session.query(models.Corporation).join(models.Api.corporation).filter(models.Api.userId==session['user']).all()
+    return render_template('corporations.html', title="corporations", data=corps)  
 
 # @app.route('/api_refresh/<apiKey>')
 # @login_required
@@ -115,13 +122,13 @@ def characters():
 @app.route('/transactions')
 @decorators.login_required
 def transactions():
-    data = db.session.query(models.Transaction).join(models.Character).all()#join(models.Api.characters).filter(models.Api.userId==session['user']).all()
-    return render_template('transactions.html', title="Transactions", data=data ) #TODO this returns all transactions currently, need to think about this
+    data = db.session.query(models.Transaction).all() #TODO this returns all transactions currently, need to think about this    
+    return render_template('transactions.html', title="Transactions", data=data )
     
 @app.route('/orders')
 @decorators.login_required
 def orders():
-    data = db.session.query(models.Order).join(models.Character).all()
+    data = db.session.query(models.Order).all()
     return render_template('orders.html', title="Orders", data=data )
     
 # @app.route('/assets')

@@ -28,6 +28,7 @@ $(document).ready(function(){
             
             <table class="table" id="example">     
                 <thead>
+                    <th scope="col">Corporation</th>
                     <th scope="col">Character</th>
                     <th scope="col">b/s</th>
                     <th scope="col">Date</th>
@@ -40,7 +41,8 @@ $(document).ready(function(){
                 <tbody>
                     {% for row in data %}  
                     <tr> 
-                    <td><a href="/char/{{row.charID}}">{{row.charID}}</a></td>
+                    <td><a href="/corp/{{row.corpID}}">{{row.corporation.name}}</a></td>
+                    <td><a href="/char/{{row.charID}}">{{row.character.name}}</a></td>
                     <td>{{row.transactionType}}</td>
                     <td>{{row.transactionDateTime}}</td>
                     <td><a href="/item/{{row.typeID}}">{{row.typeName}}</a></td>

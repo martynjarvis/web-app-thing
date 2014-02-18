@@ -12,7 +12,6 @@ $(document).ready(function(){
     $('#example').dataTable({
     "iDisplayLength": 15,
     "aLengthMenu": [[15,50,100,500,-1], [15,50,100,500, "All"]],
-    "aaSorting": [[ 2, "desc" ]],
     });
 });
 </script>
@@ -23,33 +22,30 @@ $(document).ready(function(){
     <div class="row">
          <div class="span12">
             <div class="page-header">
-                <h1>Market Orders <small>tag</small></h1>
+                <h1>Assets <small>tag</small></h1>
             </div>    
-            
             <table class="table" id="example">     
                 <thead>
                     <th scope="col">Corporation</th>
                     <th scope="col">Character</th>
-                    <th scope="col">b/s</th>
-                    <th scope="col">Date</th>
+                    <th scope="col">flag</th>
+                    <th scope="col">singleton</th>
+                    <th scope="col">rawQuantity</th>
                     <th scope="col">Item</th>
-                    <th class="ral" scope="col">Price</th>
                     <th class="ral" scope="col">n</th>
-                    <th class="ral" scope="col">Total</th>
-                    <th scope="col">Station</th>
+                    <th scope="col">Location</th>
                 </thead>
                 <tbody>
                     {% for row in data %}  
                     <tr> 
-                    <td><a href="/corp/{{row.corpID}}">{{row.corporation.name}}</a></td>
-                    <td><a href="/char/{{row.charID}}">{{row.character.name}}</a></td>
-                    <td>{{row.bid}}</td>
-                    <td>{{row.issued}}</td>
-                    <td><a href="/item/{{row.typeID}}">{{row.typeName}}</a></td>
-                    <td class="ral">{{'{:20,.2f}'.format(row.price)}}</td>
-                    <td class="ral">{{row.volRemaining}}</td>
-                    <td class="ral">{{'{:20,.2f}'.format(row.price*row.volRemaining)}} </td>
-                    <td><a href="/station/{{row.stationID}}">{{row.stationID}}</a></td> 
+                    <td><a href="/char/{{row.corporation.id}}">{{row.corporation.name}}</a></td>
+                    <td><a href="/char/{{row.character.id}}">{{row.character.name}}</a></td>
+                    <td>{{row.flag}}</td>
+                    <td>{{row.singleton}}</td>
+                    <td>{{row.rawQuantity}}</td>
+                    <td><a href="/item/{{row.typeID}}">{{row.type.typeName}}</a></td>
+                    <td class="ral">{{row.quantity}}</td>
+                    <td><a href="/station/{{row.locationID}}">{{row.locationID}}</a></td> 
                     </tr> 
                     {% endfor %} 
                 <tbody>

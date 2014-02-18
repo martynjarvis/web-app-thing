@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+<script type="text/javascript">
+    $(document).ready(function() {
+      $('#scan-total').text(type_ids.length);
+    });
+        
+    var type_ids = [{% for row in data%}{{row[0].typeID}}{% if not loop.last %},{%endif%}{% endfor %}];
+    var type_names = [{% for row in data%}'{{row[1].typeName}}'{% if not loop.last %},{%endif%}{% endfor %}];
+    var type_vol = [{% for row in data%}{{row[1].volume}}{% if not loop.last %},{%endif%}{% endfor %}];
+    var item_price = [{% for row in data%}{{row[2].price}}{% if not loop.last %},{%endif%}{% endfor %}];
+  
+    index = 0;
+    function next() {
+      if (index >= type_ids.length) {
+        index = 0;
+        $('#name').text("");
+        {%for markup in markups%}
+        $('#id_{{'{:.0f}'.format(markup*100)}}').text("");
+        {%endfor%}
+        $('#scan-done').text(index);
+      }
+      else {
+        CCPEVE.showMarketDetails(type_ids[index]);
+        $('#name').text(type_names[index]);
+        {%for markup in markups%}
+        $('#id_{{'{:.0f}'.format(markup*100)}}').text(Math.round(item_price[index]*{{markup}}+type_vol[index]*{{import_cost}}));
+        {%endfor%}
+        index++;
+        $('#scan-done').text(index);
+      }
+    }
+    
+  </script>
+
+{% endblock %}
+
+
+{% block content %}
+    <div class="row">
+        <div class="span12">
+            <div class="page-header">
+                <h1>Update Market Orders <small>{{import_cost}} isk/m3</small></h1>
+            </div>
+        </div><!--/span--> 
+    </div><!--/row-->   
+
+    <div class="row-fluid">
+        <div class="span4">
+            <button class="btn btn-primary" id="scan-button" onclick="next();">Next Item</button>
+            : Scanned <strong id="scan-done">0</strong> of <strong id="scan-total"></strong>
+            <h3 id="name"><small></small></h3>
+            
+            <table class="table table-striped">
+                <tbody>
+                    {%for markup in markups%}
+                    <tr><td>{{markup}}</td><td id="id_{{'{:.0f}'.format(markup*100)}}"></td></tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+
+        </div><!--/span--> 
+    </div><!--/row-->   
+{% endblock %}
+

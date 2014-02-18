@@ -1,14 +1,35 @@
 from wallet import db
 from sqlalchemy.sql import exists
 
-APITYPES = {'Account':1, 'Character':2, 'Corporation':3}
-TRANSACTIONTYPE = {'buy':1, 'sell':2}
-TRANSACTIONFOR = {'personal':1, 'corporation':2}
-DTPATTERN = '%Y-%m-%d %H:%M:%S'
 import eveapi
 import datetime
 import hashlib 
-#from eveapi import EVEAPIConnection, Error
+
+BUY = 1
+SELL = 2
+
+APITYPES = {'Account':1, 'Character':2, 'Corporation':3}
+TRANSACTIONTYPE = {'buy':BUY, 'sell':SELL}
+MKTTRANSTYPE = {'b':BUY, 's':SELL}
+TRANSACTIONFOR = {'personal':1, 'corporation':2}
+DTPATTERN = '%Y-%m-%d %H:%M:%S'
+JITA = 30000142
+
+class InvTypes(db.Model):
+    __table__ = db.Table('invtypes', db.metadata, autoload=True, autoload_with=db.engine)
+    @classmethod
+    def getByID(cls,id): #TODO this is not needed (see sqlalchemy get method)
+        return db.session.query(InvTypes).filter(InvTypes.typeID==id).first()
+        
+class MapSolarSystems(db.Model):
+    __table__ = db.Table('mapsolarsystems', db.metadata, autoload=True, autoload_with=db.engine)
+    
+class MapRegions(db.Model):
+    __table__ = db.Table('mapregions', db.metadata, autoload=True, autoload_with=db.engine)
+
+class StaStations(db.Model):
+    __table__ = db.Table('stastations', db.metadata, autoload=True, autoload_with=db.engine)
+        
 
 class User(db.Model):
     __tablename__ = 'User'
@@ -28,7 +49,7 @@ class User(db.Model):
         return '<User %r>' % self.username
     
     @classmethod
-    def get(cls,id):
+    def get(cls,id):  #TODO this is not needed (see sqlalchemy get method)
         return db.session.query(User).filter(User.id==id).first()
 
     @classmethod
@@ -103,6 +124,7 @@ class Character(db.Model):
     
     transactions = db.relationship("Transaction", backref="character")
     orders = db.relationship("Order", backref="character")
+    assets = db.relationship("Asset", backref="character")
     
     def __init__(self,id,name):
         self.id = int(id)
@@ -121,6 +143,7 @@ class Corporation(db.Model):
     
     transactions = db.relationship("Transaction", backref="corporation")
     orders = db.relationship("Order", backref="corporation")
+    assets = db.relationship("Asset", backref="corporation")
     
     def __init__(self,id,name,ticker):
         self.id = int(id)
@@ -139,7 +162,7 @@ class Cache(db.Model): # keeps track of what needs to be updated
         self.cachedUntil = None
   
     @classmethod
-    def get(cls,key,page):
+    def get(cls,key,page):  #TODO this is not needed (see sqlalchemy get method)
         return db.session.query(Cache).filter(Cache.key==key).filter(Cache.page==page).first()
 
 
@@ -148,20 +171,24 @@ class Transaction(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
     transactionDateTime = db.Column(db.DateTime)
     quantity = db.Column(db.Integer)
-    typeName = db.Column(db.String(80))
-    typeID = db.Column(db.Integer)
     price = db.Column(db.Float)
     clientID = db.Column(db.Integer)
     clientName = db.Column(db.String(80))
-    stationID = db.Column(db.Integer)
-    stationName = db.Column(db.String(80))
     transactionType = db.Column(db.Integer)
     transactionFor = db.Column(db.Integer)
     journalTransactionID = db.Column(db.BigInteger)
     
     charID = db.Column(db.Integer, db.ForeignKey('Character.id'))
     corpID = db.Column(db.Integer, db.ForeignKey('Corporation.id'))
-        
+    
+    typeName = db.Column(db.String(80))
+    typeID = db.Column(db.Integer, db.ForeignKey('invtypes.typeID'))
+    type = db.relationship(InvTypes)
+    
+    stationName = db.Column(db.String(80))
+    stationID = db.Column(db.Integer, db.ForeignKey('stastations.stationID'))
+    station = db.relationship(StaStations)
+    
     def __init__(self,transaction,entity):
         self.id = int(transaction.transactionID)
         self.transactionDateTime = datetime.datetime.fromtimestamp(transaction.transactionDateTime)
@@ -202,12 +229,10 @@ class Transaction(db.Model):
 class Order(db.Model):
     __tablename__ = 'Order'
     id = db.Column(db.BigInteger, primary_key=True)
-    stationID = db.Column(db.Integer)
     volEntered = db.Column(db.Integer)
     volRemaining = db.Column(db.Integer)
     minVolume = db.Column(db.Integer)
     orderState = db.Column(db.Integer) #Valid states: 0 = open/active, 1 = closed, 2 = expired (or fulfilled), 3 = cancelled, 4 = pending, 5 = character deleted. 
-    typeID = db.Column(db.Integer)
     range = db.Column(db.Integer)
     accountKey = db.Column(db.Integer) # Always 1000 for characters, but in the range 1000 to 1006 for corporations.
     duration = db.Column(db.Integer)# How many days this order is good for. Expiration is issued + duration in days.
@@ -218,6 +243,12 @@ class Order(db.Model):
 
     charID = db.Column(db.Integer, db.ForeignKey('Character.id'))
     corpID = db.Column(db.Integer, db.ForeignKey('Corporation.id'))
+    
+    typeID = db.Column(db.Integer, db.ForeignKey('invtypes.typeID'))
+    type = db.relationship(InvTypes)
+    
+    stationID = db.Column(db.Integer, db.ForeignKey('stastations.stationID'))
+    station = db.relationship(StaStations)
     
     def __init__(self,order,entity):
         self.id = order.orderID
@@ -272,47 +303,117 @@ class Order(db.Model):
                 else:
                     retVal.append(order)
         return retVal
+
+class Asset(db.Model):
+    __tablename__ = 'Asset'
+    id = db.Column(db.BigInteger, primary_key=True)
+    locationID = db.Column(db.BigInteger)
+    quantity = db.Column(db.Integer)    
+    flag = db.Column(db.Integer)    
+    singleton = db.Column(db.Boolean)
+    rawQuantity = db.Column(db.Integer)    
+    
+    typeID = db.Column(db.Integer, db.ForeignKey('invtypes.typeID'))
+    type = db.relationship(InvTypes)
+    
+    charID = db.Column(db.Integer, db.ForeignKey('Character.id'))
+    corpID = db.Column(db.Integer, db.ForeignKey('Corporation.id'))
+    
+    def __init__(self,asset,entity):
+        self.id = asset.itemID
+        self.typeID = asset.typeID
+        self.quantity = asset.quantity 
+        self.flag = asset.flag
+        self.singleton = bool(asset.singleton)
+        try:  # Note that this column is not present in the sub-asset lists
+            self.locationID = asset.locationID
+        except AttributeError, e: 
+            self.locationID = None #TODO fix
+        try: 
+            self.rawQuantity = asset.rawQuantity
+        except AttributeError, e: 
+            self.rawQuantity = None
+            
+        entity.assets.append(self) # will either be corp or char 
+                
+    @classmethod
+    def inDB(cls,id):
+        return db.session.query(exists().where(Asset.id == id)).scalar()
+        
+
+class ItemPrice(db.Model):
+    __tablename__ = 'ItemPrice'    
+    transactionType = db.Column(db.Integer,  primary_key=True) # buysell
+    price = db.Column(db.Float)
+    updated = db.Column(db.DateTime)
+
+    typeID = db.Column(db.Integer, db.ForeignKey('invtypes.typeID'),  primary_key=True)
+    type = db.relationship(InvTypes)
+    
+    solarsystemID = db.Column(db.Integer, db.ForeignKey('mapsolarsystems.solarSystemID'), primary_key=True)
+    solarsystem = db.relationship(MapSolarSystems)    
+    
+    def __init__(self,row):
+        self.transactionType = MKTTRANSTYPE[row['buysell']]
+        self.price = row['price']
+        self.updated = row['updated']
+        self.typeID = row['typeID']
+        self.solarsystemID = row['solarsystemID']
+    
+    @classmethod
+    def update(cls,row):
+        price = db.session.query(ItemPrice).filter(ItemPrice.typeID==row['typeID'])\
+                                           .filter(ItemPrice.solarsystemID==row['solarsystemID'])\
+                                           .filter(ItemPrice.transactionType==MKTTRANSTYPE[row['buysell']]).first()
+        if price is None:
+            price = ItemPrice(row)
+            db.session.add(price)
+        else:
+            price.price = row['price']
+            price.updated = row['updated']
+            
+class ItemHistory(db.Model):
+    __tablename__ = 'ItemHistory'  
+    typeID = db.Column(db.Integer, db.ForeignKey('invtypes.typeID'),  primary_key=True)
+    type = db.relationship(InvTypes)
+       
+    regionID = db.Column(db.Integer, db.ForeignKey('mapregions.regionID'), primary_key=True)
+    region = db.relationship(MapRegions)    
+    
+    date = db.Column(db.DateTime,  primary_key=True)
+    lowPrice = db.Column(db.Float)
+    highPrice = db.Column(db.Float)
+    avgPrice = db.Column(db.Float)
+    volume = db.Column(db.BigInteger)
+    orders = db.Column(db.Integer)
+    
+    def __init__(self,row):
+        self.typeID = row['typeID']
+        self.regionID = row['regionID']
+        self.date = row['date']
+        self.lowPrice = row['lowPrice']
+        self.highPrice = row['highPrice']
+        self.avgPrice = row['avgPrice']
+        self.volume = row['volume']
+        self.orders = row['orders']
+    
+    @classmethod
+    def update(cls,row):
+        history = db.session.query(ItemHistory).filter(ItemHistory.typeID==row['typeID'])\
+                                           .filter(ItemHistory.regionID==row['regionID'])\
+                                           .filter(ItemHistory.date==row['date']).first()
+        if history is None:
+            history = ItemHistory(row)
+            db.session.add(history)
+        else:
+            history.lowPrice = row['lowPrice']
+            history.highPrice = row['highPrice']
+            history.avgPrice = row['avgPrice']
+            history.volume = row['volume']
+            history.orders = row['orders']
+
+
         
         
-# class Item(ndb.Model):
-    # typeID = ndb.IntegerProperty()
-    # typeName=ndb.StringProperty()
-    # volume=ndb.FloatProperty(indexed=False)
-    # marketGroupID = ndb.IntegerProperty()
-    # buy = ndb.FloatProperty(indexed=False)
-    # sell = ndb.FloatProperty(indexed=False)
-
-# class MarketStat(ndb.Model):
-    # typeID = ndb.IntegerProperty()
-    # volume = ndb.IntegerProperty(indexed=False)
-    # avg = ndb.FloatProperty(indexed=False)
-    # max = ndb.FloatProperty(indexed=False)
-    # min = ndb.FloatProperty(indexed=False)
-    # stddev = ndb.FloatProperty(indexed=False)
-    # median = ndb.FloatProperty(indexed=False)
-    # percentile = ndb.FloatProperty(indexed=False)
-    # retreived=ndb.DateTimeProperty(indexed=False)
-
-
-
-
-    
-
-
-    
-
-    
-# class Asset(ndb.Model):
-    # itemKey = ndb.KeyProperty(Item)
-    # itemID = ndb.IntegerProperty()
-    # locationID = ndb.IntegerProperty(indexed=False)
-    # typeID = ndb.IntegerProperty()
-    # typeName=ndb.StringProperty(indexed=False)
-    # quantity = ndb.IntegerProperty(indexed=False)
-    # flag = ndb.IntegerProperty(indexed=False)
-    # singleton = ndb.BooleanProperty(indexed=False)
-    # rawQuantity = ndb.IntegerProperty(indexed=False)
-    # character = ndb.KeyProperty(Character)
-    # user = ndb.UserProperty(required = True)
-    
-
+        
+        

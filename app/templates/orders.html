@@ -12,7 +12,6 @@ $(document).ready(function(){
     $('#example').dataTable({
     "iDisplayLength": 15,
     "aLengthMenu": [[15,50,100,500,-1], [15,50,100,500, "All"]],
-    "aaSorting": [[ 2, "desc" ]],
     });
 });
 </script>
@@ -23,7 +22,7 @@ $(document).ready(function(){
     <div class="row">
          <div class="span12">
             <div class="page-header">
-                <h1>Transactions <small>from wallet</small></h1>
+                <h1>Market Orders <small>tag</small></h1>
             </div>    
             
             <table class="table" id="example">     
@@ -43,17 +42,13 @@ $(document).ready(function(){
                     <tr> 
                     <td><a href="/corp/{{row.corpID}}">{{row.corporation.name}}</a></td>
                     <td><a href="/char/{{row.charID}}">{{row.character.name}}</a></td>
-                    <td>{{row.transactionType}}</td>
-                    <td>{{row.transactionDateTime}}</td>
-                    <td><a href="/item/{{row.typeID}}">{{row.typeName}}</a></td>
+                    <td>{{row.bid}}</td>
+                    <td>{{row.issued}}</td>
+                    <td><a href="/item/{{row.type.typeID}}">{{row.type.typeName}}</a></td>
                     <td class="ral">{{'{:20,.2f}'.format(row.price)}}</td>
-                    <td class="ral">{{row.quantity}}</td>
-                    {% if row.transactionType=="sell" %}  
-                    <td class="ral"><p class="text-success"> {{'{:20,.2f}'.format(row.quantity*row.price)}} </p></td>
-                    {% else %}  
-                    <td class="ral"><p class="text-error"> {{'{:20,.2f}'.format(row.quantity*row.price)}} </p></td>
-                    {% endif %}  
-                    <td><a href="/station/{{row.stationID}}">{{row.stationName}}</a></td> 
+                    <td class="ral">{{row.volRemaining}}</td>
+                    <td class="ral">{{'{:20,.2f}'.format(row.price*row.volRemaining)}} </td>
+                    <td><a href="/station/{{row.stationID}}">{{row.stationID}}</a></td> 
                     </tr> 
                     {% endfor %} 
                 <tbody>

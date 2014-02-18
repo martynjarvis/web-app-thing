@@ -22,28 +22,31 @@ $(document).ready(function(){
     <div class="row">
          <div class="span12">
             <div class="page-header">
-                <h1>Assets <small>tag</small></h1>
+                <h1>Stuff <small>blah</small></h1>
             </div>    
+            
             <table class="table" id="example">     
                 <thead>
-                    <th scope="col">Character</th>
-                    <th scope="col">flag</th>
-                    <th scope="col">singleton</th>
-                    <th scope="col">rawQuantity</th>
                     <th scope="col">Item</th>
-                    <th class="ral" scope="col">n</th>
-                    <th scope="col">Location</th>
+                    <th class="ral" scope="col">Volume</th>
+                    <th class="ral" scope="col">Stock</th>
+                    <th class="ral" scope="col">Days</th>
+                    <th class="ral" scope="col">Source Price</th>
+                    <th class="ral" scope="col">Destination Price</th>
+                    <th class="ral" scope="col">Margin</th>
+                    <th scope="col">Age</th>
                 </thead>
                 <tbody>
                     {% for row in data %}  
                     <tr> 
-                    <td><a href="/char/{{row.character.get().characterID}}">{{row.character.get().characterName}}</a></td>
-                    <td>{{row.flag}}</td>
-                    <td>{{row.singleton}}</td>
-                    <td>{{row.rawQuantity}}</td>
-                    <td><a href="/item/{{row.typeID}}">{{row.typeName}}</a></td>
-                    <td class="ral">{{row.quantity}}</td>
-                    <td><a href="/station/{{row.locationID}}">{{row.locationID}}</a></td> 
+                    <td><a href="/item/{{row[0].typeID}}">{{row[0].typeName}}</a></td>
+                    <td class="ral">{{0}}</td>
+                    <td class="ral">{{1}}</td>
+                    <td class="ral">{{2}}</td>
+                    <td class="ral">{{'{:20,.2f}'.format(row[1])}}</td>
+                    <td class="ral">{{'{:20,.2f}'.format(row[2])}}</td>
+                    <td class="ral">{{'{:20,.2f}'.format(row[2])}}</td>
+                    <td>age</a></td> 
                     </tr> 
                     {% endfor %} 
                 <tbody>

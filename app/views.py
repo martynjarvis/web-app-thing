@@ -11,6 +11,7 @@ from flask import render_template, flash, url_for, redirect, request, session
 import datetime
 import hashlib
 import logging
+from sqlalchemy.orm import aliased
 
 # TODO charactor page (similar to item page)
 
@@ -111,14 +112,6 @@ def corporations():
     # corps = Corporation.query().filter(Corporation.user == users.get_current_user())
     # return render_template('overview.html', title="Overview", data={'chars':chars,'corps':corps})
         
-    
-# @app.route('/corporations')
-# @login_required
-# def corporations():
-    # ''' List characters in db linked to this user '''
-    # corps = Corporation.query().filter(Corporation.user == users.get_current_user())
-    # return render_template('corporations.html', title="Corporations", data=corps)
-
 @app.route('/transactions')
 @decorators.login_required
 def transactions():
@@ -131,42 +124,76 @@ def orders():
     data = db.session.query(models.Order).all()
     return render_template('orders.html', title="Orders", data=data )
     
-# @app.route('/assets')
-# @login_required
-# def assets():
-    # ''' List transactions in db for this user'''
-    # data = Asset.query().filter(Asset.user == users.get_current_user()).fetch()
-    # return render_template('assets.html', title="Assets", data=data )
+@app.route('/assets')
+@decorators.login_required
+def assets():
+    data = db.session.query(models.Asset).all()
+    return render_template('assets.html', title="Assets", data=data )
     
-# @app.route('/item/<typeID>')
-# @login_required
-# def item(typeID):
-    # ''' List orders,transactions and assets'''
-    # typeID = int(typeID)
-    # item         = Item.query().filter(Item.typeID == typeID).get()
-    # if item is None:
-        # return redirect(url_for('index')) # TODO change this tosomewhere useful
-    # orders       = Order.query().filter(Order.user == users.get_current_user()).filter(Order.typeID == typeID).fetch()
-    # transactions = Transaction.query().filter(Transaction.user == users.get_current_user()).filter(Transaction.typeID == typeID).fetch()
-    # assets       = Asset.query().filter(Asset.user == users.get_current_user()).filter(Asset.typeID == typeID).fetch()
-    # return render_template('item.html', title=item.typeName, item=item,orders=orders,transactions=transactions,assets=assets)
+@app.route('/item/<typeID>')
+@decorators.login_required
+def item(typeID):
+    ''' List orders,transactions and assets'''
+    item = models.InvTypes.getByID(int(typeID))
+    return render_template('item.html', title=item.typeName, item=item)
 
-# @app.route('/update')
-# @app.route('/update/<importCost>')
-# @trust_required
-# def order_update(importCost=0):
-    # '''Scans through items character currently has on market'''
-    # charID = int(request.headers["Eve_Charid"])
-    # orders = Order.query().filter(Order.charID == charID).fetch()
-    # data = []
-    # typeIDs = [] # to keep track of repeats
-    # for order in orders: # not ideal
-        # item = Item.query().filter(Item.typeID == order.typeID).get()
-        # if not item.typeID in typeIDs :
-            # typeIDs.append(item.typeID)
-            # data.append([order.typeID,order.typeName,item.sell,item.sell+importCost*item.volume])
-    # return render_template('update.html', title="Update Orders", data=data, import_cost=importCost,  bid=0 )
+@app.route('/update')
+@app.route('/update/<importCost>')
+@decorators.trust_required
+def order_update(importCost=0):
+    '''Scans through items character currently has on market'''
+    charID = int(request.headers["Eve_Charid"])
+    regionID = int(request.headers["Eve_Regionid"])
+    
+    query = db.session.query(models.Order, models.InvTypes, models.ItemPrice, models.StaStations)\
+        .filter(models.Order.orderState == 0)\
+        .filter(models.Order.charID == charID)\
+        .filter(models.Order.bid == False)\
+        .filter(models.Order.stationID == models.StaStations.stationID)\
+        .filter(models.StaStations.regionID == regionID)\
+        .filter(models.Order.typeID == models.InvTypes.typeID)\
+        .filter(models.InvTypes.typeID == models.ItemPrice.typeID)\
+        .filter(models.ItemPrice.transactionType == models.SELL)\
+        .filter(models.ItemPrice.solarsystemID == models.JITA)
 
+    markups = [1.0,1.05,1.1,1.15,1.2,1.25,1.30]
+    
+    return render_template('update.html', title="Update Orders", data=query, import_cost=importCost,  markups=markups )
+    
+
+@app.route('/import', methods=['GET', 'POST'])
+def import_tool():   
+    '''Returns a list of items to import to a given system based on market history'''
+    # source="Jita"
+    # dest="K-6K16"
+    cost=275.
+    # if request.method == 'POST':
+        # source = request.form['source']
+        # dest = request.form['dest']
+        # cost = float(request.form['cost'])
+    
+    sourcePrice = aliased(models.ItemPrice)
+    destPrice = aliased(models.ItemPrice)
+    # .join(sourcePrice.typeID, models.InvTypes.typeID)\
+    # .join(destPrice.typeID, models.InvTypes.typeID)\
+    
+    data = db.session.query(models.InvTypes, sourcePrice.price, destPrice.price)\
+        .filter(models.InvTypes.marketGroupID is not None)\
+        .filter(models.InvTypes.marketGroupID < 300000)\
+        .filter(sourcePrice.typeID == models.InvTypes.typeID)\
+        .filter(sourcePrice.transactionType == models.SELL)\
+        .filter(sourcePrice.solarsystemID == models.JITA)\
+        .filter(destPrice.typeID == models.InvTypes.typeID)\
+        .filter(destPrice.transactionType == models.SELL)\
+        .filter(destPrice.solarsystemID == 30003862)\
+        .limit(10)
+   
+    return render_template('import.html', title="Import", data=data, cost=cost)
+    
+    
+    
+    
+    
 # @trust_required
 # @app.route('/list', methods=['GET', 'POST'])
 # def list_tool():

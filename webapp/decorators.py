@@ -1,4 +1,4 @@
-from wallet import db
+from webapp import db
 
 from functools import wraps
 from flask import redirect, request, session, render_template, url_for

@@ -1,4 +1,4 @@
-from wallet import app,db
+from webapp import app,db
 import decorators
 import models
 

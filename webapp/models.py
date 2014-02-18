@@ -1,4 +1,4 @@
-from wallet import db
+from webapp import db
 from sqlalchemy.sql import exists
 
 import eveapi

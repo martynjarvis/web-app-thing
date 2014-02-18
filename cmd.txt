@@ -1,1 +1,0 @@
-mysql> SELECT typeID, typeName, volume, marketGroupID FROM invtypes INTO OUTFILE './evedata.csv' FIELDS TERMINATED BY '\t' ENCLOSED BY '' LINES TERMINATED BY '\n';

@@ -1,17 +1,10 @@
-from webapp import app,db
-
-import models
-import decorators
+from evewallet.webapp import app,db,models,decorators
 
 from flask import render_template, flash, url_for, redirect, request, session
-
-# from eveapi import EVEAPIConnection
-# from eveapi import Error as api_error
-
+from sqlalchemy.orm import aliased
 import datetime
 import hashlib
 import logging
-from sqlalchemy.orm import aliased
 
 # TODO charactor page (similar to item page)
 

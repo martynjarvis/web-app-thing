@@ -4,7 +4,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 import settings
 
 app = Flask('wallet')
-app.config.from_object('webapp.settings')
+app.config.from_object('evewallet.webapp.settings')
 
 db = SQLAlchemy(app) 
  

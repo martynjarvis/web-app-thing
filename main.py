@@ -1,2 +1,2 @@
-from webapp import app
+from evewallet.webapp import app
 app.run(debug=True)

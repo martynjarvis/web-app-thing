@@ -1,9 +1,7 @@
-from webapp import app,db
-import decorators
-import models
+from evewallet.webapp import app,db,decorators,models
 
-from eveapi import EVEAPIConnection
-from eveapi import Error as apiError
+from evewallet.eveapi import EVEAPIConnection
+from evewallet.eveapi import Error as apiError
 
 import json
 import urllib2

@@ -1,8 +1,7 @@
-from webapp import db
+from evewallet.webapp import db,models
 
 from functools import wraps
 from flask import redirect, request, session, render_template, url_for
-from models import Cache
 import datetime
 
 def login_required(func):
@@ -25,9 +24,9 @@ def trust_required(func):
 def cache(func):
     @wraps(func)
     def decorated_view(*args, **kwargs):
-        cache = Cache.get(kwargs['entity'].name,func.__name__)
+        cache = models.Cache.get(kwargs['entity'].name,func.__name__)
         if cache is None:
-            cache = Cache(kwargs['entity'].name,func.__name__)
+            cache = models.Cache(kwargs['entity'].name,func.__name__)
             db.session.add(cache)
         if cache.cachedUntil is None or cache.cachedUntil < datetime.datetime.now():
             cachedUntil = func(*args, **kwargs)

@@ -1,7 +1,7 @@
-from webapp import db
-from sqlalchemy.sql import exists
+from evewallet.webapp import db
+import evewallet.eveapi as eveapi
 
-import eveapi
+from sqlalchemy.sql import exists
 import datetime
 import hashlib 
 

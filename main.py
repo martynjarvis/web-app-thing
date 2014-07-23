@@ -1,2 +1,4 @@
-from evewallet.webapp import app
-app.run(debug=True)
+from evewallet.webapp import manager
+
+if __name__ == '__main__':
+    manager.run()

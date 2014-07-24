@@ -4,8 +4,11 @@ from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
 
 import settings
+import os
 
-app = Flask('wallet')
+tmpl_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', 'templates'))
+
+app = Flask('wallet', template_folder=tmpl_dir)
 app.config.from_object('evewallet.webapp.settings')
 
 db = SQLAlchemy(app) 

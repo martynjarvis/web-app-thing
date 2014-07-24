@@ -1,28 +1,17 @@
-import datetime
-import hashlib
-import logging
+from flask import render_template, flash, url_for, redirect, request
 
-from evewallet.webapp import app,db,models#,decorators
-
-from flask import render_template, flash, url_for, redirect, request, session
-# from sqlalchemy.orm import aliased
-
-# TODO charactor page (similar to item page)
-
-# TODO add corp apis
-# market orders, same
+from evewallet.webapp import app, decorators, auth, xmlapi
 
 @app.route('/logout')
 def logout():
-    session.pop('user', None)
+    auth.logout()
     return redirect(url_for('index'))
     
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        user = models.User.auth(request.form['username'],request.form['password'])
+        user = auth.login(request.form['username'],request.form['password'])
         if user is not None:
-            session['user'] = user.id
             flash('You were logged in','success')
             return redirect(url_for('index'))  
         flash('Incorrect username or password','error')
@@ -32,11 +21,14 @@ def login():
 def register():
     if request.method == 'POST':
         if request.form['password1']==request.form['password2'] :
-            user = models.User(request.form['username'],request.form['email'],request.form['password1'])
-            db.session.add(user)
-            db.session.commit()  #TODO, deal with erro
-            return redirect(url_for('index'))
-        flash('Incorrect username or password','error')
+            user = auth.register(request.form['username'],request.form['email'],request.form['password1'])
+            if user is not None:
+                auth.login(request.form['username'],request.form['password1'])
+                return redirect(url_for('index'))
+            else:
+                flash('Username already in use','error')
+        else:
+            flash('Passwords do not match','error')
     return render_template('register.html')
 
 @app.route('/')
@@ -46,57 +38,50 @@ def index():
     #    return redirect(url_for('overview'))
     return render_template('index.html', title="Home")
 
-# @app.route('/api')
-# @decorators.login_required
-# def api():
-    # ''' List of APIs '''
-    # user = models.User.get(session['user'])
-    # return render_template('api.html', title="APIs", data=user.apis)
+@app.route('/api')
+@decorators.login_required
+def apis():
+    ''' List of APIs '''
+    api_keys = xmlapi.all_keys()
+    return render_template('api.html', title="APIs", data=api_keys)
     
-# @app.route('/api_add', methods=['GET', 'POST'])
-# @decorators.login_required
-# def api_add():
-    # ''' Adds an API to the db'''
-    # if request.method == 'GET':
-        # return render_template('api_add.html')
-    # if request.method == 'POST':
-        # if request.form['api_id']=="" or request.form['api_vcode']=="":
-            # flash('Invalid API','error')
-            # return render_template('api_add.html')
-        # api = models.Api(request.form['api_id'],request.form['api_vcode'],session['user'])
-        # if api.update() > 0 :
-            # flash('API Error','error')
-            # return render_template('api_add.html')
-        # else : 
-            # db.session.add(api)
-        # db.session.commit()
-        # return redirect(url_for('api'))
-        
-# @app.route('/characters')
-# @decorators.login_required
-# def characters():
-    # ''' List characters in db linked to this user '''
-    # chars = db.session.query(models.Character).join(models.Api.characters).filter(models.Api.userId==session['user']).all()
-    # return render_template('characters.html', title="Characters", data=chars)    
+@app.route('/api_add', methods=['GET', 'POST'])
+@decorators.login_required
+def api_add():
+    ''' Adds an API to the db'''
+    if request.method == 'POST':
+        api = xmlapi.add_api(request.form['api_id'], request.form['api_vcode'])
+        if api is not None:
+            return redirect(url_for('apis'))
+        else:
+            flash('API Error','error')
+    return render_template('api_add.html')
+   
+@app.route('/characters')
+@decorators.login_required
+def characters():
+    ''' List characters in db linked to this user '''
+    chars = xmlapi.all_characters()
+    return render_template('characters.html', title="Characters", data=chars)    
     
-# @app.route('/corporations')
-# @decorators.login_required
-# def corporations():
-    # ''' List corporations in db linked to this user '''
-    # corps = db.session.query(models.Corporation).join(models.Api.corporation).filter(models.Api.userId==session['user']).all()
-    # return render_template('corporations.html', title="corporations", data=corps)  
+@app.route('/corporations')
+@decorators.login_required
+def corporations():
+    ''' List corporations in db linked to this user '''
+    corps = xmlapi.all_corporations()
+    return render_template('corporations.html', title="corporations", data=corps)  
 
-# # @app.route('/api_refresh/<apiKey>')
-# # @login_required
-# # def api_refresh(apiKey):
-    # # ''' Refreshes an existing API to the db and adds new characters '''
-    # # api = ndb.Key(urlsafe=apiKey).get()
-    # # if api:
-        # # auth = EVEAPIConnection().auth(keyID=api.keyID, vCode=api.vCode)
-        # # a = update_char_from_api(auth)
-    # # else :
-        # # flash('API related error','error')
-    # # return redirect(url_for('api'))
+# @app.route('/api_refresh/<apiKey>')
+# @decorators.login_required
+# def api_refresh(apiKey):
+    # ''' Refreshes an existing API to the db and adds new characters '''
+    # api = ndb.Key(urlsafe=apiKey).get()
+    # if api:
+        # auth = EVEAPIConnection().auth(keyID=api.keyID, vCode=api.vCode)
+        # a = update_char_from_api(auth)
+    # else :
+        # flash('API related error','error')
+    # return redirect(url_for('api'))
         
 # # @app.route('/overview')
 # # @login_required

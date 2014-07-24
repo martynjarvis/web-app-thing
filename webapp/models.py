@@ -3,12 +3,11 @@ import evewallet.eveapi as eveapi
 
 from sqlalchemy.sql import exists
 import datetime
-import hashlib 
 
 BUY = 1
 SELL = 2
 
-APITYPES = {'Account':1, 'Character':2, 'Corporation':3}
+
 TRANSACTIONTYPE = {'buy':BUY, 'sell':SELL}
 MKTTRANSTYPE = {'b':BUY, 's':SELL}
 TRANSACTIONFOR = {'personal':1, 'corporation':2}
@@ -29,129 +28,61 @@ JITA = 30000142
 
 # class StaStations(db.Model):
     # __table__ = db.Table('stastations', db.metadata, autoload=True, autoload_with=db.engine)
-        
-
-# No multiple users like previously. This is only for me, and maybe people working on the same project as me. 		
-		
+                
 class User(db.Model):
     __tablename__ = 'User'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True)
     email = db.Column(db.String(120), unique=True)
     hash = db.Column(db.String(80))
-    
-    # apis = db.relationship("Api", backref="user")
 
-    def __init__(self, username, email, password):
+    def __init__(self, username, email, password_hash):
         self.username = username
         self.email = email           
-        self.hash = hashlib.sha1(password).hexdigest()
+        self.hash = password_hash
 
     def __repr__(self):
         return '<User %r>' % self.username
+       
+class Api(db.Model):
+    __tablename__ = 'Api'
+    id = db.Column(db.Integer, primary_key=True)
+    vcode = db.Column(db.String(80))
+    type = db.Column(db.Integer)
+    access_mask = db.Column(db.Integer)
+    expires = db.Column(db.DateTime)
+    type = db.Column(db.Integer)
     
-    @classmethod
-    def get(cls,id):  #TODO this is not needed (see sqlalchemy get method)
-        return db.session.query(User).filter(User.id==id).first()
+    character_id = db.Column(db.Integer, db.ForeignKey('Character.id'))
+    corporation_id = db.Column(db.Integer, db.ForeignKey('Corporation.id'))
 
-    @classmethod
-    def auth(cls,username,password):
-        hash = hashlib.sha1(password).hexdigest()
-        return db.session.query(User).filter(User.username==username).filter(User.hash==hash).first()
+    character = db.relationship("Character", backref="api_keys")
+    corporation = db.relationship("Corporation", backref="api_keys")
+    
+    def __init__(self,id,vCode):
+        self.id = int(id)
+        self.vCode = vCode
+             
+class Character(db.Model):
+    __tablename__ = 'Character'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), unique=True)
+    corporationID = db.Column(db.Integer)
+    corporationName = db.Column(db.String(80))
 
-# api_char = db.Table('api_char', db.metadata,
-    # db.Column('api_id', db.Integer, db.ForeignKey('Api.id')),
-    # db.Column('char_id', db.Integer, db.ForeignKey('Character.id'))
-# )
-   
-# class Api(db.Model):
-    # __tablename__ = 'Api'
-    # id = db.Column(db.Integer, primary_key=True)
-    # vCode = db.Column(db.String(80))
-    # type = db.Column(db.Integer)
-    # accessMask = db.Column(db.Integer)
-    # expires = db.Column(db.DateTime)
-    # userId = db.Column(db.Integer, db.ForeignKey('User.id'))
-    # corporationId = db.Column(db.Integer, db.ForeignKey('Corporation.id'))
+    def __init__(self,id,name):
+        self.id = int(id)
+        self.name = name    
     
-    # characters = db.relationship("Character", secondary=api_char, backref="apis")
-    # corporation = db.relationship("Corporation", backref="apis")
+class Corporation(db.Model):
+    __tablename__ = 'Corporation'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), unique=True)
+    ticker = db.Column(db.String(5), unique=True)
     
-    # def __init__(self,id,vCode,userId):
-        # self.id = int(id)
-        # self.vCode = vCode
-        # self.userId = int(userId)
-    
-    # def update(self):
-        # auth = eveapi.EVEAPIConnection().auth(keyID=self.id, vCode=self.vCode)
-        
-        # # fill api information
-        # try: 
-            # APIKeyInfo = auth.account.APIKeyInfo()
-        # except eveapi.Error, e:
-            # return 1
-        # except Exception, e:
-            # return 2
-        # self.type = APITYPES[APIKeyInfo.key.type]
-        # self.accessMask = int(APIKeyInfo.key.accessMask)
-        # try:
-            # self.expires = datetime.datetime.strptime(APIKeyInfo.key.expires,DTPATTERN)
-        # except ValueError:
-            # self.expires = None
-        
-        # #fill character information  #TODO could remove chars from corp apis
-        # self.characters=[]
-        # for row in APIKeyInfo.key.characters:
-            # character = db.session.query(Character).filter(Character.id==row.characterID).first()
-            # if character is None:
-                # character = Character(row.characterID,row.characterName)
-            # self.characters.append(character)  
-                
-        # #fill corporation information  
-        # if APIKeyInfo.key.type == 'Corporation':
-            # corporationSheet = auth.corp.CorporationSheet()    
-            # corporation = db.session.query(Corporation).filter(Corporation.id==corporationSheet.corporationID).first()
-            # if corporation is None:
-                # corporation = Corporation(corporationSheet.corporationID,corporationSheet.corporationName,corporationSheet.ticker)
-            # self.corporation = corporation
-        # return 0
-         
-# class Character(db.Model):
-    # __tablename__ = 'Character'
-    # id = db.Column(db.Integer, primary_key=True)
-    # name = db.Column(db.String(80), unique=True)
-    # corporationID = db.Column(db.Integer)
-    # corporationName = db.Column(db.String(80))
-    # balance = db.Column(db.Float)
-    
-    # transactions = db.relationship("Transaction", backref="character")
-    # orders = db.relationship("Order", backref="character")
-    # assets = db.relationship("Asset", backref="character")
-    
-    # def __init__(self,id,name):
-        # self.id = int(id)
-        # self.name = name    
-        
-    # def update(self):
-        # CharacterInfo = eveapi.EVEAPIConnection().eve.CharacterInfo(characterID=self.id)
-        # self.name = CharacterInfo.characterName
-        
-# class Corporation(db.Model):
-    # __tablename__ = 'Corporation'
-    # id = db.Column(db.Integer, primary_key=True)
-    # name = db.Column(db.String(80), unique=True)
-    # ticker = db.Column(db.String(5), unique=True)
-    # balance = db.Column(db.Float)
-    
-    # transactions = db.relationship("Transaction", backref="corporation")
-    # orders = db.relationship("Order", backref="corporation")
-    # assets = db.relationship("Asset", backref="corporation")
-    
-    # def __init__(self,id,name,ticker):
-        # self.id = int(id)
-        # self.name = name
-        # self.ticker = ticker
-
+    def __init__(self,id,name):
+        self.id = int(id)
+        self.name = name
 
 # class Cache(db.Model): # keeps track of what needs to be updated
     # __tablename__ = 'Cache'

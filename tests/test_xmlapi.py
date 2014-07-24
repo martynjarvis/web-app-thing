@@ -100,7 +100,7 @@ class API(base.BaseTest):
             self.assertTrue(CORP_API_ID in rv.data)
             self.assertTrue(CORP_API_VCODE in rv.data)
         
-            rv = c.get('/corporation')
+            rv = c.get('/corporations')
             self.assertTrue(CORP_API_CORPORATION_NAME in rv.data)
             
     # def test_delete_api(self):

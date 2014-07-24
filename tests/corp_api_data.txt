@@ -1,0 +1,11 @@
+<eveapi version="2">
+<currentTime>2014-07-24 23:01:51</currentTime>
+<result>
+<key accessMask="67108863" type="Corporation" expires="2015-07-23 21:39:27">
+<rowset name="characters" key="characterID" columns="characterID,characterName,corporationID,corporationName,allianceID,allianceName,factionID,factionName">
+<row characterID="90817766" characterName="scruff decima" corporationID="98280334" corporationName="Large Collidable Object." allianceID="0" allianceName="" factionID="0" factionName=""/>
+</rowset>
+</key>
+</result>
+<cachedUntil>2014-07-24 23:06:51</cachedUntil>
+</eveapi>

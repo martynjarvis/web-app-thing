@@ -59,9 +59,9 @@ class Api(db.Model):
     character = db.relationship("Character", backref="api_keys")
     corporation = db.relationship("Corporation", backref="api_keys")
     
-    def __init__(self,id,vCode):
+    def __init__(self,id,vcode):
         self.id = int(id)
-        self.vCode = vCode
+        self.vcode = vcode
              
 class Character(db.Model):
     __tablename__ = 'Character'

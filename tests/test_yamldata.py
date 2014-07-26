@@ -2,8 +2,8 @@ import base
 from evewallet.webapp import yamldata, db, models
 
 # load test data
-yamldata.TYPE_ID_FILE = '../data/typeIDs_debug.yaml'
-yamldata.BLUEPRINT_FILE = '../data/blueprints_debug.yaml'
+yamldata.TYPE_ID_FILE = '../test/typeIDs_debug.yaml'
+yamldata.BLUEPRINT_FILE = '../test/blueprints_debug.yaml'
 
 TYPEID = 38
 BLUEPRINT_ID = 681

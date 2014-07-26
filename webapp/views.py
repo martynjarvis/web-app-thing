@@ -1,6 +1,6 @@
 from flask import render_template, flash, url_for, redirect, request
 
-from evewallet.webapp import app, decorators, auth, xmlapi
+from evewallet.webapp import app, decorators, auth, xmlapi, project
 
 @app.route('/logout')
 def logout():
@@ -34,8 +34,6 @@ def register():
 @app.route('/')
 def index():
     ''' Standard home page '''
-    #if 'user' in session:
-    #    return redirect(url_for('overview'))
     return render_template('index.html', title="Home")
 
 @app.route('/api')
@@ -56,6 +54,14 @@ def api_add():
         else:
             flash('API Error','error')
     return render_template('api_add.html')
+    
+@app.route('/api_delete/<api_id>')
+@decorators.login_required
+def api_delete(api_id):
+    ''' removes an API from the db'''
+    if xmlapi.delete_api(api_id) is None:
+        flash('API Error','error')
+    return redirect(url_for('apis'))
    
 @app.route('/characters')
 @decorators.login_required
@@ -71,18 +77,42 @@ def corporations():
     corps = xmlapi.all_corporations()
     return render_template('corporations.html', title="corporations", data=corps)  
 
+        
+@app.route('/project')
+@decorators.login_required
+def projects():
+    ''' List of Projectss '''
+    api_keys = project.all_projects()
+    return render_template('project.html', title="Projects", data=api_keys)
+    
+@app.route('/project_add', methods=['GET', 'POST'])
+@decorators.login_required
+def project_add():
+    ''' Adds a Project to the db'''
+    if request.method == 'POST':
+        prj = project.add_project(request.form['output_id'], request.form['output_quantity'])
+        if prj is not None:
+            return redirect(url_for('projects'))
+        else:
+            flash('Project Error','error')
+    return render_template('project_add.html')
+    
+@app.route('/project_delete/<project_id>')
+@decorators.login_required
+def project_delete(project_id):
+    ''' removes a Project from the db'''
+    if project.delete_project(project_id) is None:
+        flash('Project Error','error')
+    return redirect(url_for('projects'))
+    
+   
+    
 # @app.route('/api_refresh/<apiKey>')
 # @decorators.login_required
 # def api_refresh(apiKey):
     # ''' Refreshes an existing API to the db and adds new characters '''
-    # api = ndb.Key(urlsafe=apiKey).get()
-    # if api:
-        # auth = EVEAPIConnection().auth(keyID=api.keyID, vCode=api.vCode)
-        # a = update_char_from_api(auth)
-    # else :
-        # flash('API related error','error')
-    # return redirect(url_for('api'))
-        
+
+    
 # # @app.route('/overview')
 # # @login_required
 # # def overview():
@@ -168,10 +198,6 @@ def corporations():
         # .limit(10)
    
     # return render_template('import.html', title="Import", data=data, cost=cost)
-    
-    
-    
-    
     
 # # @trust_required
 # # @app.route('/list', methods=['GET', 'POST'])

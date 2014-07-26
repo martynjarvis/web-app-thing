@@ -1,0 +1,36 @@
+681:
+  activities:
+    1:
+      materials:
+        38:
+          quantity: 86
+      products:
+        165:
+          quantity: 1
+      time: 600
+    3:
+      time: 210
+    4:
+      time: 210
+    5:
+      time: 480
+  blueprintTypeID: 681
+  maxProductionLimit: 300
+682:
+  activities:
+    1:
+      materials:
+        38:
+          quantity: 133
+      products:
+        166:
+          quantity: 1
+      time: 600
+    3:
+      time: 210
+    4:
+      time: 210
+    5:
+      time: 480
+  blueprintTypeID: 682
+  maxProductionLimit: 300

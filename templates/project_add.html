@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row-fluid">
+        <div class="span4">
+            <form method="post" action="/project_add" class="form-horizontal">
+              <div class="control-group">
+                <label class="control-label" for="inputUsername">Item ID</label>
+                <div class="controls">
+                  <input type="text" name="output_id" placeholder="ID">
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="control-label" for="inputPassword">Quant</label>
+                <div class="controls">
+                  <input type="text" name="output_quantity" placeholder="VCode">
+                </div>
+              </div>
+              <div class="control-group">
+                <div class="controls">
+                    <button type="submit" class="btn">Add</button>
+                </div>
+              </div>
+            </form>
+        </div><!--/span-->
+    </div><!--/row-->
+{% endblock %}
+

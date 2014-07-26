@@ -1,12 +1,10 @@
 from evewallet.webapp import db
-import evewallet.eveapi as eveapi
 
-from sqlalchemy.sql import exists
+#from sqlalchemy.sql import exists
 import datetime
 
 BUY = 1
 SELL = 2
-
 
 TRANSACTIONTYPE = {'buy':BUY, 'sell':SELL}
 MKTTRANSTYPE = {'b':BUY, 's':SELL}
@@ -14,32 +12,62 @@ TRANSACTIONFOR = {'personal':1, 'corporation':2}
 DTPATTERN = '%Y-%m-%d %H:%M:%S'
 JITA = 30000142
 
-# class InvTypes(db.Model):
-    # __table__ = db.Table('invtypes', db.metadata, autoload=True, autoload_with=db.engine)
-    # @classmethod
-    # def getByID(cls,id): #TODO this is not needed (see sqlalchemy get method)
-        # return db.session.query(InvTypes).filter(InvTypes.typeID==id).first()
-        
-# class MapSolarSystems(db.Model):
-    # __table__ = db.Table('mapsolarsystems', db.metadata, autoload=True, autoload_with=db.engine)
-    
-# class MapRegions(db.Model):
-    # __table__ = db.Table('mapregions', db.metadata, autoload=True, autoload_with=db.engine)
+# Eve data
+class TypeID(db.Model):
+    __tablename__ = 'TypeID'
+    id = db.Column(db.Integer, primary_key=True)
+    graphic_id = db.Column(db.Integer)
+    radius = db.Column(db.Float)
+    sound_id = db.Column(db.Integer)
+    icon_id = db.Column(db.Integer)
+    faction_id = db.Column(db.Integer)
+    volume = db.Column(db.Float)# I need to hack this in
+    name = db.Column(db.String(80))# I need to hack this in
 
-# class StaStations(db.Model):
-    # __table__ = db.Table('stastations', db.metadata, autoload=True, autoload_with=db.engine)
-                
+class Blueprint(db.Model):
+    __tablename__ = 'Blueprint'
+    id = db.Column(db.Integer, primary_key=True)
+    production_limit = db.Column(db.Integer, nullable=False)
+        
+class Activity(db.Model):  
+    __tablename__ = 'Activity'
+    id = db.Column(db.Integer, primary_key=True)
+    blueprint_id = db.Column(db.Integer, db.ForeignKey('Blueprint.id'), nullable=False)
+    type = db.Column(db.Integer, nullable=False)
+    time = db.Column(db.Integer, nullable=False)
+    
+    blueprint = db.relationship("Blueprint", backref="activities")
+        
+class Material(db.Model):  
+    __tablename__ = 'Material'
+    id = db.Column(db.Integer, primary_key=True)
+    activity_id = db.Column(db.Integer, db.ForeignKey('Activity.id'), nullable=False)
+    type_id = db.Column(db.Integer, db.ForeignKey('TypeID.id'), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+    consume = db.Column(db.Boolean, nullable=False)
+    
+    activity = db.relationship("Activity", backref="materials")
+    type = db.relationship("TypeID")
+            
+class Product(db.Model):  
+    __tablename__ = 'Product'
+    id = db.Column(db.Integer, primary_key=True)
+    activity_id = db.Column(db.Integer, db.ForeignKey('Activity.id'), nullable=False)
+    type_id = db.Column(db.Integer, db.ForeignKey('TypeID.id'), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+    probability = db.Column(db.Float)
+    
+    activity = db.relationship("Activity", backref="products")
+    type = db.relationship("TypeID")
+    
+# My data
+    
 class User(db.Model):
     __tablename__ = 'User'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True)
     email = db.Column(db.String(120), unique=True)
     hash = db.Column(db.String(80))
-
-    def __init__(self, username, email, password_hash):
-        self.username = username
-        self.email = email           
-        self.hash = password_hash
 
     def __repr__(self):
         return '<User %r>' % self.username
@@ -59,20 +87,12 @@ class Api(db.Model):
     character = db.relationship("Character", backref="api_keys")
     corporation = db.relationship("Corporation", backref="api_keys")
     
-    def __init__(self,id,vcode):
-        self.id = int(id)
-        self.vcode = vcode
-             
 class Character(db.Model):
     __tablename__ = 'Character'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True)
     corporationID = db.Column(db.Integer)
     corporationName = db.Column(db.String(80))
-
-    def __init__(self,id,name):
-        self.id = int(id)
-        self.name = name    
     
 class Corporation(db.Model):
     __tablename__ = 'Corporation'
@@ -80,10 +100,17 @@ class Corporation(db.Model):
     name = db.Column(db.String(80), unique=True)
     ticker = db.Column(db.String(5), unique=True)
     
-    def __init__(self,id,name):
-        self.id = int(id)
-        self.name = name
+class Project(db.Model):
+    __tablename__ = 'Project'
+    id = db.Column(db.Integer, primary_key=True)
+    output_id = db.Column(db.Integer, db.ForeignKey('TypeID.id'), nullable=False)
+    output_quantity = db.Column(db.Integer)
+    parent_id = db.Column(db.Integer, db.ForeignKey('Project.id'))
+      
+    output = db.relationship("TypeID")
+    parent = db.relationship("Project", remote_side=[id], backref="children")
 
+        
 # class Cache(db.Model): # keeps track of what needs to be updated
     # __tablename__ = 'Cache'
     # key = db.Column(db.String(80), primary_key=True)

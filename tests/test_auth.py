@@ -68,8 +68,6 @@ class Authentication(base.BaseTest):
                         follow_redirects=True)
             self.assertNotEqual(session.get('user',None),None)
     
-    
-        
     def test_create_duplicate_user(self):
         with app.test_client() as c:
             rv = self.create_user(c)
@@ -85,5 +83,3 @@ class Authentication(base.BaseTest):
             self.assertEqual(session.get('user',None),None)
             self.assertTrue('Username already in use' in rv.data)
             self.assertFalse('Passwords do not match' in rv.data)
-            
-    

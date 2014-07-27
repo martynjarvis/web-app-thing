@@ -1,36 +1,229 @@
-681:
+941:
   activities:
     1:
       materials:
+        34:
+          quantity: 13333
+        35:
+          quantity: 11111
+        36:
+          quantity: 4000
+        37:
+          quantity: 33
         38:
-          quantity: 86
+          quantity: 17
+        39:
+          quantity: 6
       products:
-        165:
+        594:
           quantity: 1
-      time: 600
+      skills:
+        3380:
+          level: 1
+      time: 6000
     3:
-      time: 210
+      time: 2100
     4:
-      time: 210
+      time: 2100
     5:
-      time: 480
-  blueprintTypeID: 681
-  maxProductionLimit: 300
-682:
+      time: 4800
+    8:
+      materials:
+        20410:
+          quantity: 2
+        20424:
+          quantity: 2
+        25855:
+          consume: false
+          quantity: 1
+      products:
+        12043:
+          probability: 0.3
+          quantity: 1
+        12045:
+          probability: 0.3
+          quantity: 1
+      skills:
+        11450:
+          level: 1
+        11452:
+          level: 1
+        23121:
+          level: 1
+      time: 63900
+  blueprintTypeID: 941
+  maxProductionLimit: 30
+12043:
   activities:
     1:
       materials:
-        38:
-          quantity: 133
-      products:
-        166:
+        40:
+          quantity: 6
+        594:
           quantity: 1
-      time: 600
+        3828:
+          quantity: 38
+        11399:
+          quantity: 45
+        11478:
+          quantity: 6
+        11531:
+          quantity: 30
+        11535:
+          quantity: 30
+        11541:
+          quantity: 135
+        11545:
+          quantity: 900
+        11547:
+          quantity: 8
+        11553:
+          quantity: 90
+        11556:
+          quantity: 30
+      products:
+        12042:
+          quantity: 1
+      skills:
+        3380:
+          level: 5
+        3395:
+          level: 5
+        11450:
+          level: 1
+        11452:
+          level: 1
+      time: 120000
     3:
-      time: 210
+      materials:
+        3814:
+          quantity: 16
+        9836:
+          quantity: 8
+        11466:
+          quantity: 2
+      skills:
+        3403:
+          level: 5
+        11450:
+          level: 3
+        11452:
+          level: 3
+      time: 42000
     4:
-      time: 210
+      materials:
+        3814:
+          quantity: 16
+        9836:
+          quantity: 8
+        11466:
+          quantity: 2
+      skills:
+        3409:
+          level: 5
+        11450:
+          level: 2
+        11452:
+          level: 2
+      time: 42000
     5:
-      time: 480
-  blueprintTypeID: 682
-  maxProductionLimit: 300
+      materials:
+        3812:
+          quantity: 80
+        11466:
+          quantity: 4
+      skills:
+        11450:
+          level: 3
+        11452:
+          level: 3
+      time: 96000
+  blueprintTypeID: 12043
+  maxProductionLimit: 1
+12045:
+  activities:
+    1:
+      materials:
+        40:
+          quantity: 4
+        594:
+          quantity: 1
+        3828:
+          quantity: 38
+        11399:
+          quantity: 45
+        11478:
+          quantity: 6
+        11531:
+          quantity: 23
+        11535:
+          quantity: 30
+        11541:
+          quantity: 135
+        11545:
+          quantity: 750
+        11547:
+          quantity: 8
+        11553:
+          quantity: 90
+        11556:
+          quantity: 30
+      products:
+        12044:
+          quantity: 1
+      skills:
+        3380:
+          level: 5
+        3395:
+          level: 5
+        11450:
+          level: 1
+        11452:
+          level: 1
+      time: 120000
+    3:
+      materials:
+        3814:
+          quantity: 16
+        9836:
+          quantity: 8
+        11465:
+          quantity: 2
+      skills:
+        3403:
+          level: 5
+        11450:
+          level: 3
+        11452:
+          level: 3
+      time: 42000
+    4:
+      materials:
+        3814:
+          quantity: 16
+        9836:
+          quantity: 8
+        11465:
+          quantity: 2
+      skills:
+        3409:
+          level: 5
+        11450:
+          level: 2
+        11452:
+          level: 2
+      time: 42000
+    5:
+      materials:
+        3812:
+          quantity: 80
+        11465:
+          quantity: 4
+      skills:
+        11450:
+          level: 3
+        11452:
+          level: 3
+      time: 96000
+  blueprintTypeID: 12045
+  maxProductionLimit: 1

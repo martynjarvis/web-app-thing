@@ -1,14 +1,22 @@
 from flask import session
 import mock
 import base
-from evewallet.webapp import project, db, app
+from evewallet.webapp import yamldata, project, db, app
 
-OUTPUT_ID = 12345
-OUTPUT_QUANT = 500
+OUTPUT_ID = base.TYPEID
+OUTPUT_T2_ID = 12044  # enyo
+OUTPUT_QUANT = 50
+
+from evewallet.webapp import yamldata, db, models
+
+# load test data
+yamldata.TYPE_ID_FILE = '../tests/typeIDs_debug.yaml'
+yamldata.BLUEPRINT_FILE = '../tests/blueprints_debug.yaml'
 
 class Project(base.BaseTest):
     def setUp(self):
         db.create_all()
+        self.load_yaml_data()
 
     def tearDown(self):
         db.session.rollback()
@@ -40,4 +48,32 @@ class Project(base.BaseTest):
             self.assertFalse(str(OUTPUT_ID) in rv.data)
             projects = project.all_projects()
             self.assertEqual(len(projects), 0)
-         
+
+    def test_t2_project(self): 
+        with app.test_client() as c:
+            rv = self.create_user(c)
+    
+            # add t2 project
+            rv = c.post('/project_add', 
+                        data=dict(output_id=OUTPUT_T2_ID,
+                                  output_quantity=OUTPUT_QUANT),
+                        follow_redirects=True)
+            projects = project.all_projects()
+            self.assertEqual(len(projects), 1)
+            project_id = projects[0].id
+            
+            # Test data only has:
+            #   T2 manafacturing
+            #   Invention
+            #   T1 manafacturing
+            
+            tasks = project.tasks(project_id)
+            self.assertEqual(len(tasks), 3)
+            
+            rv = c.get('/project_view/{}'.format(project_id))
+            for task in tasks:
+                self.assertTrue(str(task.output_id) in rv.data)
+            
+
+            
+    

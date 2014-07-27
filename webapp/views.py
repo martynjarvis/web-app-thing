@@ -82,8 +82,8 @@ def corporations():
 @decorators.login_required
 def projects():
     ''' List of Projectss '''
-    api_keys = project.all_projects()
-    return render_template('project.html', title="Projects", data=api_keys)
+    project_list = project.all_projects()
+    return render_template('project.html', title="Projects", data=project_list)
     
 @app.route('/project_add', methods=['GET', 'POST'])
 @decorators.login_required
@@ -105,7 +105,14 @@ def project_delete(project_id):
         flash('Project Error','error')
     return redirect(url_for('projects'))
     
-   
+@app.route('/project_view/<project_id>')
+@decorators.login_required
+def project_view(project_id):
+    ''' List of Projectss '''
+    tasks = project.tasks(project_id)
+    return render_template('project_view.html', title="Projects", data=tasks)
+    
+    
     
 # @app.route('/api_refresh/<apiKey>')
 # @decorators.login_required

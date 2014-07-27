@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row">
+        <div class="span8 offset2">
+            <div class="page-header">
+              <h1>API <small> Projects: </small></h1>
+            </div>          
+
+            <table class="table">
+                <thead>
+                    <th scope="col">ID</th>
+                    <th scope="col">Output</th>
+                    <th scope="col">Quantity</th>
+                </thead>
+                <tbody>
+                    {% for task in data %}  
+                        <tr> 
+                        <td>{{task.id}}</td> 
+                        <td>{{task.output_id}}</td> 
+                        <td>{{task.output_quantity}}</td> 
+                        </tr> 
+                    {% endfor %} 
+                <tbody>
+            </table>
+        </div><!--/span-->
+        <div class="span2 offset9">
+            <a href="/project_add" class="btn btn-primary">New</a>
+        </div><!--/span-->
+    </div><!--/row-->
+{% endblock %}
+

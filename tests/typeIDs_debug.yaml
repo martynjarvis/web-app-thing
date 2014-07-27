@@ -1,6 +1,262 @@
+34:
+    iconID: 22
+35:
+    iconID: 400
+36:
+    iconID: 401
+37:
+    iconID: 402
 38:
     iconID: 1201
-165:
-    iconID: 34
-166:
-    iconID: 34
+39:
+    iconID: 404
+40:
+    iconID: 405
+594:
+    factionID: 500004
+    graphicID: 61
+    masteries:
+        0:
+        - 96
+        - 99
+        - 140
+        - 67
+        - 150
+        - 89
+        - 94
+        1:
+        - 96
+        - 99
+        - 140
+        - 67
+        - 150
+        - 89
+        - 94
+        2:
+        - 96
+        - 99
+        - 140
+        - 67
+        - 150
+        - 89
+        - 94
+        3:
+        - 96
+        - 99
+        - 140
+        - 67
+        - 150
+        - 89
+        - 94
+        4:
+        - 96
+        - 99
+        - 140
+        - 67
+        - 117
+        - 150
+        - 89
+        - 94
+    radius: 41.0
+    soundID: 20074
+    traits:
+        3328:
+            1:
+                bonus: 7.5
+                bonusText: bonus to <a href=showinfo:3393>Armor Repairer</a> amount
+                unitID: 105
+            2:
+                bonus: 5
+                bonusText: bonus to <a href=showinfo:3301>Small Hybrid Turret</a>
+                    damage
+                unitID: 105
+3812:
+    iconID: 1192
+3814:
+    iconID: 1192
+3828:
+    iconID: 26
+9836:
+    iconID: 1362
+11399:
+    iconID: 2103
+11465:
+    iconID: 2225
+11466:
+    iconID: 2225
+11478:
+    iconID: 2226
+11531:
+    iconID: 2178
+11535:
+    iconID: 2182
+11541:
+    iconID: 2186
+11545:
+    iconID: 2190
+11547:
+    iconID: 2194
+11553:
+    iconID: 2198
+11556:
+    iconID: 2202
+12042:
+    factionID: 500004
+    graphicID: 1840
+    masteries:
+        0:
+        - 96
+        - 67
+        - 164
+        - 140
+        - 99
+        - 150
+        - 89
+        - 94
+        1:
+        - 96
+        - 67
+        - 164
+        - 140
+        - 99
+        - 150
+        - 89
+        - 94
+        2:
+        - 96
+        - 67
+        - 164
+        - 140
+        - 99
+        - 150
+        - 89
+        - 94
+        3:
+        - 96
+        - 67
+        - 164
+        - 140
+        - 99
+        - 150
+        - 89
+        - 94
+        4:
+        - 96
+        - 67
+        - 164
+        - 140
+        - 99
+        - 117
+        - 150
+        - 89
+        - 94
+    radius: 39.0
+    soundID: 20074
+    traits:
+        -1:
+            1:
+                bonus: 50
+                bonusText: reduction in <a href=showinfo:3454>Microwarpdrive</a> signature
+                    radius penalty
+                unitID: 105
+        3328:
+            1:
+                bonus: 5
+                bonusText: bonus to <a href=showinfo:3301>Small Hybrid Turret</a>
+                    damage
+                unitID: 105
+            2:
+                bonus: 10
+                bonusText: bonus to <a href=showinfo:3436>Drone</a> hitpoints
+                unitID: 105
+        12095:
+            1:
+                bonus: 10
+                bonusText: bonus to <a href=showinfo:3301>Small Hybrid Turret</a>
+                    optimal range
+                unitID: 105
+            2:
+                bonus: 5
+                bonusText: bonus to ship drone bay capacity
+                unitID: 9
+12043:
+    graphicID: 1066
+12044:
+    factionID: 500004
+    graphicID: 1771
+    masteries:
+        0:
+        - 96
+        - 99
+        - 140
+        - 67
+        - 150
+        - 89
+        - 94
+        1:
+        - 96
+        - 99
+        - 140
+        - 67
+        - 150
+        - 89
+        - 94
+        2:
+        - 96
+        - 99
+        - 140
+        - 67
+        - 150
+        - 89
+        - 94
+        3:
+        - 96
+        - 99
+        - 140
+        - 67
+        - 150
+        - 89
+        - 94
+        4:
+        - 96
+        - 99
+        - 140
+        - 67
+        - 117
+        - 150
+        - 89
+        - 94
+    radius: 39.0
+    soundID: 20074
+    traits:
+        -1:
+            1:
+                bonus: 50
+                bonusText: reduction in <a href=showinfo:3454>Microwarpdrive</a> signature
+                    radius penalty
+                unitID: 105
+        3328:
+            1:
+                bonus: 10
+                bonusText: bonus to <a href=showinfo:3301>Small Hybrid Turret</a>
+                    damage
+                unitID: 105
+        12095:
+            1:
+                bonus: 10
+                bonusText: bonus to <a href=showinfo:3301>Small Hybrid Turret</a>
+                    optimal range
+                unitID: 105
+            2:
+                bonus: 7.5
+                bonusText: bonus to <a href=showinfo:3301>Small Hybrid Turret</a>
+                    tracking speed
+                unitID: 105
+12045:
+    graphicID: 1066
+20410:
+    iconID: 3231
+20424:
+    iconID: 3232
+25855:
+    iconID: 3186    

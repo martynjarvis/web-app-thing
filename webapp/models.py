@@ -105,12 +105,24 @@ class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     output_id = db.Column(db.Integer, db.ForeignKey('TypeID.id'), nullable=False)
     output_quantity = db.Column(db.Integer)
-    parent_id = db.Column(db.Integer, db.ForeignKey('Project.id'))
-      
-    output = db.relationship("TypeID")
-    parent = db.relationship("Project", remote_side=[id], backref="children")
 
-        
+    output = db.relationship("TypeID")
+    tasks = db.relationship("Task", cascade="all,delete", backref="tasks")
+    
+class Task(db.Model):
+    __tablename__ = 'Task'
+    id = db.Column(db.Integer, primary_key=True)
+    activity_id = db.Column(db.Integer, db.ForeignKey('Activity.id'), nullable=False)
+    output_id = db.Column(db.Integer, db.ForeignKey('TypeID.id'), nullable=False)
+    project_id = db.Column(db.Integer, db.ForeignKey('Project.id'), nullable=False)
+    parent_task_id = db.Column(db.Integer, db.ForeignKey('Task.id'))
+    state = db.Column(db.Integer)
+    output_quantity = db.Column(db.Integer)
+
+    activity = db.relationship("Activity")
+    output = db.relationship("TypeID")
+    parent = db.relationship("Task", remote_side=[id], backref="children")
+
 # class Cache(db.Model): # keeps track of what needs to be updated
     # __tablename__ = 'Cache'
     # key = db.Column(db.String(80), primary_key=True)

@@ -39,15 +39,15 @@
 
 {% block content %}
     <div class="row">
-        <div class="span12">
+      <div class="col-md-12">
             <div class="page-header">
                 <h1>Update Market Orders <small>{{import_cost}} isk/m3</small></h1>
             </div>
-        </div><!--/span--> 
+        </div><!--/col-md--> 
     </div><!--/row-->   
 
     <div class="row-fluid">
-        <div class="span4">
+      <div class="col-md-12">
             <button class="btn btn-primary" id="scan-button" onclick="next();">Next Item</button>
             : Scanned <strong id="scan-done">0</strong> of <strong id="scan-total"></strong>
             <h3 id="name"><small></small></h3>
@@ -60,7 +60,7 @@
                 </tbody>
             </table>
 
-        </div><!--/span--> 
+        </div><!--/col-md--> 
     </div><!--/row-->   
 {% endblock %}
 

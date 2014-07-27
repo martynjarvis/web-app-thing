@@ -1,27 +1,25 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class="row-fluid">
-        <div class="span4">
-            <form method="post" action="/project_add" class="form-horizontal">
-              <div class="control-group">
-                <label class="control-label" for="inputUsername">Item ID</label>
-                <div class="controls">
-                  <input type="text" name="output_id" placeholder="ID">
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-horizontal" role="form" method="post" action="/project_add">
+                <div class="form-group">
+                    <label for="output_id" class="col-md-3 control-label">Item ID</label>
+                    <div class="col-md-7">
+                        <input type="text" class="form-control"  name="output_id" id="output_id" placeholder="Item ID">
+                    </div>
                 </div>
-              </div>
-              <div class="control-group">
-                <label class="control-label" for="inputPassword">Quant</label>
-                <div class="controls">
-                  <input type="text" name="output_quantity" placeholder="VCode">
+                <div class="form-group">
+                    <label for="output_quantity" class="col-md-3 control-label">Quantity</label>
+                    <div class="col-md-7">
+                        <input type="text" class="form-control"  name="output_quantity" id="output_quantity" placeholder="Quantity">
+                    </div>
                 </div>
-              </div>
-              <div class="control-group">
-                <div class="controls">
-                    <button type="submit" class="btn">Add</button>
+                <div class="col-md-1 col-md-offset-9">
+                    <button type="submit" class="btn btn-default">Submit</button>
                 </div>
-              </div>
             </form>
-        </div><!--/span-->
+        </div><!--/col-md-->
     </div><!--/row-->
 {% endblock %}
 

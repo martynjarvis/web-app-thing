@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class="row-fluid">
-        <div class="span4">
+    <div class="row">
+      <div class="col-md-12">
   
             <form method="post" action="/list" class="form-horizontal">
                 {% if error %}
@@ -10,19 +10,19 @@
                       <strong>Error!</strong> {{ error }}
                     </div>
                 {% endif %}
-              <div class="control-group">
+              <div class="form-group">
                 <label class="control-label" for="inputCost">Shipping</label>
                 <div class="controls">
                   <input type="text" name="cost" value="400">
                 </div>
               </div>
-              <div class="control-group">
+              <div class="form-group">
                 <label class="control-label" for="inputStuff">Paste: </label>
                 <div class="controls">
                   <textarea name="stuff" rows="10"></textarea>
                 </div>
               </div>
-              <div class="control-group">
+              <div class="form-group">
                 <div class="controls">
 
                     <button type="submit" class="btn">Go</button>
@@ -30,7 +30,7 @@
               </div>
             </form>
 
-        </div><!--/span-->
+        </div><!--/col-md-12-->
     </div><!--/row-->
 {% endblock %}
 

@@ -12,18 +12,15 @@
 
 {% block content %}
     <div class="row">
-        <div class="span4">
+        <div class="col-md-12">
             <div class="page-header">
                 <h1>Request Trust<small></small></h1>
             </div>
-        </div><!--/span--> 
-    </div><!--/row-->   
-
-    <div class="row-fluid">
-        <div class="span4">
+        </div><!--/col-md--> 
+        <div class="col-md-1 col-md-offset-9">
             <button class="btn btn-primary" onclick="trust();">Request Trust</button>
             <a href="{{url_for(redirect)}}" class="btn">Continue</a>
-        </div><!--/span--> 
+        </div><!--/col-md--> 
     </div><!--/row-->   
 {% endblock %}
 

@@ -1,225 +1,127 @@
-<!doctype html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
     <meta charset="utf-8">
-    <title>EvE Wallet - {{ title }}</title>  
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
+    <link rel="icon" href="/static/favicon.ico">
     <script type='text/javascript' src='http://code.jquery.com/jquery-1.7.1.js'></script>
+    
+    <title>EVE Thing - {{ title }}</title>  
 
-    <!-- Le styles -->
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-    </style>
-    
+    <!-- Bootstrap core CSS -->
     <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet">
-    <link href="/static/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
     
-    <style type="text/css">
-      th.ral ,
-      td.ral {
-        text-align: right;
-      }
-    </style>
+    <!-- Custom styles for this template -->
+    <!--<link href="starter-template.css" rel="stylesheet">-->
+    
     {% block extra_head %}{% endblock %}
     
-    <script type='text/javascript'>
-      $(window).load(function(){
-        $('.dropdown-toggle').dropdown();
-        
-        var item_data = {};
-        var item_names = [];    
-
-        $('#searchinput').typeahead({
-        source:function ( query, process ) {
-            //the "process" argument is a callback, expecting an array of values (strings) to display
-
-            //get the data to populate the typeahead (plus some) 
-            //from your api, wherever that may be
-            $.getJSON( '{{url_for("typeahead_data")}}', { q: $("#searchinput").val() }, function ( data ) {   
-                //reset these containers
-                item_data = {};
-                item_names = [];
-
-                for (var i = 0; i <data.result.length; i++) {                
-                    //console.debug(data.result[i])
-               
-                    //add the label to the display array
-                    item_names.push( data.result[i][1] );
-
-                    //also store a mapping to get from label back to ID
-                    item_data[ data.result[i][1] ] = data.result[i][0];
-                    $( "#debug" ).text( data.result[i][1]);
-                };
-                //return the display array
-                process( item_names );
-            });
-            
-        }
-        , updater: function (item) {
-            //save the id value into the hidden field   
-            $( "#searchid" ).val( item_data[ item ] );
-            document.forms["searchform"].submit();
-            return item;
-        }
-        });
-    });
-    </script>
-</head>
-
-<body>
-<div class="navbar navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container">
-
-            <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
-            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </a>
-
-            <!-- Be sure to leave the brand out there if you want it shown -->
-            <a class="brand" href="#">Project name</a>
-
-            <!-- Everything you want hidden at 940px or less, place within here -->
-            <div class="nav-collapse">
-
-                {% if session.user  %}
-                <ul class="nav pull-left">
-                    <li><a href="/overview">Overview</a></li>
-                    <li><a href="/orders">Orders</a></li>
-                    <li><a href="/transactions">Transactions</a></li>
-                    <li><a href="/assets">Assets</a></li>
-                    <!--<li><a href="/market">Market</a></li>-->
-                    <li class="dropdown" id="tools-menu">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#tools-menu"> Tools <b class="caret"></b> </a>
-                        <ul class="dropdown-menu">
-                             <!--<li class="divider"></li>-->
-                            <li><a href="/update">Order Updater</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                {% endif %}
-                <ul class="nav pull-right">
-                    {% if not session.user  %}
-                    <li><a href="/login">Login</a></li>
-                    {% else %}   
-                    
-                    <form class="navbar-search pull-left" id='searchform' method="post" action="/search">
-                        <i class="icon-search"></i>               
-                           <input type="hidden" 
-                           name="search_id"
-                           id="searchid"
-                           class="search-query"
-                           value="-1"
-                           />
-                        <input type="text" 
-                           name="search_term"
-                           id="searchinput"
-                           class="search-query" 
-                           placeholder="Item..." 
-                           data-provide="typeahead"
-                           autocomplete="off"
-                           /> 
-                    </form>
-                    <li class="divider-vertical"></li>
-                    <li class="dropdown" id="user-menu">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#user-menu">
-                            <i class="icon-user"></i>
-                            {{ session.user }} 
-                            <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="/characters">Characters</a></li>
-                            <li><a href="/corporations">Corporations</a></li>
-                            <li><a href="/api">API</a></li>
-                            <li class="divider"></li>
-                            <li><a href="/logout">Logout</a></li>
-                        </ul>
-                    </li>
-                    {% endif %}
-                </ul>
-    
-            </div><!--/.nav-collapse -->
-      
+  </head>
+  <body>
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">EVE</a>
         </div>
- 
-    </div>
-  </div>
-</div>
 
-{% for message in get_flashed_messages(category_filter=["error"]) %}
-   <div class="alert alert-error">
-     <button type="button" class="close" data-dismiss="alert">x</button>
-     <strong>Error:</strong> {{ message }}
-   </div>
-{% endfor %}
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            <li><a href="/overview"><span class="glyphicon glyphicon-stats"></span> Overview</a></li>
+            <li><a href="/projects"><span class="glyphicon glyphicon-tasks"></span> Projects</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-usd"></span> Market<span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                 <li><a href="/market">Orders</a></li>
+                 <li><a href="/market">Transactions</a></li>
+                <li class="divider"></li>
+                <li><a href="/update">Order Updater</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-wrench"></span> Industry<span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="/market">Jobs</a></li>
+              </ul>
+            </li>
+            <li><a href="/assets"><span class="glyphicon glyphicon-book"></span> Inventory</a></li>
+          </ul>
+          <form class="navbar-form navbar-left" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+          <ul class="nav navbar-nav navbar-right">
+            {% if not session.user  %}
+            <li><a href="/login">Login</a></li>
+            {% else %}   
+            <li><a href="/logout">Logout</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span> <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="/characters">Characters</a></li>
+                <li><a href="/corporations">Corporations</a></li>
+                <li><a href="/api">APIs</a></li>
+              </ul>
+            </li>
+            {% endif %}  
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+    
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+            {% for message in get_flashed_messages(category_filter=["error"]) %}
+               <div class="alert alert-danger">
+                 <button type="button" class="close" data-dismiss="alert">x</button>
+                 <strong>Error:</strong> {{ message }}
+               </div>
+            {% endfor %}
 
-{% for message in get_flashed_messages(category_filter=["warning"]) %}
-   <div class="alert">
-     <button type="button" class="close" data-dismiss="alert">x</button>
-     <strong>Warning:</strong> {{ message }}
-   </div>
-{% endfor %}
+            {% for message in get_flashed_messages(category_filter=["warning"]) %}
+               <div class="alert">
+                 <button type="button" class="close" data-dismiss="alert">x</button>
+                 <strong>Warning:</strong> {{ message }}
+               </div>
+            {% endfor %}
 
-{% for message in get_flashed_messages(category_filter=["success"]) %}
-   <div class="alert alert-success">
-     <button type="button" class="close" data-dismiss="alert">x</button>
-     <strong>Success:</strong> {{ message }}
-   </div>
-{% endfor %}
+            {% for message in get_flashed_messages(category_filter=["success"]) %}
+               <div class="alert alert-success">
+                 <button type="button" class="close" data-dismiss="alert">x</button>
+                 <strong>Success:</strong> {{ message }}
+               </div>
+            {% endfor %}
 
-{% for message in get_flashed_messages(category_filter=["note"]) %}
-   <div class="alert alert-info">
-     <button type="button" class="close" data-dismiss="alert">x</button>
-     <strong>Note:</strong> {{ message }}
-   </div>
-{% endfor %}
-
-<div class="container">
-
+            {% for message in get_flashed_messages(category_filter=["note"]) %}
+               <div class="alert alert-info">
+                 <button type="button" class="close" data-dismiss="alert">x</button>
+                 <strong>Note:</strong> {{ message }}
+               </div>
+            {% endfor %}    
+        </div>
+    </div><!-- /.row Alert Row-->
+    
+    <div class="container">
     {% block content %}{% endblock %}
+    </div><!-- /.container -->
 
-    <hr>
-    <footer>
-        <p> - scruffd</p>
-        
-    </footer>
 
-<span id=debug>?</span>
-
-</div><!--/container-->
-
-    <!-- Le javascript (from working example)
+    <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="/static/bootstrap/js/bootstrap.js"></script>
-    <!-- 
-    <script src="/static/bootstrap/js/bootstrap-transition.js"></script>
-    <script src="/static/bootstrap/js/bootstrap-alert.js"></script>
-    <script src="/static/bootstrap/js/bootstrap-modal.js"></script>
-    <script src="/static/bootstrap/js/bootstrap-dropdown.js"></script>
-    <script src="/static/bootstrap/js/bootstrap-scrollspy.js"></script>
-    <script src="/static/bootstrap/js/bootstrap-tab.js"></script>
-    <script src="/static/bootstrap/js/bootstrap-tooltip.js"></script>
-    <script src="/static/bootstrap/js/bootstrap-popover.js"></script>
-    <script src="/static/bootstrap/js/bootstrap-button.js"></script>
-    <script src="/static/bootstrap/js/bootstrap-collapse.js"></script>
-    <script src="/static/bootstrap/js/bootstrap-carousel.js"></script>
-    <script src="/static/bootstrap/js/bootstrap-typeahead.js"></script>
-    -->
-</body>
-</html> 
-
-
-
-
-
-
-
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>

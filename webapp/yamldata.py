@@ -1,9 +1,12 @@
 from evewallet.webapp import models, db
+from flask.ext.script import Command 
 
 import yaml
 
-TYPE_ID_FILE = '../data/typeIDs.yaml'
-BLUEPRINT_FILE = '../data/blueprints.yaml'
+# TODO should be in settings.py
+TYPE_ID_FILE = './data/typeIDs.yaml'
+BLUEPRINT_FILE = './data/blueprints.yaml'
+
 
 def load_type_id():
     tables = [models.TypeID]
@@ -68,7 +71,14 @@ def load_blueprint():
         db.session.rollback()
         return False
     return True
+
     
+class LoadCommand(Command):
+    '''Loads prepared yaml data in to db'''
+    def run(self):
+        load_type_id()
+        load_blueprint()
+    
+
 if __name__ == '__main__':
-    load_type_id()
-    load_blueprint()
+    load_all()

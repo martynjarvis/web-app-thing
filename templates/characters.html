@@ -1,26 +1,22 @@
 {% extends "base.html" %}
 {% block content %}
     <div class="row">
-        <div class="span8 offset2">
+      <div class="col-md-12">
             <div class="page-header">
-              <h1>Characters <small> Eve characters linked to this account: </small></h1>
-            </div>          
-
-            <table class="table">
-                <thead>
-                    <th scope="col">Portrait</th>					
-                    <th scope="col">Name</th>
-                </thead>
-                <tbody>
-                    {% for char in data %}  
-                        <tr> 
-                        <td> <img src="http://image.eveonline.com/Character/{{char.id}}_64.jpg" class="img-polaroid"></td>
-                        <td>{{char.name}}</td>
-                        </tr> 
-                    {% endfor %} 
-                <tbody>
-            </table>
-        </div><!--/span-->
+              <h1>Characters</h1>
+            </div>   
+              {% for char in data %}         
+              <div class="col-sm-4 col-md-3">
+                <div class="thumbnail">
+                  <img src="http://image.eveonline.com/Character/{{char.id}}_256.jpg" class="img-responsive">
+                  <div class="caption">
+                    <h3>{{char.name}}</h3>
+                    <p>....</p>
+                  </div>
+                </div>
+              </div>
+              {% endfor %} 
+        </div><!--/col-md-12-->
     </div><!--/row-->
 {% endblock %}
 

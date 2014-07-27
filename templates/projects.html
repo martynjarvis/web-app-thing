@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row">
+      <div class="col-md-12">
+            <div class="page-header">
+              <h1>Projects</h1>
+            </div>          
+
+            <table class="table table-hover">
+                <thead>
+                    <th scope="col">ID</th>
+                    <th scope="col"></th>
+                    <th scope="col">Output</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Progress </th>
+                    <th scope="col"> </th>
+                </thead>
+                <tbody>
+                    {% for project in data %} 
+                        <tr> 
+                        <td><a href="project_view/{{project.id}}">{{project.id}}</a></td> 
+                        <td><a href="project_view/{{project.id}}"><img src="http://image.eveonline.com/Type/{{project.output_id}}_32.png" class="img-responsive"></a></td> 
+                        <td>{{project.output_id}}</td> 
+                        <td>{{project.output_quantity}}</td> 
+                        <td>
+                            <div class="progress">
+                              <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+                                <span class="sr-only">60% Complete</span>
+                              </div>
+                            </div>
+                        </td> 
+                        <td><a href="project_copy/{{project.id}}"><span class="glyphicon glyphicon-repeat"></span></a> <a href="project_delete/{{project.id}}"><span class="glyphicon glyphicon-remove"></span></a></td> 
+                        </tr> 
+                    {% endfor %} 
+                <tbody>
+            </table>
+        </div><!--/col-md-12-->
+        <div class="col-md-1 col-md-offset-11">
+            <a href="/project_add" class="btn btn-primary">New</a>
+        </div><!--/col-md-12-->
+    </div><!--/row-->
+{% endblock %}
+
+
+
+
+
+<div class="progress">
+  <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+    <span class="sr-only">60% Complete</span>
+  </div>
+</div>
+
+
+
+
+
+

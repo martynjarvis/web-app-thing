@@ -77,20 +77,20 @@ def corporations():
     corps = xmlapi.all_corporations()
     return render_template('corporations.html', title="corporations", data=corps)  
 
-        
-@app.route('/project')
+@app.route('/projects')
 @decorators.login_required
 def projects():
     ''' List of Projectss '''
     project_list = project.all_projects()
-    return render_template('project.html', title="Projects", data=project_list)
+    return render_template('projects.html', title="Projects", data=project_list)
     
 @app.route('/project_add', methods=['GET', 'POST'])
 @decorators.login_required
 def project_add():
     ''' Adds a Project to the db'''
     if request.method == 'POST':
-        prj = project.add_project(request.form['output_id'], request.form['output_quantity'])
+        prj = project.add_project(request.form['output_id'],
+                                  int(request.form['output_quantity']))
         if prj is not None:
             return redirect(url_for('projects'))
         else:
@@ -109,17 +109,14 @@ def project_delete(project_id):
 @decorators.login_required
 def project_view(project_id):
     ''' List of Projectss '''
-    tasks = project.tasks(project_id)
-    return render_template('project_view.html', title="Projects", data=tasks)
-    
-    
+    prj = project.get_project(project_id)
+    return render_template('project_view.html', title="Projects", data=prj)
     
 # @app.route('/api_refresh/<apiKey>')
 # @decorators.login_required
 # def api_refresh(apiKey):
     # ''' Refreshes an existing API to the db and adds new characters '''
 
-    
 # # @app.route('/overview')
 # # @login_required
 # # def overview():
@@ -176,7 +173,6 @@ def project_view(project_id):
     
     # return render_template('update.html', title="Update Orders", data=query, import_cost=importCost,  markups=markups )
     
-
 # @app.route('/import', methods=['GET', 'POST'])
 # def import_tool():   
     # '''Returns a list of items to import to a given system based on market history'''
@@ -235,6 +231,3 @@ def project_view(project_id):
     # # data = Item.query().filter(Item.typeName>=q).filter(Item.typeName<q+ u"\ufffd").fetch(10)
     # # return render_template('search.html', title=request.form['search_term'], searchData=data, searchTerm=q)   
     
-
-        
-        

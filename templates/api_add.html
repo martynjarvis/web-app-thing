@@ -1,30 +1,25 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class="row-fluid">
-        <div class="span4">
-  
-            <form method="post" action="/api_add" class="form-horizontal">
-              <div class="control-group">
-                <label class="control-label" for="inputUsername">ID</label>
-                <div class="controls">
-                  <input type="text" name="api_id" placeholder="ID">
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-horizontal" role="form" method="post" action="/api_add">
+                <div class="form-group">
+                    <label for="api_id" class="col-md-3 control-label">API Key ID</label>
+                    <div class="col-md-7">
+                        <input type="text" class="form-control"  name="api_id" id="api_id" placeholder="ID">
+                    </div>
                 </div>
-              </div>
-              <div class="control-group">
-                <label class="control-label" for="inputPassword">VCode</label>
-                <div class="controls">
-                  <input type="text" name="api_vcode" placeholder="VCode">
+                <div class="form-group">
+                    <label for="api_vcode" class="col-md-3 control-label">API Key VCode</label>
+                    <div class="col-md-7">
+                        <input type="text" class="form-control"  name="api_vcode" id="api_vcode" placeholder="VCode">
+                    </div>
                 </div>
-              </div>
-              <div class="control-group">
-                <div class="controls">
-
-                    <button type="submit" class="btn">Add</button>
+                <div class="col-md-1 col-md-offset-9">
+                    <button type="submit" class="btn btn-default">Submit</button>
                 </div>
-              </div>
             </form>
-
-        </div><!--/span-->
+        </div><!--/col-md-->
     </div><!--/row-->
 {% endblock %}
 

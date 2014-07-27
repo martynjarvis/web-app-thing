@@ -6,22 +6,21 @@ def all_projects():
     projects = db.session.query(models.Project).all()
     return projects
     
-def tasks(project_id):
-    tasks = db.session.query(models.Task).\
-                    filter(models.Task.project_id==project_id).\
-                    all()
-    return tasks
+def get_project(project_id):
+    project = db.session.query(models.Project).get(project_id)
+    return project
 
-def add_project(output_id, output_quantity):
+def add_project(output_id, output_quantity): # TODO assert types?
+    output_quantity = int(output_quantity)
     project = models.Project(output_id=output_id, output_quantity=output_quantity)
     tasks = create_task(output_id, output_quantity, project.id)
     project.tasks = tasks
     db.session.add(project)
-    try: 
-        db.session.commit()
-    except IntegrityError:
-        db.session.rollback()
-        return None    
+    # try: 
+    db.session.commit()
+    # except IntegrityError:
+        # db.session.rollback()
+        # return None    
     return project
     
 def create_task(output_id, output_quantity, project_id, parent_task_id=None):

@@ -12,6 +12,14 @@ TRANSACTIONFOR = {'personal':1, 'corporation':2}
 DTPATTERN = '%Y-%m-%d %H:%M:%S'
 JITA = 30000142
 
+ACTIVITY_NAMES = {  1: 'Manufacturing',
+                    2: 'Researching Technology',
+                    3: 'Researching Time Productivity',
+                    4: 'Researching Material Productivity',
+                    5: 'Copying',
+                    6: 'Duplicating ',
+                    7: 'Reverse Engineering ',
+                    8: 'Invention'}
 # Eve data
 class TypeID(db.Model):
     __tablename__ = 'TypeID'
@@ -37,7 +45,10 @@ class Activity(db.Model):
     time = db.Column(db.Integer, nullable=False)
     
     blueprint = db.relationship("Blueprint", backref="activities")
-        
+    
+    def type_string(self):
+        return ACTIVITY_NAMES[self.type]
+    
 class Material(db.Model):  
     __tablename__ = 'Material'
     id = db.Column(db.Integer, primary_key=True)
@@ -107,7 +118,8 @@ class Project(db.Model):
     output_quantity = db.Column(db.Integer)
 
     output = db.relationship("TypeID")
-    tasks = db.relationship("Task", cascade="all,delete", backref="tasks")
+    tasks = db.relationship("Task", cascade="all,delete", backref="project")
+    raw_materials = db.relationship("RawMaterial", cascade="all,delete", backref="project")
     
 class Task(db.Model):
     __tablename__ = 'Task'
@@ -123,6 +135,20 @@ class Task(db.Model):
     output = db.relationship("TypeID")
     parent = db.relationship("Task", remote_side=[id], backref="children")
 
+class RawMaterial(db.Model):
+    __tablename__ = 'RawMaterial'  
+    id = db.Column(db.Integer, primary_key=True)
+    type_id = db.Column(db.Integer, db.ForeignKey('TypeID.id'), nullable=False)
+    project_id = db.Column(db.Integer, db.ForeignKey('Project.id'), nullable=False)
+    parent_task_id = db.Column(db.Integer, db.ForeignKey('Task.id'))
+    state = db.Column(db.Integer)
+    quantity = db.Column(db.Integer)
+
+    type = db.relationship("TypeID")
+    task = db.relationship("Task", backref="raw_materials")
+
+    
+    
 # class Cache(db.Model): # keeps track of what needs to be updated
     # __tablename__ = 'Cache'
     # key = db.Column(db.String(80), primary_key=True)

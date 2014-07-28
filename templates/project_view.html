@@ -3,14 +3,14 @@
     <div class="row">
       <div class="col-md-12">
             <div class="page-header">
-              <h1>Tasks:</h1>
+              <h1><img src="http://image.eveonline.com/Type/{{data.output_id}}_32.png">{{data.output_id}}<small> {{data.output_quantity}}</small></h1>
             </div>          
 
             <table class="table table-hover">
                 <thead>
                     <th scope="col">ID</th>
-                    <th scope="col">type</th>
                     <th scope="col"></th>
+                    <th scope="col">type</th>
                     <th scope="col">Output</th>
                     <th scope="col">Quantity</th>
                     <th scope="col">Progress </th>
@@ -19,8 +19,8 @@
                     {% for task in data.tasks %}  
                         <tr>
                         <td>{{task.id}}</td>
-                        <td>{{task.activity.type}}</td>
                         <td><img src="http://image.eveonline.com/Type/{{task.output_id}}_32.png" class="img-responsive"></td>
+                        <td>{{task.activity.type_string()}}</td>
                         <td>{{task.output_id}}</td>
                         <td>{{task.output_quantity}}</td>
                         <td>

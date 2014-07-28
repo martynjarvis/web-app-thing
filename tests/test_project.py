@@ -1,7 +1,7 @@
 import base
 from evewallet.webapp import yamldata, project, db, app
 
-OUTPUT_ID = base.TYPEID
+OUTPUT_ID = base.TYPEID # incursus?
 OUTPUT_T2_ID = 12044  # enyo
 OUTPUT_QUANT = 50
 
@@ -30,7 +30,7 @@ class Project(base.BaseTest):
                         
             # check project was made
             self.assertFalse('Project Error' in rv.data)                        
-            rv = c.get('/project')
+            rv = c.get('/projects')
             self.assertTrue(str(OUTPUT_ID) in rv.data)
             projects = project.all_projects()
             self.assertEqual(len(projects), 1)
@@ -44,6 +44,21 @@ class Project(base.BaseTest):
             self.assertFalse(str(OUTPUT_ID) in rv.data)
             projects = project.all_projects()
             self.assertEqual(len(projects), 0)
+
+    def test_project_materials(self): 
+        with app.test_client() as c:
+            rv = self.create_user(c)
+            rv = c.post('/project_add', 
+                        data=dict(output_id=OUTPUT_ID,
+                                  output_quantity=OUTPUT_QUANT),
+                        follow_redirects=True)
+                        
+            projects = project.all_projects()
+            self.assertEqual(len(projects), 1)
+            raw_materials = [r.type_id for r in projects[0].raw_materials]
+            
+            self.assertEqual(len(raw_materials),len(base.BLUEPRINT_MATERIALS))
+            self.assertEqual(sorted(raw_materials),sorted(base.BLUEPRINT_MATERIALS))
 
     def test_t2_project(self): 
         with app.test_client() as c:
@@ -71,6 +86,5 @@ class Project(base.BaseTest):
             # for task in tasks:
                 # self.assertTrue(str(task.output_id) in rv.data)
             
-
             
-    
+            

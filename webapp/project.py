@@ -13,8 +13,9 @@ def get_project(project_id):
 def add_project(output_id, output_quantity): # TODO assert types?
     output_quantity = int(output_quantity)
     project = models.Project(output_id=output_id, output_quantity=output_quantity)
-    tasks = create_task(output_id, output_quantity, project.id)
+    tasks, raw_materials = create_task(output_id, output_quantity, project.id)
     project.tasks = tasks
+    project.raw_materials = raw_materials
     db.session.add(project)
     # try: 
     db.session.commit()
@@ -23,8 +24,14 @@ def add_project(output_id, output_quantity): # TODO assert types?
         # return None    
     return project
     
-def create_task(output_id, output_quantity, project_id, parent_task_id=None):
+def create_task(output_id, output_quantity, project_id, parent_task=None, blueprint=False):
     tasks = []
+    raw_materials = []
+    
+    parent_task_id = None
+    if parent_task is not None:
+        parent_task_id = parent_task.id
+        
     # simple implicit join
     q = db.session.query(models.Activity, models.Product).\
                 filter(models.Activity.id==models.Product.activity_id).\
@@ -32,27 +39,39 @@ def create_task(output_id, output_quantity, project_id, parent_task_id=None):
                 all()
     if len(q) < 1:
         # A base material or blueprint with no way to make it
-        return []
+        if not blueprint: # don't add T1 blueprints as materials (although with copies maybe this is true...)
+            raw_mat = models.RawMaterial(type_id = output_id,
+                                        project_id = project_id,
+                                        parent_task_id = parent_task_id,
+                                        state = 0,
+                                        quantity = output_quantity)
+            raw_materials.append(raw_mat)
+    else:    
+        assert(len(q)==1) # Is this guaranteed? I think so...
         
-    assert(len(q)==1) # Is this guaranteed? I think so...
-    
-    activity, products = q[0]
-    
-    task = models.Task(output_id=output_id, 
-                          output_quantity=output_quantity,
-                          project_id=project_id,
-                          activity_id=activity.id,
-                          parent_task_id = parent_task_id,
-                          state = 0 )    
+        activity, products = q[0]
         
-    tasks.append(task)   
-    # add a task for each product
-    for material in activity.materials:
-        tasks += create_task(material.type_id, output_quantity*material.quantity, project_id)
-    
-    # add a task for blueprint (invention)
-    tasks += create_task(activity.blueprint_id, output_quantity, project_id)
-    return tasks
+        current_task = models.Task(output_id=output_id, 
+                           output_quantity=output_quantity,
+                           project_id=project_id,
+                           activity_id=activity.id,
+                           parent_task_id = parent_task_id,
+                           state = 0)
+        tasks.append(current_task)   
+        
+        # add a task for each product
+        for material in activity.materials:
+            if material.consume is True:  # ignore decryptors
+                new_tasks, new_materials = create_task(material.type_id, output_quantity*material.quantity, project_id, current_task)
+                tasks += new_tasks
+                raw_materials += new_materials
+                
+        # add a task for blueprint (invention)
+        new_tasks, new_materials = create_task(activity.blueprint_id, output_quantity, project_id, current_task, blueprint=True)
+        tasks += new_tasks
+        raw_materials += new_materials
+        
+    return tasks, raw_materials
     
 def delete_project(id):
     project = db.session.query(models.Project).get(id)

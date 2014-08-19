@@ -4,13 +4,15 @@
       <div class="col-md-12">
             <div class="page-header">
               <h1><img src="http://image.eveonline.com/Type/{{data.output_id}}_32.png">{{data.output_id}}<small> {{data.output_quantity}}</small></h1>
-            </div>          
-
+            </div>    
+            
+            <h2>Tasks</h2>
+            
             <table class="table table-hover">
                 <thead>
                     <th scope="col">ID</th>
                     <th scope="col"></th>
-                    <th scope="col">type</th>
+                    <th scope="col">Task Type</th>
                     <th scope="col">Output</th>
                     <th scope="col">Quantity</th>
                     <th scope="col">Progress </th>
@@ -37,6 +39,39 @@
                     {% endfor %} 
                 <tbody>
             </table>
+            
+            <h2>Raw Materials</h2>
+            
+            <table class="table table-hover">
+                <thead>
+                    <th scope="col">ID</th>
+                    <th scope="col"></th>
+                    <th scope="col">Item ID</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Progress </th>
+                </thead>
+                <tbody>
+                    {% for raw in data.raw_materials %}  
+                        <tr>
+                        <td>{{raw.id}}</td>
+                        <td><img src="http://image.eveonline.com/Type/{{raw.type_id}}_32.png" class="img-responsive"></td>
+                        <td>{{raw.type_id}}</td>
+                        <td>{{raw.quantity}}</td>
+                        <td>
+                            <div class="progress">
+                              <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+                                <span class="sr-only">60% Complete</span>
+                              </div>
+                              <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100" style="width: 10%;">
+                                <span class="sr-only">10% Complete</span>
+                              </div>
+                            </div>
+                        </td>
+                        </tr>
+                    {% endfor %} 
+                <tbody>
+            </table>
+            
         </div><!--/col-md-->
     </div><!--/row-->
 {% endblock %}

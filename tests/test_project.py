@@ -40,6 +40,14 @@ class Project(base.BaseTest):
             projects = project.all_projects()
             self.assertEqual(len(projects), 0)
 
+    def test_bad_delete_project(self):
+        with app.test_client() as c:
+            rv = self.create_user(c)
+            rv = c.get('/project_delete/{}'.format(100),
+                       follow_redirects=True)
+            self.assertTrue('Project Error' in rv.data)
+
+
     def test_project_materials(self):
         with app.test_client() as c:
             rv = self.create_user(c)

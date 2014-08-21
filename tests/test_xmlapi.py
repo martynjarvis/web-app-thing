@@ -122,6 +122,7 @@ class API(base.BaseTest):
     def test_bad_api_delete(self):
         with app.test_client() as c:
             rv = self.create_user(c)
-            rv = c.get('/api_delete/{}'.format(100))
+            rv = c.get('/api_delete/{}'.format(100),
+                       follow_redirects=True)
             self.assertTrue('API Error' in rv.data)
 

@@ -15,22 +15,22 @@ class Blueprint(object):
 
 class Yaml_Data(object):
     test_type_id = 34
-    type_id_file = '../tests/typeIDs_debug.yaml'
-    blueprint_file = '../tests/blueprints_debug.yaml'
+    type_id_file = './data/typeIDs_debug.yaml'
+    blueprint_file = './data/blueprints_debug.yaml'
     
 class Corp_Api(object):
     key = '1234567'
     vcode = 'THISISAFAKEAPIVCODE'
     corp_id = '98280334'
     corp_name = 'Large Collidable Object.'
-    filename = 'corp_api_data.txt'
+    filename = './data/corp_api_data.txt'
 
 class Char_Api(object):
     key = '1234566'
     vcode = 'THISISANOTHERFAKEAPIVCODE'
     char_id = '90817766'
     char_name = 'scruff decima'
-    filename = 'char_api_data.txt'
+    filename = './data/char_api_data.txt'
 
 #OUTPUT_ID = base.TYPEID # incursus?
 #OUTPUT_T2_ID = 12044  # enyo

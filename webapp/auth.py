@@ -1,5 +1,5 @@
 from flask import session
-import hashlib 
+import hashlib
 from sqlalchemy.exc import IntegrityError
 
 from evewallet.webapp import models, db
@@ -12,7 +12,7 @@ def current_user():
 def logout():
     session.pop('user', None)
     return
-      
+
 def login(username,password):
     hash = hashlib.sha1(password).hexdigest()
     user = db.session.query(models.User).\
@@ -20,7 +20,7 @@ def login(username,password):
     if user.hash == hash:
         session['user'] = user.id
         return user
-    return 
+    return
 
 def register(username, email, password):
     password_hash = hashlib.sha1(password).hexdigest()
@@ -33,5 +33,5 @@ def register(username, email, password):
     except IntegrityError:
         db.session.rollback()
         return None
-    return user    
-    
+    return user
+

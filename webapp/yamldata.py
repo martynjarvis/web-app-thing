@@ -1,5 +1,5 @@
 from evewallet.webapp import models, db
-from flask.ext.script import Command 
+from flask.ext.script import Command
 
 import yaml
 
@@ -23,7 +23,7 @@ def load_type_id():
                                  sound_id = v.get('soundID',None),
                                  icon_id = v.get('iconID',None),
                                  faction_id = v.get('factionID',None))
-            type_ids.append(type) 
+            type_ids.append(type)
     db.session.add_all(type_ids)
     try:
         db.session.commit()
@@ -31,7 +31,7 @@ def load_type_id():
         db.session.rollback()
         return False
     return True
-      
+
 def load_blueprint():
     tables = [models.Blueprint, models.Activity, models.Material, models.Product]
     db.metadata.drop_all(db.engine,tables=[t.__table__ for t in tables])
@@ -53,7 +53,7 @@ def load_blueprint():
                     products.append(models.Product(type_id = product_id,
                                                    quantity = product.get('quantity',None),
                                                    probability = product.get('probability',None)))
-                
+
                 activities.append(models.Activity(blueprint_id = blueprint_id,
                                                   type = activity_id,
                                                   time = activity.get('time',None),
@@ -63,22 +63,22 @@ def load_blueprint():
             blueprints.append(models.Blueprint(id = blueprint_id,
                                                production_limit = blueprint.get('maxProductionLimit',None),
                                                activities = activities))
-            
+
     db.session.add_all(blueprints)
     try:
-        db.session.commit()  
+        db.session.commit()
     except IntegrityError:
         db.session.rollback()
         return False
     return True
 
-    
+
 class LoadCommand(Command):
     '''Loads prepared yaml data in to db'''
     def run(self):
         load_type_id()
         load_blueprint()
-    
+
 
 if __name__ == '__main__':
     load_all()

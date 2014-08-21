@@ -11,7 +11,7 @@ def login_required(func):
             return redirect(url_for('login'))
         return func(*args, **kwargs)
     return decorated_view
-    
+
 def trust_required(func):
     @wraps(func)
     def decorated_view(*args, **kwargs):
@@ -19,8 +19,8 @@ def trust_required(func):
             return render_template('trust.html', title="Request Trust",redirect=func.__name__)
         return func(*args, **kwargs)
     return decorated_view
-    
-    
+
+
 def cache(func):
     @wraps(func)
     def decorated_view(*args, **kwargs):
@@ -33,5 +33,5 @@ def cache(func):
             cache.cachedUntil = cachedUntil
             return
         else:
-            return 
+            return
     return decorated_view

@@ -11,7 +11,7 @@ tmpl_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', 'temp
 app = Flask('wallet', template_folder=tmpl_dir)
 app.config.from_object('evewallet.webapp.settings')
 
-db = SQLAlchemy(app) 
+db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 from yamldata import LoadCommand

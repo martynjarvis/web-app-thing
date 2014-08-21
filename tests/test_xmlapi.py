@@ -35,97 +35,103 @@ class API(base.BaseTest):
         db.session.rollback()
         db.drop_all()
 
-    @mock.patch("evewallet.eveapi.httplib.HTTPSConnection") 
-    def test_bad_api(self, mock_HTTPSConnection): 
+    @mock.patch("evewallet.eveapi.httplib.HTTPSConnection")
+    def test_bad_api(self, mock_HTTPSConnection):
         mock_response = MockResponse(CHAR_API_DATA, 403)
         instance = mock_HTTPSConnection.return_value
         instance.getresponse.return_value = mock_response
-        
+
         with app.test_client() as c:
             rv = self.create_user(c)
-            rv = c.post('/api_add', 
+            rv = c.post('/api_add',
                         data=dict(api_id=CHAR_API_ID,
-                                  api_vcode='AAAAAAA'), 
+                                  api_vcode='AAAAAAA'),
                         follow_redirects=True)
-                        
+
             self.assertTrue('API Error' in rv.data)
-            
+
             rv = c.get('/api')
             self.assertFalse(CHAR_API_ID in rv.data)
-            
+
         mock_response.close()
 
-    @mock.patch("evewallet.eveapi.httplib.HTTPSConnection") 
-    def test_char_api(self, mock_HTTPSConnection): 
+    @mock.patch("evewallet.eveapi.httplib.HTTPSConnection")
+    def test_char_api(self, mock_HTTPSConnection):
         mock_response = MockResponse(CHAR_API_DATA, 200)
         instance = mock_HTTPSConnection.return_value
         instance.getresponse.return_value = mock_response
 
         with app.test_client() as c:
             rv = self.create_user(c)
-            rv = c.post('/api_add', 
+            rv = c.post('/api_add',
                         data=dict(api_id=CHAR_API_ID,
-                                  api_vcode=CHAR_API_VCODE), 
+                                  api_vcode=CHAR_API_VCODE),
                         follow_redirects=True)
-                        
+
             self.assertFalse('API Error' in rv.data)
-            
+
             rv = c.get('/api')
             self.assertTrue(CHAR_API_ID in rv.data)
             self.assertTrue(CHAR_API_VCODE in rv.data)
-            
+
             rv = c.get('/characters')
             self.assertTrue(CHAR_API_CHARACTER_NAME in rv.data)
-            
+
         mock_response.close()
 
-    @mock.patch("evewallet.eveapi.httplib.HTTPSConnection") 
-    def test_corp_api(self, mock_HTTPSConnection): 
+    @mock.patch("evewallet.eveapi.httplib.HTTPSConnection")
+    def test_corp_api(self, mock_HTTPSConnection):
         mock_response = MockResponse(CORP_API_DATA, 200)
         instance = mock_HTTPSConnection.return_value
         instance.getresponse.return_value = mock_response
-        
+
         with app.test_client() as c:
             rv = self.create_user(c)
-            rv = c.post('/api_add', 
+            rv = c.post('/api_add',
                         data=dict(api_id=CORP_API_ID,
-                                  api_vcode=CORP_API_VCODE), 
+                                  api_vcode=CORP_API_VCODE),
                         follow_redirects=True)
-                        
+
             self.assertFalse('API Error' in rv.data)
-            
+
             rv = c.get('/api')
             self.assertTrue(CORP_API_ID in rv.data)
             self.assertTrue(CORP_API_VCODE in rv.data)
-        
+
             rv = c.get('/corporations')
             self.assertTrue(CORP_API_CORPORATION_NAME in rv.data)
-            
-    # TODO test delete non existant api
-    
-    @mock.patch("evewallet.eveapi.httplib.HTTPSConnection") 
-    def test_api_delete(self, mock_HTTPSConnection): 
+
+
+    @mock.patch("evewallet.eveapi.httplib.HTTPSConnection")
+    def test_api_delete(self, mock_HTTPSConnection):
         mock_response = MockResponse(CORP_API_DATA, 200)
         instance = mock_HTTPSConnection.return_value
         instance.getresponse.return_value = mock_response
-        
+
         with app.test_client() as c:
             rv = self.create_user(c)
-            rv = c.post('/api_add', 
+            rv = c.post('/api_add',
                         data=dict(api_id=CORP_API_ID,
-                                  api_vcode=CORP_API_VCODE), 
+                                  api_vcode=CORP_API_VCODE),
                         follow_redirects=True)
-                        
+
             self.assertFalse('API Error' in rv.data)
-            
+
             rv = c.get('/api')
             self.assertTrue(CORP_API_ID in rv.data)
             self.assertTrue(CORP_API_VCODE in rv.data)
-        
+
             rv = c.get('/api_delete/{}'.format(CORP_API_ID))
-        
+
             rv = c.get('/api')
             self.assertFalse(CORP_API_ID in rv.data)
             self.assertFalse(CORP_API_VCODE in rv.data)
-            
+
             # should corps be deleted as well?
+
+    def test_bad_api_delete(self):
+        with app.test_client() as c:
+            rv = self.create_user(c)
+            rv = c.get('/api_delete/{}'.format(100))
+            self.assertTrue('API Error' in rv.data)
+

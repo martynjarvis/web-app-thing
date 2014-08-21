@@ -1,20 +1,10 @@
 from flask import session
 import mock
-import base
+
 from evewallet.webapp import db, app
 
-CORP_API_ID = '1234567'
-CORP_API_VCODE = 'THISISAFAKEAPIVCODE'
-CORP_API_CORPORATION_ID = '98280334'
-CORP_API_CORPORATION_NAME = 'Large Collidable Object.'
-CORP_API_DATA = 'corp_api_data.txt'
-
-CHAR_API_ID = '1234566'
-CHAR_API_VCODE = 'THISISAFAKEAPIVCODE'
-CHAR_API_CHARACTER_ID = '90817766'
-CHAR_API_CHARACTER_NAME = 'scruff decima'
-CHAR_API_DATA = 'char_api_data.txt'
-
+import base
+from settings import Corp_Api, Char_Api
 
 class MockResponse(object):
     ''' simple class to mock a HTTP response with data from a file'''
@@ -37,95 +27,95 @@ class API(base.BaseTest):
 
     @mock.patch("evewallet.eveapi.httplib.HTTPSConnection")
     def test_bad_api(self, mock_HTTPSConnection):
-        mock_response = MockResponse(CHAR_API_DATA, 403)
+        mock_response = MockResponse(Char_Api.filename, 403)
         instance = mock_HTTPSConnection.return_value
         instance.getresponse.return_value = mock_response
 
         with app.test_client() as c:
             rv = self.create_user(c)
             rv = c.post('/api_add',
-                        data=dict(api_id=CHAR_API_ID,
+                        data=dict(api_id=Char_Api.key,
                                   api_vcode='AAAAAAA'),
                         follow_redirects=True)
 
             self.assertTrue('API Error' in rv.data)
 
             rv = c.get('/api')
-            self.assertFalse(CHAR_API_ID in rv.data)
+            self.assertFalse(Char_Api.key in rv.data)
 
         mock_response.close()
 
     @mock.patch("evewallet.eveapi.httplib.HTTPSConnection")
     def test_char_api(self, mock_HTTPSConnection):
-        mock_response = MockResponse(CHAR_API_DATA, 200)
+        mock_response = MockResponse(Char_Api.filename, 200)
         instance = mock_HTTPSConnection.return_value
         instance.getresponse.return_value = mock_response
 
         with app.test_client() as c:
             rv = self.create_user(c)
             rv = c.post('/api_add',
-                        data=dict(api_id=CHAR_API_ID,
-                                  api_vcode=CHAR_API_VCODE),
+                        data=dict(api_id=Char_Api.key,
+                                  api_vcode=Char_Api.vcode),
                         follow_redirects=True)
 
             self.assertFalse('API Error' in rv.data)
 
             rv = c.get('/api')
-            self.assertTrue(CHAR_API_ID in rv.data)
-            self.assertTrue(CHAR_API_VCODE in rv.data)
+            self.assertTrue(Char_Api.key in rv.data)
+            self.assertTrue(Char_Api.vcode in rv.data)
 
             rv = c.get('/characters')
-            self.assertTrue(CHAR_API_CHARACTER_NAME in rv.data)
+            self.assertTrue(Char_Api.char_name in rv.data)
 
         mock_response.close()
 
     @mock.patch("evewallet.eveapi.httplib.HTTPSConnection")
     def test_corp_api(self, mock_HTTPSConnection):
-        mock_response = MockResponse(CORP_API_DATA, 200)
+        mock_response = MockResponse(Corp_Api.filename, 200)
         instance = mock_HTTPSConnection.return_value
         instance.getresponse.return_value = mock_response
 
         with app.test_client() as c:
             rv = self.create_user(c)
             rv = c.post('/api_add',
-                        data=dict(api_id=CORP_API_ID,
-                                  api_vcode=CORP_API_VCODE),
+                        data=dict(api_id=Corp_Api.key,
+                                  api_vcode=Corp_Api.vcode),
                         follow_redirects=True)
 
             self.assertFalse('API Error' in rv.data)
 
             rv = c.get('/api')
-            self.assertTrue(CORP_API_ID in rv.data)
-            self.assertTrue(CORP_API_VCODE in rv.data)
+            self.assertTrue(Corp_Api.key in rv.data)
+            self.assertTrue(Corp_Api.vcode in rv.data)
 
             rv = c.get('/corporations')
-            self.assertTrue(CORP_API_CORPORATION_NAME in rv.data)
+            self.assertTrue(Corp_Api.corp_name in rv.data)
 
 
     @mock.patch("evewallet.eveapi.httplib.HTTPSConnection")
     def test_api_delete(self, mock_HTTPSConnection):
-        mock_response = MockResponse(CORP_API_DATA, 200)
+        mock_response = MockResponse(Corp_Api.filename, 200)
         instance = mock_HTTPSConnection.return_value
         instance.getresponse.return_value = mock_response
 
         with app.test_client() as c:
             rv = self.create_user(c)
             rv = c.post('/api_add',
-                        data=dict(api_id=CORP_API_ID,
-                                  api_vcode=CORP_API_VCODE),
+                        data=dict(api_id=Corp_Api.key,
+                                  api_vcode=Corp_Api.vcode),
                         follow_redirects=True)
 
             self.assertFalse('API Error' in rv.data)
 
             rv = c.get('/api')
-            self.assertTrue(CORP_API_ID in rv.data)
-            self.assertTrue(CORP_API_VCODE in rv.data)
+            self.assertTrue(Corp_Api.key in rv.data)
+            self.assertTrue(Corp_Api.vcode in rv.data)
 
-            rv = c.get('/api_delete/{}'.format(CORP_API_ID))
+            rv = c.get('/api_delete/{}'.format(Corp_Api.key))
 
             rv = c.get('/api')
-            self.assertFalse(CORP_API_ID in rv.data)
-            self.assertFalse(CORP_API_VCODE in rv.data)
+            self.assertFalse(Corp_Api.key in rv.data)
+            self.assertFalse(Corp_Api.vcode in rv.data)
 
             # should corps be deleted as well?
 

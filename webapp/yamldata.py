@@ -7,14 +7,13 @@ import yaml
 TYPE_ID_FILE = './data/typeIDs.yaml'
 BLUEPRINT_FILE = './data/blueprints.yaml'
 
-
-def load_type_id():
+def load_type_id(filename=TYPE_ID_FILE):
     tables = [models.TypeID]
     db.metadata.drop_all(db.engine,tables=[t.__table__ for t in tables])
     db.metadata.create_all(db.engine,tables=[t.__table__ for t in tables])
 
     type_ids = []
-    with open(TYPE_ID_FILE, 'r') as f:
+    with open(filename, 'r') as f:
         data = yaml.load(f)
         for k, v in data.iteritems():
             type = models.TypeID(id = k,
@@ -32,13 +31,13 @@ def load_type_id():
         return False
     return True
 
-def load_blueprint():
+def load_blueprint(filename=BLUEPRINT_FILE):
     tables = [models.Blueprint, models.Activity, models.Material, models.Product]
     db.metadata.drop_all(db.engine,tables=[t.__table__ for t in tables])
     db.metadata.create_all(db.engine,tables=[t.__table__ for t in tables])
 
     blueprints = []
-    with open(BLUEPRINT_FILE, 'r') as f:
+    with open(filename, 'r') as f:
         data = yaml.load(f)
         for blueprint_id, blueprint in data.iteritems():
             activities = []

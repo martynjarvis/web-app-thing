@@ -1,7 +1,9 @@
 from flask import session
 
-import base
 from evewallet.webapp import auth, db, app
+
+import base
+from settings import User
 
 class Authentication(base.BaseTest):
     def setUp(self):
@@ -22,7 +24,7 @@ class Authentication(base.BaseTest):
 
             # log in with wrong password
             rv = c.post('/login',
-                        data=dict(username=self.username,
+                        data=dict(username=User.username,
                                   password='wrong_password'),
                         follow_redirects=True)
 
@@ -39,8 +41,8 @@ class Authentication(base.BaseTest):
 
             self.assertNotEqual(user_id, None)
             self.assertEqual(user_id,1)
-            self.assertEqual(auth.current_user().username, self.username)
-            self.assertEqual(auth.current_user().email, self.email)
+            self.assertEqual(auth.current_user().username, User.username)
+            self.assertEqual(auth.current_user().email, User.email)
 
     def test_passwords_dont_match(self):
         with app.test_client() as c:
@@ -63,8 +65,8 @@ class Authentication(base.BaseTest):
 
             # log back in
             rv = c.post('/login',
-                        data=dict(username=self.username,
-                                  password=self.password),
+                        data=dict(username=User.username,
+                                  password=User.password),
                         follow_redirects=True)
             self.assertNotEqual(session.get('user',None),None)
 

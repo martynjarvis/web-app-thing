@@ -1,24 +1,13 @@
 import unittest
+
 from evewallet.webapp import yamldata
 
-TYPEID = 594
-BLUEPRINT_ID = 941
-BLUEPRINT_MATERIALS = [34,35,36,37,38,39]
-BLUEPRINT_MATERIALS_QUANT = [13333,11111,4000,33,17,6]
-BLUEPRINT_PRODUCTS = [594]
-BLUEPRINT_PRODUCTS_QUANT = [1]
-BLUEPRINT_LIMIT = 30
-BLUEPRINT_N_ACTV = 5
-
+from settings import User, Yaml_Data
 
 class BaseTest(unittest.TestCase):
-    username = 'hello'
-    password = 'world'
-    email = 'hello@world'
-    
     def load_yaml_data(self):
-        yamldata.load_type_id()
-        yamldata.load_blueprint()
+        yamldata.load_type_id(filename=Yaml_Data.type_id_file)
+        yamldata.load_blueprint(filename=Yaml_Data.blueprint_file)
     
     def create_user(self, context_manager, 
                          username=None,
@@ -27,13 +16,13 @@ class BaseTest(unittest.TestCase):
                          password2=None):
                          
         if username is None:
-            username = self.username
+            username = User.username
         if email is None:
-            email = self.email
+            email = User.email
         if password1 is None:
-            password1 = self.password
+            password1 = User.password
         if password2 is None:
-            password2 = self.password
+            password2 = User.password
         
         rv = context_manager.post('/register', 
                                   data=dict(username=username,
@@ -41,4 +30,5 @@ class BaseTest(unittest.TestCase):
                                             password1=password1,
                                             password2=password2),
                                   follow_redirects=True)
+        # TODO assert user was created?
         return rv    

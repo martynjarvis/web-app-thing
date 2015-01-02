@@ -17,7 +17,7 @@ def login(username,password):
     hash = hashlib.sha1(password).hexdigest()
     user = db.session.query(models.User).\
             filter(models.User.username==username).first()
-    if user.hash == hash:
+    if user is not None and user.hash == hash:
         session['user'] = user.id
         return user
     return

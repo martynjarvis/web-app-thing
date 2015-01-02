@@ -22,6 +22,15 @@ class Authentication(base.BaseTest):
             rv = c.get('/logout',follow_redirects=True)
             self.assertEqual(session.get('user',None),None)
 
+            # log in with wrong username
+            rv = c.post('/login',
+                        data=dict(username='not_a_user',
+                                  password='wrong_password'),
+                        follow_redirects=True)
+
+            self.assertTrue('Incorrect username or password' in rv.data)
+            self.assertEqual(session.get('user',None), None)
+
             # log in with wrong password
             rv = c.post('/login',
                         data=dict(username=User.username,

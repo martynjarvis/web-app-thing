@@ -1,3 +1,4 @@
+# TODO settings should be in caps as thwey're 'global'
 
 class User(object):
     username = 'hello'

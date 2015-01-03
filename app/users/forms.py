@@ -19,8 +19,7 @@ class LoginForm(Form):
         if not user.is_valid_password(form.password.data):
             raise ValidationError("Invalid password")
 
-        # Make the current user available
-        # to calling code.
+        # Make the current user available to calling code.
         form.user = user
 
 class RegistrationForm(Form):

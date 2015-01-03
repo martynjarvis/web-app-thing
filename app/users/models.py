@@ -2,6 +2,7 @@ from random import SystemRandom
 from backports.pbkdf2 import pbkdf2_hmac, compare_digest
 from flask.ext.login import UserMixin
 from sqlalchemy.ext.hybrid import hybrid_property
+
 from app import db
 
 class User(UserMixin, db.Model):

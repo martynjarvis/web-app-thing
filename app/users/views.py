@@ -1,7 +1,7 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask.ext.login import login_required, login_user, logout_user
 
-from evewallet.app import db
+from app import db
 from .forms import LoginForm, RegistrationForm
 from .models import User
 

@@ -12,7 +12,7 @@ tmpl_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ),
                            'app/templates'))
 
 app = Flask('wallet', template_folder=tmpl_dir)
-app.config.from_object('evewallet.app.settings')
+app.config.from_object('app.settings')
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)

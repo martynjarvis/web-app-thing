@@ -7,11 +7,9 @@ from flask.ext.login import LoginManager
 import settings
 import os
 
-tmpl_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ),
-                           '..',
-                           'app/templates'))
-
-app = Flask('wallet', template_folder=tmpl_dir)
+app = Flask('wallet',
+            template_folder='app/templates',
+            static_folder='app/static')
 app.config.from_object('app.settings')
 app.config.from_envvar('FLASK_SETTINGS')
 
@@ -27,9 +25,9 @@ login_manager.login_view = "users.login"
 def load_user(user_id):
     return User.query.get(user_id)
 
-#from yamldata import LoadCommand
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
+#from yamldata import LoadCommand
 #manager.add_command('load', LoadCommand)
 
 from .users.views import users

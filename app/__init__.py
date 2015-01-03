@@ -13,6 +13,7 @@ tmpl_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ),
 
 app = Flask('wallet', template_folder=tmpl_dir)
 app.config.from_object('app.settings')
+app.config.from_envvar('FLASK_SETTINGS')
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)

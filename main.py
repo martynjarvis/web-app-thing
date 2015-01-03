@@ -1,4 +1,4 @@
-from evewallet.webapp import manager
+from evewallet.app import manager
 
 if __name__ == '__main__':
     manager.run()

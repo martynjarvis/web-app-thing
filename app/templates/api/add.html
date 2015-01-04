@@ -2,7 +2,7 @@
 {% import "helpers/forms.html" as forms %}
 {% block content %}
 {{super()}}
-<form action="{{url_for('users.register')}}" method="POST">
+<form action="{{url_for('api_add')}}" method="POST">
     {{ forms.render(form) }}
     <button type="Submit" class="btn btn-default">Submit</button>
 </form>

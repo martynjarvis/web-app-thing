@@ -33,8 +33,8 @@ manager.add_command('db', MigrateCommand)
 from .users.views import users
 app.register_blueprint(users)
 
-import views
+from .api.views import api
+app.register_blueprint(api)
 
-#import models
-#import workers
-#import data
+import views
+import api

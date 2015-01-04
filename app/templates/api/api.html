@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row">
+      <div class="col-md-12">
+            <div class="page-header">
+              <h1>API Keys</h1>
+            </div>          
+
+            <table class="table">
+                <thead>
+                    <th scope="col">ID</th>
+                    <th scope="col">Verification Code</th>
+                    <th scope="col"> </th>
+                </thead>
+                <tbody>
+                    {% for api in data %}  
+                        <tr> 
+                        <td>{{api.id}}</td> 
+                        <td>{{api.vcode}}</td> 
+                        <td><a href="api_refresh/{{api.id}}"><span class="glyphicon glyphicon-refresh"></span></a> <a href="api_delete/{{api.id}}"><span class="glyphicon glyphicon-remove"></span></a></td> 
+                        </tr> 
+                    {% endfor %} 
+                <tbody>
+            </table>
+        </div><!--/col-md--->
+        <div class="col-md-2 col-md-offset-9">
+            <a href="/api_refresh_all"><button type="button" class="btn btn-default">Refresh All</button></a>
+            <a href="/api_add"><button type="button" class="btn btn-primary">Add</button></a>
+        </div><!--/col-md--->
+    </div><!--/row-->
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+

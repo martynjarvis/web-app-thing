@@ -2,6 +2,7 @@ from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 from flask.ext.wtf import Form
 from wtforms import fields
 from wtforms.validators import Email, InputRequired, ValidationError
+import eveapi
 
 #from .models import Api, Character, Corporation
 

@@ -7,23 +7,21 @@ import eveapi
 from .models import Api
 
 class ApiForm(Form):
-    id = fields.IntegerField("API ID", validators=[InputRequired()])
-    vcode = fields.StringField("VCode", validators=[InputRequired()])
+    keyID = fields.IntegerField("API ID", validators=[InputRequired()])
+    vCode = fields.StringField("VCode", validators=[InputRequired()])
 
-    def validate_id(form, field):
-        api = Api.query.filter(Api.id == field.data).first()
+    def validate_keyID(form, field):
+        api = Api.query.filter(Api.keyID == field.data).first()
         if api is not None:
             raise ValidationError("That API key already exists")
 
-    def validate_vcode(form, field):
-        auth = eveapi.EVEAPIConnection().auth(keyID=form.id.data,
-                                              vCode=form.vcode.data)
+    def validate_vCode(form, field):
+        auth = eveapi.EVEAPIConnection().auth(keyID=form.keyID.data,
+                                              vCode=form.vCode.data)
         try:
             APIKeyInfo = auth.account.APIKeyInfo()
         except eveapi.Error, e:
             raise ValidationError("Invalid API.") # TODO better reasons
 
         # keep api information on form object
-        # TODO, add fields from api call to form object so we can populate
-        # object similar to user
-        form.auth = APIKeyInfo
+        form.key = APIKeyInfo.key

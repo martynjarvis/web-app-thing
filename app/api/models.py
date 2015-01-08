@@ -16,8 +16,9 @@ class BaseMixin(object):
         return r
 
     def populate_from_object(self, obj):
-        for c in self.__table__.columns:
-            setattr(self, c.name, getattr(obj, c.name, default=None))
+        for n in self.__table__.c.keys():
+            if hasattr(obj, n):
+                setattr(self, n, getattr(obj, n))
 
     def __repr__(self):
         values = ', '.join("{0}={1}".format(n, getattr(self, n))
@@ -28,19 +29,19 @@ class BaseMixin(object):
 # could add another mixin that deals with assets and orders, where we have to
 # keep track of old orders
 
-class Api(db.Model):
+class Api(BaseMixin, db.Model):
     __tablename__ = 'Api'
-    id = db.Column(db.Integer, primary_key=True)
-    vcode = db.Column(db.String(80))
-    access_mask = db.Column(db.Integer)
+    keyID = db.Column(db.Integer, primary_key=True)
+    vCode = db.Column(db.String(80))
+    accessMask = db.Column(db.Integer)
     expires = db.Column(db.DateTime)
-    type = db.Column(db.Enum('Character', 'Corporation', name='api_types'))
+    type = db.Column(db.Enum('Account', 'Character', 'Corporation', name='api_types'))
 
-    character_id = db.Column(db.Integer, db.ForeignKey('Character.id'))
-    corporation_id = db.Column(db.Integer, db.ForeignKey('Corporation.id'))
+    #character_id = db.Column(db.Integer, db.ForeignKey('Character.id'))
+    #corporation_id = db.Column(db.Integer, db.ForeignKey('Corporation.id'))
 
-    character = db.relationship("Character", backref="api_keys")
-    corporation = db.relationship("Corporation", backref="api_keys")
+    #character = db.relationship("Character", backref="api_keys")
+    #corporation = db.relationship("Corporation", backref="api_keys")
 
 class Character(db.Model):
     __tablename__ = 'Character'

@@ -22,6 +22,7 @@ def add():
     if form.validate_on_submit():
         api = Api()
         form.populate_obj(api)
+        api.populate_from_object(form.key)
         db.session.add(api)
         db.session.commit()
         return redirect(url_for('api.apis'))

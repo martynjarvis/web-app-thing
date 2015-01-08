@@ -4,10 +4,8 @@ class Api(db.Model):
     __tablename__ = 'Api'
     id = db.Column(db.Integer, primary_key=True)
     vcode = db.Column(db.String(80))
-    type = db.Column(db.Integer)
     access_mask = db.Column(db.Integer)
     expires = db.Column(db.DateTime)
-    type = db.Column(db.Integer)
     type = db.Column(db.Enum('Character', 'Corporation', name='api_types'))
 
     character_id = db.Column(db.Integer, db.ForeignKey('Character.id'))
@@ -15,6 +13,9 @@ class Api(db.Model):
 
     character = db.relationship("Character", backref="api_keys")
     corporation = db.relationship("Corporation", backref="api_keys")
+
+    # TODO perhaps as a MixIn we want a populate_from_api(x) where x is the
+    # eveapi object
 
 class Character(db.Model):
     __tablename__ = 'Character'

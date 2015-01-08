@@ -24,4 +24,6 @@ class ApiForm(Form):
             raise ValidationError("Invalid API.") # TODO better reasons
 
         # keep api information on form object
+        # TODO, add fields from api call to form object so we can populate
+        # object similar to user
         form.auth = APIKeyInfo

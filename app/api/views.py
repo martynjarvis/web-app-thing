@@ -4,6 +4,7 @@ from flask.ext.login import login_required
 from app import db
 from .forms import ApiForm
 from .models import Api, Character, Corporation
+import tasks
 
 api = Blueprint('api', __name__)
 
@@ -23,6 +24,14 @@ def add():
         api = Api()
         form.populate_obj(api)
         api.populate_from_object(form.key)
+        for c in form.key.characters:
+            character = Character.get_or_create(characterID=c.characterID)
+            character.populate_from_object(c)
+            api.characters.append(character)
+            tasks.character_sheet.apply_async(countdown=1,
+                                              args=(form.keyID.data,
+                                                    form.vCode.data,
+                                                    c.characterID))
         db.session.add(api)
         db.session.commit()
         return redirect(url_for('api.apis'))
@@ -42,6 +51,18 @@ def delete(api_id):
     except IntegrityError:
         db.session.rollback()
         flash('API Error','error')
+    return redirect(url_for('api.apis'))
+
+@api.route('/api_refresh/<api_id>')
+@login_required
+def refresh(api_id):
+    ''' refresh an API'''
+    this_api = db.session.query(Api).get(api_id)
+    for c in this_api.characters:
+        tasks.character_sheet.apply_async(countdown=1,
+                                          args=(this_api.keyID,
+                                                this_api.vCode,
+                                                c.characterID))
     return redirect(url_for('api.apis'))
 
 @api.route('/characters')

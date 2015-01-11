@@ -25,12 +25,13 @@ class BaseMixin(object):
                            for n in self.__table__.c.keys())
         return "{0}({1})".format(self.__class__.__name__, values)
 
-# could add another mixin that deals with assets and orders, where we have to
-# keep track of old orders
-
 ApiCharacter = db.Table('api_apicharacter',
                         db.Column('characterID', db.Integer, db.ForeignKey('api_character.characterID')),
                         db.Column('keyID', db.Integer, db.ForeignKey('api_api.keyID')))
+
+ApiCorporation = db.Table('api_apicorporation',
+                          db.Column('corporationID', db.Integer, db.ForeignKey('api_corporation.corporationID')),
+                          db.Column('keyID', db.Integer, db.ForeignKey('api_api.keyID')))
 
 class Api(BaseMixin, db.Model):
     __tablename__ = 'api_api'
@@ -71,4 +72,45 @@ class Character(BaseMixin, db.Model):
     balance = db.Column(db.Numeric(12, 2))
     apis = db.relationship('Api', secondary=ApiCharacter, backref='characters')
 
-Corporation = None
+class Corporation(BaseMixin, db.Model):
+    __tablename__ = 'api_corporation'
+    corporationID = db.Column(db.Integer, primary_key=True)
+    corporationName = db.Column(db.String(80))
+    ticker = db.Column(db.String(5))
+    ceoID = db.Column(db.Integer)
+    ceoName = db.Column(db.String(80))
+    stationID = db.Column(db.Integer)
+    stationName = db.Column(db.String(80))
+    description = db.Column(db.String(80))
+    url = db.Column(db.String(80))
+    allianceID = db.Column(db.Integer)
+    factionID = db.Column(db.Integer)
+    taxRate = db.Column(db.Float)
+    memberCount = db.Column(db.Integer)
+    memberLimit = db.Column(db.Integer)
+    shares = db.Column(db.Integer)
+    apis = db.relationship('Api', secondary=ApiCorporation, backref='corporations')
+
+class Transaction(BaseMixin, db.Model):
+    __tablename__ = 'api_transaction'
+    transactionDateTime = db.Column(db.DateTime)
+    transactionID = db.Column(db.Integer, primary_key=True)
+    quantity = db.Column(db.Integer)
+    typeName = db.Column(db.String(80))
+    typeID = db.Column(db.Integer)
+    price = db.Column(db.Numeric(12, 2))
+    clientID = db.Column(db.Integer)
+    clientName = db.Column(db.String(80))
+    stationID = db.Column(db.Integer)
+    stationName = db.Column(db.String(80))
+    transactionType = db.Column(db.Enum("buy", "sell", name='api_transactiontypes'))
+    transactionFor = db.Column(db.Enum("personal","corporation", name='api_transactiontypes'))
+    journalTransactionID = db.Column(db.BigInteger)
+    clientTypeID = db.Column(db.Integer)
+
+    characterID = db.Column(db.Integer, db.ForeignKey('api_character.characterID'), nullable=True)
+    character = db.relationship("Character", backref="transactions")
+
+    corporationID = db.Column(db.Integer, db.ForeignKey('api_corporation.corporationID'), nullable=True)
+    corporation = db.relationship("Corporation", backref="transactions")
+

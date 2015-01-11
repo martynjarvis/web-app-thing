@@ -24,14 +24,23 @@ def add():
         api = Api()
         form.populate_obj(api)
         api.populate_from_object(form.key)
-        for c in form.key.characters:
-            character = Character.get_or_create(characterID=c.characterID)
-            character.populate_from_object(c)
-            api.characters.append(character)
-            tasks.character_sheet.apply_async(countdown=1,
-                                              args=(form.keyID.data,
-                                                    form.vCode.data,
-                                                    c.characterID))
+        if api.type in ('Account', 'Character'):
+            for c in form.key.characters:
+                character = Character.get_or_create(characterID=c.characterID)
+                character.populate_from_object(c)
+                api.characters.append(character)
+                tasks.character_sheet.apply_async(countdown=1,
+                                                  kwargs={'keyID': form.keyID.data,
+                                                          'vCode': form.vCode.data,
+                                                          'characterID': c.characterID})
+        if api.type == 'Corporation':
+            c = form.key.characters[0]
+            corporation = Corporation.get_or_create(corporationID=c.corporationID)
+            corporation.populate_from_object(c)
+            api.corporations.append(corporation)
+            tasks.corporation_sheet.apply_async(countdown=1,
+                                                kwargs={'keyID': form.keyID.data,
+                                                        'vCode': form.vCode.data})
         db.session.add(api)
         db.session.commit()
         return redirect(url_for('api.apis'))
@@ -58,11 +67,12 @@ def delete(api_id):
 def refresh(api_id):
     ''' refresh an API'''
     this_api = db.session.query(Api).get(api_id)
-    for c in this_api.characters:
-        tasks.character_sheet.apply_async(countdown=1,
-                                          args=(this_api.keyID,
-                                                this_api.vCode,
-                                                c.characterID))
+    tasks.corporation_sheet.apply_async(kwargs={'keyID': this_api.keyID,
+                                                'vCode': this_api.vCode})
+    #for c in this_api.characters:
+        #tasks.character_sheet.apply_async(kwargs={'keyID': this_api.keyID,
+                                                  #'vCode': this_api.vCode,
+                                                  #'characterID': c.characterID})
     return redirect(url_for('api.apis'))
 
 @api.route('/characters')

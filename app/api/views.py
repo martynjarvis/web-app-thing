@@ -3,7 +3,7 @@ from flask.ext.login import login_required
 
 from app import db
 from .forms import ApiForm
-from .models import Api, Character, Corporation, Transaction
+from .models import Api, Character, Corporation, Transaction, Order
 import tasks
 
 api = Blueprint('api', __name__)
@@ -68,13 +68,13 @@ def refresh(api_id):
     ''' refresh an API'''
     this_api = db.session.query(Api).get(api_id)
     if this_api.type == 'Corporation':
-        tasks.transactions.apply_async(kwargs={'keyID': this_api.keyID,
-                                               'vCode': this_api.vCode})
+        tasks.orders.apply_async(kwargs={'keyID': this_api.keyID,
+                                         'vCode': this_api.vCode})
     else:
         for c in this_api.characters:
-            tasks.transactions.apply_async(kwargs={'keyID': this_api.keyID,
-                                                   'vCode': this_api.vCode,
-                                                   'characterID': c.characterID})
+            tasks.orders.apply_async(kwargs={'keyID': this_api.keyID,
+                                             'vCode': this_api.vCode,
+                                             'characterID': c.characterID})
     return redirect(url_for('api.apis'))
 
 @api.route('/characters')
@@ -97,4 +97,9 @@ def transactions():
     data = db.session.query(Transaction).all() #TODO this returns all transactions currently, need to think about this
     return render_template('api/transactions.html', title="Transactions", data=data )
 
+@api.route('/orders')
+@login_required
+def orders():
+    data = db.session.query(Order).all()
+    return render_template('api/orders.html', title="Orders", data=data )
 

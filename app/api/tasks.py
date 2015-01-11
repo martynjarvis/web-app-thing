@@ -3,11 +3,11 @@ import functools
 import time
 
 from app import db, celery
-from .models import Corporation, Character, Api, Transaction
+from .models import Corporation, Character, Api, Transaction, Order
 
 ROWCOUNT = 500
 
-# TODO, cache?
+# TODO, cache
 
 def api_requirements(access_mask=None, allowed_types=None):
     def decorator(method):
@@ -56,67 +56,92 @@ def _corporation_sheet(**kwargs):
 
 @celery.task()
 def transactions(**kwargs):
-    #TODO corp or character transactions?
     this_api = db.session.query(Api).get(kwargs['keyID'])
-    auth = eveapi.EVEAPIConnection().auth(keyID=kwargs['keyID'],
-                                          vCode=kwargs['vCode'])
+    kwargs.update({'this_api': this_api}) # keep hold of api object
     if this_api.type == 'Corporation':
-        corporationID = this_api.corporations[0].corporationID
-        auth = auth.corp
-        extra_kwargs={'this_api':this_api,
-                      'auth':auth,
-                      'corporationID':corporationID}
-        kwargs.update(extra_kwargs)
         return _transactions_corp(**kwargs)
     else:
-        characterID = kwargs['characterID']
-        auth = auth.character(characterID)
-        extra_kwargs={'this_api':this_api,
-                      'auth':auth,
-                      'characterID':characterID}
-        kwargs.update(extra_kwargs)
         return _transactions_char(**kwargs)
-
-@api_requirements(access_mask=4194304, allowed_types=['Character','Account'])
-def _transactions_char(**kwargs):
-    fromID = 0  # seems to work
-    new = None
-    transaction_list=[]
-    while new is None or new>0:
-        new = 0
-        walletTransactions = kwargs['auth'].WalletTransactions(rowCount=ROWCOUNT,
-                                                               fromID=fromID)
-        for t in walletTransactions.transactions :
-            if Transaction.get_by(transactionID=t.transactionID) is None:
-                transaction = Transaction(transactionID=t.transactionID)
-                transaction.populate_from_object(t)
-                transaction.characterID=kwargs['characterID']
-                new+=1
-                print t.transactionID
-                transaction_list.append(transaction)
-            fromID = t.transactionID if fromID == 0 else min(t.transactionID,fromID)
-        time.sleep(1)
-    db.session.add_all(transaction_list)
-    db.session.commit()
 
 @api_requirements(access_mask=2097152, allowed_types=['Corporation'])
 def _transactions_corp(**kwargs):
+    auth = eveapi.EVEAPIConnection().auth(keyID=kwargs['keyID'],
+                                          vCode=kwargs['vCode'])
+    corp_auth = auth.corp
+    corporation = kwargs['this_api'].corporations[0]
+    _update_transactions(corp_auth, corporationID=corporation.corporationID)
+
+@api_requirements(access_mask=4194304, allowed_types=['Character','Account'])
+def _transactions_char(**kwargs):
+    auth = eveapi.EVEAPIConnection().auth(keyID=kwargs['keyID'],
+                                          vCode=kwargs['vCode'])
+    char_auth = auth.character(kwargs['characterID'])
+    character = Character.get_by(characterID=kwargs['characterID'])
+    _update_transactions(char_auth, characterID=character.characterID)
+
+def _update_transactions(auth, corporationID=None, characterID=None):
     fromID = 0  # seems to work
     new = None
     transaction_list=[]
     while new is None or new>0:
         new = 0
-        walletTransactions = kwargs['auth'].WalletTransactions(rowCount=ROWCOUNT,
-                                                               fromID=fromID)
+        walletTransactions = auth.WalletTransactions(rowCount=ROWCOUNT,
+                                                     fromID=fromID)
         for t in walletTransactions.transactions :
             if Transaction.get_by(transactionID=t.transactionID) is None:
                 transaction = Transaction(transactionID=t.transactionID)
                 transaction.populate_from_object(t)
-                transaction.corporationID=kwargs['corporationID']
+                if corporationID:
+                    transaction.corporationID=corporationID
+                if characterID:
+                    transaction.characterID=characterID
                 new+=1
-                print t.transactionID
                 transaction_list.append(transaction)
             fromID = t.transactionID if fromID == 0 else min(t.transactionID,fromID)
         time.sleep(1)
     db.session.add_all(transaction_list)
     db.session.commit()
+
+@celery.task()
+def orders(**kwargs):
+    this_api = db.session.query(Api).get(kwargs['keyID'])
+    kwargs.update({'this_api': this_api}) # keep hold of api object
+    if this_api.type == 'Corporation':
+        return _orders_corp(**kwargs)
+    else:
+        return _orders_char(**kwargs)
+
+@api_requirements(access_mask=4096, allowed_types=['Corporation'])
+def _orders_corp(**kwargs):
+    auth = eveapi.EVEAPIConnection().auth(keyID=kwargs['keyID'],
+                                          vCode=kwargs['vCode'])
+    corporationID = kwargs['this_api'].corporations[0].corporationID
+    active_orders = db.session.query(Order).filter_by(corporationID=corporationID,
+                                                      orderState=0).all()
+    _update_orders(auth.corp, active_orders, corporationID)
+
+@api_requirements(access_mask=4096, allowed_types=['Character','Account'])
+def _orders_char(**kwargs):
+    auth = eveapi.EVEAPIConnection().auth(keyID=kwargs['keyID'],
+                                          vCode=kwargs['vCode'])
+    characterID = kwargs['characterID']
+    active_orders = db.session.query(Order).filter_by(charID=characterID,
+                                                      orderState=0).all()
+    _update_orders(auth.character(characterID), active_orders)
+
+def _update_orders(auth, order_list, corporationID=None):
+    updated_orders = []
+    marketOrders = auth.MarketOrders()
+    for api_order in marketOrders.orders:
+        db_order = Order.get_or_create(orderID=api_order.orderID)
+        db_order.populate_from_object(api_order)
+        if corporationID:
+            db_order.corporationID=corporationID
+        updated_orders.append(api_order.orderID)
+
+    for old_order in order_list:
+        if old_order.orderID not in updated_orders:
+            api_order = auth.marketOrders(orderID=old_order.orderID).orders[0]
+            old_order.populate_from_object(api_order)
+    db.session.commit()
+

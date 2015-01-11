@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.4/css/jquery.dataTables.css">
+<!-- DataTables -->
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.js"></script>
+
+<script type="text/javascript">
+    $(document).ready( 
+        function () { 
+            $('#example').DataTable(); 
+        } 
+    );
+</script>
+
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+      <div class="col-md-12">
+            <div class="page-header">
+                <h1>Market Orders <small>tag</small></h1>
+            </div>    
+            
+            <table class="table" id="example">     
+                <thead>
+                    <th scope="col">Corporation</th>
+                    <th scope="col">Character</th>
+                    <th scope="col">b/s</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Item</th>
+                    <th class="ral" scope="col">Price</th>
+                    <th class="ral" scope="col">n</th>
+                    <th class="ral" scope="col">Total</th>
+                    <th scope="col">Station</th>
+                </thead>
+                <tbody>
+                    {% for row in data %}  
+                    <tr> 
+                    <td><a href="/corp/{{row.corpID}}">{{row.corporation.name}}</a></td>
+                    <td><a href="/char/{{row.charID}}">{{row.character.name}}</a></td>
+                    <td>{{row.bid}}</td>
+                    <td>{{row.issued}}</td>
+                    <td><a href="/item/{{row.typeID}}">{{row.typeID}}</a></td>
+                    <td class="ral">{{'{:20,.2f}'.format(row.price)}}</td>
+                    <td class="ral">{{row.volRemaining}}</td>
+                    <td class="ral">{{'{:20,.2f}'.format(row.price*row.volRemaining)}} </td>
+                    <td><a href="/station/{{row.stationID}}">{{row.stationID}}</a></td> 
+                    </tr> 
+                    {% endfor %} 
+                <tbody>
+            </table>
+        </div><!--/col-md-->
+    </div><!--/row-->
+{% endblock %}

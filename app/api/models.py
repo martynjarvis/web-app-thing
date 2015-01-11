@@ -116,3 +116,30 @@ class Transaction(BaseMixin, db.Model):
     corporationID = db.Column(db.Integer, db.ForeignKey('api_corporation.corporationID'), nullable=True)
     corporation = db.relationship("Corporation", backref="transactions")
 
+
+class Order(BaseMixin, db.Model):
+    __tablename__ = 'api_order'
+    orderID = db.Column(db.Integer, primary_key=True)
+    clientTypeID = db.Column(db.Integer)
+    stationID = db.Column(db.Integer)
+    volEntered = db.Column(db.Integer)
+    volRemaining = db.Column(db.Integer)
+    minVolume = db.Column(db.Integer)
+    orderState = db.Column(db.Integer)
+    typeID = db.Column(db.Integer)
+    range = db.Column(db.Integer)
+    accountKey = db.Column(db.Integer)
+    duration = db.Column(db.Integer)
+    escrow = db.Column(db.Numeric(12, 2))
+    price = db.Column(db.Numeric(12, 2))
+    bid = db.Column(db.Boolean)
+    issued = db.Column(db.DateTime)
+
+    # API returns charID :/
+    charID = db.Column(db.Integer, db.ForeignKey('api_character.characterID'), nullable=True)
+    character = db.relationship("Character", backref="orders")
+
+    corporationID = db.Column(db.Integer, db.ForeignKey('api_corporation.corporationID'), nullable=True)
+    corporation = db.relationship("Corporation", backref="orders")
+
+

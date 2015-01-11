@@ -90,6 +90,8 @@ class Corporation(BaseMixin, db.Model):
     memberLimit = db.Column(db.Integer)
     shares = db.Column(db.Integer)
     apis = db.relationship('Api', secondary=ApiCorporation, backref='corporations')
+    # TODO, each api can actually only have a single corporation? is this
+    # important?
 
 class Transaction(BaseMixin, db.Model):
     __tablename__ = 'api_transaction'

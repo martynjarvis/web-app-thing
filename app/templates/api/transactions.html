@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+    <style type="text/css">
+      @import "/static/datatables/css/demo_table.css";
+    </style>
+
+<script class="jsbin" src="http://datatables.net/download/build/jquery.dataTables.nightly.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#example').dataTable({
+    "iDisplayLength": 15,
+    "aLengthMenu": [[15,50,100,500,-1], [15,50,100,500, "All"]],
+    });
+});
+</script>
+
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+      <div class="col-md-12">
+            <div class="page-header">
+                <h1>Transactions <small>from wallet</small></h1>
+            </div>    
+            
+            <table class="table" id="example">     
+                <thead>
+                    <th scope="col">For</th>
+                    <th scope="col">Corporation</th>
+                    <th scope="col">Character</th>
+                    <th scope="col">b/s</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Item</th>
+                    <th class="ral" scope="col">Price</th>
+                    <th class="ral" scope="col">n</th>
+                    <th class="ral" scope="col">Total</th>
+                    <th scope="col">Station</th>
+                </thead>
+                <tbody>
+                    {% for row in data %}  
+                    <tr> 
+                    <td>{{row.transactionFor}}</td>
+                    <td><a href="/corp/{{row.corporationID}}">{{row.corporation.corporationName}}</a></td>
+                    <td><a href="/char/{{row.characterID}}">{{row.character.name}}</a></td>
+                    <td>{{row.transactionType}}</td>
+                    <td>{{row.transactionDateTime}}</td>
+                    <td><a href="/item/{{row.typeID}}">{{row.typeName}}</a></td>
+                    <td class="ral">{{'{:20,.2f}'.format(row.price)}}</td>
+                    <td class="ral">{{row.quantity}}</td>
+                    {% if row.transactionType==2 %}  
+                    <td class="ral"><p class="text-success"> {{'{:20,.2f}'.format(row.quantity*row.price)}} </p></td>
+                    {% else %}  
+                    <td class="ral"><p class="text-error"> {{'{:20,.2f}'.format(row.quantity*row.price)}} </p></td>
+                    {% endif %}  
+                    <td><a href="/station/{{row.stationID}}">{{row.stationName}}</a></td> 
+                    </tr> 
+                    {% endfor %} 
+                <tbody>
+            </table>
+        </div><!--/col-md-->
+    </div><!--/row-->
+{% endblock %}

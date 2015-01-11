@@ -1,8 +1,11 @@
 import eveapi
 import functools
+import time
 
 from app import db, celery
-from .models import Corporation, Character, Api
+from .models import Corporation, Character, Api, Transaction
+
+ROWCOUNT = 500
 
 # TODO, cache?
 
@@ -10,7 +13,7 @@ def api_requirements(access_mask=None, allowed_types=None):
     def decorator(method):
         @functools.wraps(method)
         def f(**kwargs):
-            this_api = db.session.query(Api).get(kwargs['keyID'])
+            this_api = kwargs.get('this_api', None) or db.session.query(Api).get(kwargs['keyID'])
             if (access_mask is None) or ((this_api.accessMask & access_mask) > 1):
                 if (allowed_types is None) or (this_api.type in allowed_types):
                     method(**kwargs)
@@ -42,6 +45,7 @@ def _corporation_sheet(**kwargs):
                                               vCode=kwargs['vCode'])
         sheet = auth.corp.CorporationSheet()
     elif 'characterID' in kwargs:
+        # TODO, Can't currently reach this due to decorator...
         auth = eveapi.EVEAPIConnection()
         sheet = auth.corp.CorporationSheet(characterID=kwargs['characterID'])
     else:
@@ -53,8 +57,66 @@ def _corporation_sheet(**kwargs):
 @celery.task()
 def transactions(**kwargs):
     #TODO corp or character transactions?
-    return _transactions(**kwargs)
+    this_api = db.session.query(Api).get(kwargs['keyID'])
+    auth = eveapi.EVEAPIConnection().auth(keyID=kwargs['keyID'],
+                                          vCode=kwargs['vCode'])
+    if this_api.type == 'Corporation':
+        corporationID = this_api.corporations[0].corporationID
+        auth = auth.corp
+        extra_kwargs={'this_api':this_api,
+                      'auth':auth,
+                      'corporationID':corporationID}
+        kwargs.update(extra_kwargs)
+        return _transactions_corp(**kwargs)
+    else:
+        characterID = kwargs['characterID']
+        auth = auth.character(characterID)
+        extra_kwargs={'this_api':this_api,
+                      'auth':auth,
+                      'characterID':characterID}
+        kwargs.update(extra_kwargs)
+        return _transactions_char(**kwargs)
 
-@api_requirements(access_mask=8, allowed_types=['Corporation'])
-def _transactions(**kwargs):
-    pass
+@api_requirements(access_mask=4194304, allowed_types=['Character','Account'])
+def _transactions_char(**kwargs):
+    fromID = 0  # seems to work
+    new = None
+    transaction_list=[]
+    while new is None or new>0:
+        new = 0
+        walletTransactions = kwargs['auth'].WalletTransactions(rowCount=ROWCOUNT,
+                                                               fromID=fromID)
+        for t in walletTransactions.transactions :
+            if Transaction.get_by(transactionID=t.transactionID) is None:
+                transaction = Transaction(transactionID=t.transactionID)
+                transaction.populate_from_object(t)
+                transaction.characterID=kwargs['characterID']
+                new+=1
+                print t.transactionID
+                transaction_list.append(transaction)
+            fromID = t.transactionID if fromID == 0 else min(t.transactionID,fromID)
+        time.sleep(1)
+    db.session.add_all(transaction_list)
+    db.session.commit()
+
+@api_requirements(access_mask=2097152, allowed_types=['Corporation'])
+def _transactions_corp(**kwargs):
+    fromID = 0  # seems to work
+    new = None
+    transaction_list=[]
+    while new is None or new>0:
+        new = 0
+        walletTransactions = kwargs['auth'].WalletTransactions(rowCount=ROWCOUNT,
+                                                               fromID=fromID)
+        for t in walletTransactions.transactions :
+            if Transaction.get_by(transactionID=t.transactionID) is None:
+                transaction = Transaction(transactionID=t.transactionID)
+                transaction.populate_from_object(t)
+                transaction.corporationID=kwargs['corporationID']
+                new+=1
+                print t.transactionID
+                transaction_list.append(transaction)
+            fromID = t.transactionID if fromID == 0 else min(t.transactionID,fromID)
+        time.sleep(1)
+    db.session.add_all(transaction_list)
+    db.session.commit()

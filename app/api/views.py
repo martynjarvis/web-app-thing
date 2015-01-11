@@ -3,7 +3,7 @@ from flask.ext.login import login_required
 
 from app import db
 from .forms import ApiForm
-from .models import Api, Character, Corporation
+from .models import Api, Character, Corporation, Transaction
 import tasks
 
 api = Blueprint('api', __name__)
@@ -67,12 +67,14 @@ def delete(api_id):
 def refresh(api_id):
     ''' refresh an API'''
     this_api = db.session.query(Api).get(api_id)
-    tasks.corporation_sheet.apply_async(kwargs={'keyID': this_api.keyID,
-                                                'vCode': this_api.vCode})
-    #for c in this_api.characters:
-        #tasks.character_sheet.apply_async(kwargs={'keyID': this_api.keyID,
-                                                  #'vCode': this_api.vCode,
-                                                  #'characterID': c.characterID})
+    if this_api.type == 'Corporation':
+        tasks.transactions.apply_async(kwargs={'keyID': this_api.keyID,
+                                               'vCode': this_api.vCode})
+    else:
+        for c in this_api.characters:
+            tasks.transactions.apply_async(kwargs={'keyID': this_api.keyID,
+                                                   'vCode': this_api.vCode,
+                                                   'characterID': c.characterID})
     return redirect(url_for('api.apis'))
 
 @api.route('/characters')
@@ -88,4 +90,11 @@ def corporations():
     ''' List corporations in db linked to this user '''
     corps = db.session.query(Corporation).all()
     return render_template('api/corporations.html', title="corporations", data=corps)
+
+@api.route('/transactions')
+@login_required
+def transactions():
+    data = db.session.query(Transaction).all() #TODO this returns all transactions currently, need to think about this
+    return render_template('api/transactions.html', title="Transactions", data=data )
+
 

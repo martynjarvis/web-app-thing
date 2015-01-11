@@ -1,19 +1,17 @@
 {% extends "base.html" %}
 
 {% block extra_head %}
-    <style type="text/css">
-      @import "/static/datatables/css/demo_table.css";
-    </style>
-
-<script class="jsbin" src="http://datatables.net/download/build/jquery.dataTables.nightly.js"></script>
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.4/css/jquery.dataTables.css">
+<!-- DataTables -->
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.js"></script>
 
 <script type="text/javascript">
-$(document).ready(function(){
-    $('#example').dataTable({
-    "iDisplayLength": 15,
-    "aLengthMenu": [[15,50,100,500,-1], [15,50,100,500, "All"]],
-    });
-});
+    $(document).ready( 
+        function () { 
+            $('#example').DataTable(); 
+        } 
+    );
 </script>
 
 {% endblock %}
@@ -52,7 +50,7 @@ $(document).ready(function(){
                     {% if row.transactionType==2 %}  
                     <td class="ral"><p class="text-success"> {{'{:20,.2f}'.format(row.quantity*row.price)}} </p></td>
                     {% else %}  
-                    <td class="ral"><p class="text-error"> {{'{:20,.2f}'.format(row.quantity*row.price)}} </p></td>
+                    <td class="ral"><p class="text-danger"> {{'{:20,.2f}'.format(row.quantity*row.price)}} </p></td>
                     {% endif %}  
                     <td><a href="/station/{{row.stationID}}">{{row.stationName}}</a></td> 
                     </tr> 

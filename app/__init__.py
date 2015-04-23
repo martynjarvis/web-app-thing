@@ -12,7 +12,10 @@ app = Flask('wallet',
             template_folder='app/templates',
             static_folder='app/static')
 app.config.from_object('app.settings')
-app.config.from_envvar('FLASK_SETTINGS')
+try:
+    app.config.from_envvar('FLASK_SETTINGS')
+except RuntimeError:
+    pass  # dev env, set prod env settings in env var
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)

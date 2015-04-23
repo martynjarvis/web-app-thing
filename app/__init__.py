@@ -1,3 +1,7 @@
+import datetime
+import eveapi
+import os
+
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.migrate import Migrate, MigrateCommand
@@ -6,7 +10,6 @@ from flask.ext.login import LoginManager
 from celery import Celery
 
 import settings
-import os
 
 app = Flask('wallet',
             template_folder='app/templates',
@@ -45,9 +48,23 @@ class ContextTask(TaskBase):
             return TaskBase.__call__(self, *args, **kwargs)
 celery.Task = ContextTask
 
-# eve api stuff
-import eveapi
-#TODO, user cast function can go here as well
+# eveapi stuff
+def eveapi_cast_func(key, value):
+    # attempts to cast an XML string to the most probable type.
+    cast_funcs = (
+        lambda x: datetime.datetime.strptime(x, "%Y-%m-%d %H:%M:%S"),
+        int,
+        float)
+
+    for f in cast_funcs:
+        try:
+            return f(value)
+        except ValueError:
+            pass
+
+    return value  # couldn't cast. return string unchanged.
+
+eveapi.set_cast_func(eveapi_cast_func)
 eveapi.set_user_agent("twitter:@_scruff")
 
 

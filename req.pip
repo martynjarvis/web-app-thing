@@ -24,3 +24,4 @@ pytz==2015.2
 redis==2.10.3
 uWSGI==2.0.9
 wsgiref==0.1.2
+pycrest==0.0.5

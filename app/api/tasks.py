@@ -22,6 +22,21 @@ def api_requirements(access_mask=None, allowed_types=None):
         return f
     return decorator
 
+
+@celery.task()
+def refresh_all(keyID):
+    this_api = db.session.query(Api).get(keyID)
+    kwargs={'keyID': this_api.keyID, 'vCode': this_api.vCode}
+    if this_api.type == 'Corporation':
+        for fn in (transactions, orders):
+            fn.apply_async(kwargs=kwargs)
+    else:
+        for c in this_api.characters:
+            kwargs['characterID'] = c.characterID
+            for fn in (transactions, orders):
+                fn.apply_async(kwargs=kwargs)
+
+
 @celery.task()
 def character_sheet(**kwargs):
     return _character_sheet(**kwargs)

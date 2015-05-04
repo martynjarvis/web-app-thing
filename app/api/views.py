@@ -66,15 +66,7 @@ def delete(api_id):
 @login_required
 def refresh(api_id):
     ''' refresh an API'''
-    this_api = db.session.query(Api).get(api_id)
-    if this_api.type == 'Corporation':
-        tasks.orders.apply_async(kwargs={'keyID': this_api.keyID,
-                                         'vCode': this_api.vCode})
-    else:
-        for c in this_api.characters:
-            tasks.orders.apply_async(kwargs={'keyID': this_api.keyID,
-                                             'vCode': this_api.vCode,
-                                             'characterID': c.characterID})
+    tasks.refresh_all.apply_async(kwargs={'keyID': api_id})
     return redirect(url_for('api.apis'))
 
 @api.route('/characters')

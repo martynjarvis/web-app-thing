@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row">
+      <div class="col-md-12">
+            <div class="page-header">
+                <h1>{{name}}</h1>
+            </div>
+            {{other_data}}
+            {{link_fix}}
+            <table class="table">
+                <thead>
+                    <th scope="col">{{table_name}}</th>
+                </thead>
+                <tbody>
+                    {% for thing in data %}
+                        <tr>
+                            <td> <a href="{{link_fix + thing.name}}">{{thing.name}}</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div><!--/col-md--->
+    </div><!--/row-->
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+

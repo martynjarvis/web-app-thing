@@ -1,5 +1,6 @@
 import datetime
 import eveapi
+import pycrest
 import os
 
 from flask import Flask
@@ -67,6 +68,9 @@ def eveapi_cast_func(key, value):
 eveapi.set_cast_func(eveapi_cast_func)
 eveapi.set_user_agent("twitter:@_scruff")
 
+# eve crest stuff
+eve = pycrest.EVE()
+eve()  # initialize
 
 from .users.views import users
 app.register_blueprint(users)
@@ -74,5 +78,10 @@ app.register_blueprint(users)
 from .api.views import api
 app.register_blueprint(api)
 
+from .crest.views import crest
+app.register_blueprint(crest)
+
+# TODO, are these imports now necessary?
 import views
 import api
+import crest

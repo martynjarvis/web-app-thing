@@ -1,0 +1,46 @@
+---
+# file: roles/app/tasks/main.yml
+
+- name: create www dir
+  file:
+    path: /var/www
+    state: directory
+    owner: www-data
+    group: www-data
+  sudo: yes
+
+- name: create app dir
+  file:
+    path: /var/www/app
+    state: directory
+    owner: www-data
+    group: www-data
+  sudo: yes
+
+- name: checkout git repo
+  git:
+    repo: https://github.com/martynjarvis/web-app-thing.git
+    dest: /var/www/app/
+  sudo: yes
+  sudo_user: www-data
+
+- name: install pip requirements
+  pip: requirements=/var/www/app/req.pip
+  sudo: yes
+
+- name: check db migration
+  command: /usr/bin/python main.py db current
+  args:
+    chdir: /var/www/app/
+  sudo: yes
+  sudo_user: www-data
+  register: db_current
+  changed_when: False
+
+- name: migrate db
+  command: /usr/bin/python main.py db upgrade
+  args:
+    chdir: /var/www/app/
+  sudo: yes
+  sudo_user: www-data
+  when: db_current.stdout.find('(head)') == -1

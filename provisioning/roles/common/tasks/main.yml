@@ -1,0 +1,35 @@
+---
+# file: roles/common/tasks/main.yml
+- name: update cache
+  apt: update_cache=yes cache_valid_time=3600
+  sudo: yes
+
+- name: install curl
+  apt: name=curl state=present
+  sudo: yes
+
+- name: install git
+  apt: name=git state=present
+  sudo: yes
+
+- name: install build-essential
+  apt: name=build-essential state=present
+  sudo: yes
+
+- name: install python-dev
+  apt: name=python-dev state=present
+  sudo: yes
+
+- name: install python-pip
+  apt: name=python-pip state=present
+  sudo: yes
+
+- name: download pip
+  get_url:
+   url: https://bootstrap.pypa.io/get-pip.py
+   dest: /tmp/get-pip.py
+   validate_certs: no  # urgh don't do this
+
+- name: install pip
+  command: /usr/bin/python /tmp/get-pip.py creates=/usr/local/bin/pip
+  sudo: yes

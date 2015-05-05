@@ -1,0 +1,38 @@
+---
+
+- name: install nginx
+  apt: name=nginx
+  sudo: yes
+  notify:
+    - restart nginx
+
+- name: enable nginx service
+  service:
+    name: nginx
+    enabled: yes
+
+- name: deploy nginx config
+  copy:
+    src: flask_nginx.conf
+    dest: /etc/nginx/sites-available/flask_nginx.conf
+    mode: 0644
+  sudo: yes
+  notify:
+    - restart nginx
+
+- name: remove default config
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  sudo: yes
+  notify:
+    - restart nginx
+
+- name: enable nginx config
+  file:
+    src: /etc/nginx/sites-available/flask_nginx.conf
+    dest: /etc/nginx/sites-enabled/flask_nginx.conf
+    state: link
+  sudo: yes
+  notify:
+    - restart nginx

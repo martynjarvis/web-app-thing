@@ -1,0 +1,24 @@
+---
+
+- name: install uwsgi
+  pip: name=uwsgi
+  sudo: yes
+  notify:
+    - restart uwsgi
+
+- name: deploy uwsgi config
+  copy:
+    src: uwsgi.conf
+    dest: /etc/init/uwsgi.conf
+    mode: 0644
+  sudo: yes
+  notify:
+    - restart uwsgi
+
+- name: enable uwsgi service
+  service:
+    name: uwsgi
+    state: started
+    enabled: yes
+  sudo: yes
+

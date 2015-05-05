@@ -20,8 +20,9 @@ celery==3.1.18
 git+https://github.com/ntt/eveapi.git#egg=eveapi
 itsdangerous==0.24
 kombu==3.0.26
+pycrest==0.0.5
 pytz==2015.2
 redis==2.10.3
+requests==2.6.2
 uWSGI==2.0.9
 wsgiref==0.1.2
-pycrest==0.0.5

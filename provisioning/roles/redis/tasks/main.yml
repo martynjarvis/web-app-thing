@@ -1,0 +1,34 @@
+---
+
+- name: download redis source
+  get_url:
+   url: http://download.redis.io/releases/redis-3.0.2.tar.gz
+   dest: /tmp/redis-3.0.2.tar.gz
+   validate_certs: no  # urgh don't do this
+
+- name: extract redis source
+  unarchive:
+    src: /tmp/redis-3.0.2.tar.gz
+    dest: /tmp/
+    copy: no
+
+- name: install redis
+  command: make install
+  args:
+    chdir: /tmp/redis-3.0.2
+    creates: /usr/local/bin/redis-server
+  sudo: yes
+
+- name: deploy redis upstart
+  copy:
+    src: redis.conf
+    dest: /etc/init/redis.conf
+    mode: 0644
+  sudo: yes
+
+- name: enable redis service
+  service:
+    name: redis
+    state: started
+    enabled: yes
+  sudo: yes

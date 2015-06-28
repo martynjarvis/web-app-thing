@@ -1,16 +1,23 @@
 ---
 
+- name: check redis installation
+  command: redis-server --version
+  ignore_errors: yes
+  changed_when: False
+  register: redis_version
+
 - name: download redis source
   get_url:
    url: http://download.redis.io/releases/redis-3.0.2.tar.gz
    dest: /tmp/redis-3.0.2.tar.gz
-   validate_certs: no  # urgh don't do this
+  when: redis_version.rc != 0
 
 - name: extract redis source
   unarchive:
     src: /tmp/redis-3.0.2.tar.gz
     dest: /tmp/
     copy: no
+  when: redis_version.rc != 0
 
 - name: install redis
   command: make install
@@ -18,6 +25,7 @@
     chdir: /tmp/redis-3.0.2
     creates: /usr/local/bin/redis-server
   sudo: yes
+  when: redis_version.rc != 0
 
 - name: deploy redis upstart
   copy:

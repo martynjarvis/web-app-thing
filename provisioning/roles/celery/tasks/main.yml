@@ -1,0 +1,21 @@
+---
+# file: roles/celery/tasks/main.yml
+
+- name: install celery
+  pip:
+   name: celery
+  sudo: yes
+
+- name: deploy celery config
+  copy:
+    src: celery.conf
+    dest: /etc/init/celery.conf
+    mode: 0644
+  sudo: yes
+
+- name: enable celery service
+  service:
+    name: celery
+    state: started
+    enabled: yes
+  sudo: yes

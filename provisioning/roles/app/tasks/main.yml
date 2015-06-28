@@ -23,6 +23,9 @@
     dest: /var/www/app/
   sudo: yes
   sudo_user: www-data
+  notify:
+    - restart uwsgi
+    - restart celery
 
 - name: install pip requirements
   pip: requirements=/var/www/app/req.pip

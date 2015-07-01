@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="page-header">
+                <h1>SSO Details</h1>
+            </div>
+            {{ data }}
+            <br>
+            {{ current_user.expires }}
+            <br>
+            {{ current_user.refresh_token }}
+            <br>
+            {{ current_user.token }}
+        </div><!--/col-md-->
+    </div><!--/row-->
+{% endblock content %}

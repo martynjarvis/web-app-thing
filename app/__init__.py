@@ -27,16 +27,8 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 # set up auth
-from .users.models import User
-login_manager.login_view = "users.login"
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(user_id)
-
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
-#from yamldata import LoadCommand
-#manager.add_command('load', LoadCommand)
 
 # celery stuff
 celery = Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'])
@@ -69,11 +61,22 @@ eveapi.set_cast_func(eveapi_cast_func)
 eveapi.set_user_agent("twitter:@_scruff")
 
 # eve crest stuff
-eve = pycrest.EVE()
+eve = pycrest.EVE(
+    client_id=app.config['CREST_CLIENT_ID'],
+    api_key=app.config['CREST_SECRET_KEY'],
+    redirect_uri=app.config['CREST_CALLBACK_URL'])
 eve()  # initialize
 
-from .users.views import users
-app.register_blueprint(users)
+from .sso.models import User
+login_manager.login_view = "sso.sso_login"
+@login_manager.user_loader
+def load_user(user_id):
+    u = User.query.get(user_id)
+    print u
+    return u
+
+from .sso.views import sso
+app.register_blueprint(sso)
 
 from .api.views import api
 app.register_blueprint(api)

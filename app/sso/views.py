@@ -64,6 +64,7 @@ def sso_callback():
 @login_required
 def logout():
     logout_user()
+    session.pop('eve_sso_data', None)
     return redirect(url_for('index'))
 
 @sso.route('/sso')

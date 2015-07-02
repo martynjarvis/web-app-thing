@@ -37,3 +37,6 @@ logs/
 
 # backups
 *.bak
+
+# secret settings
+cache/

@@ -1,6 +1,5 @@
 import datetime
 import eveapi
-import pycrest
 import os
 
 from flask import Flask
@@ -8,18 +7,20 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.migrate import Migrate, MigrateCommand
 from flask.ext.script import Manager
 from flask.ext.login import LoginManager
+
 from celery import Celery
+
+import pycrest
 
 import settings
 
 app = Flask('wallet',
             template_folder='app/templates',
             static_folder='app/static')
+
 app.config.from_object('app.settings')
-try:
-    app.config.from_envvar('FLASK_SETTINGS')
-except RuntimeError:
-    pass  # dev env, set prod env settings in env var
+app.config.from_envvar('FLASK_SETTINGS')
+app.config.from_envvar('EVE_SSO_SETTINGS')
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -84,7 +85,4 @@ app.register_blueprint(api)
 from .crest.views import crest
 app.register_blueprint(crest)
 
-# TODO, are these imports now necessary?
 import views
-import api
-import crest

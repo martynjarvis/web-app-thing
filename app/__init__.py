@@ -73,7 +73,6 @@ login_manager.login_view = "sso.sso_login"
 @login_manager.user_loader
 def load_user(user_id):
     u = User.query.get(user_id)
-    print u
     return u
 
 from .sso.views import sso

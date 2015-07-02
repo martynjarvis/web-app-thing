@@ -71,5 +71,5 @@ def logout():
 @login_required
 def sso_main():
     con = get_connection()
-    return render_template('sso/main.html', data=con.whoami())
+    return render_template('sso/main.html', data=con.whoami(), con=con)
 

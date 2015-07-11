@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row">
+      <div class="col-md-12">
+            <div class="page-header">
+                <h1>Item Types</h1>
+            </div>
+            crest name: {{crest_item.name}}
+            <br>
+            crest description:{{crest_item.description|safe}}
+            <br>
+            db name: {{item.name}}
+            <br>
+            db id: {{ item.id }}
+            <br>
+            db adj: {{ item.adjustedPrice }}
+            <br>
+            db avg:{{ item.averagePrice }}
+            <br>
+            db href: {{ item.href }}
+            <br>
+            market volume: {{ market_history.average_volume }}
+            <br>
+            market orders: {{ market_history.average_orders }}
+            <br>
+            market price: {{ market_history.average_price }}
+        </div><!--/col-md--->
+    </div><!--/row-->
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+

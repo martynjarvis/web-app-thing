@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row">
+      <div class="col-md-12">
+            <div class="page-header">
+                <h1>{{ station.name }} </h1>
+            </div>
+            crest name: {{crest_station.name}}
+            <br>
+            crest dump:{{ crest_station }}
+            <br>
+            db name: {{station.name}}
+            <br>
+            db id: {{ station.facilityID }}
+            <br>
+            db system: {{ station.solarSystem_id }}
+            <br>
+            db region: {{ station.region_id }}
+            <br>
+            db type id: {{ station.type_id }}
+            <br>
+            db href: {{ station.href }}
+        </div><!--/col-md--->
+    </div><!--/row-->
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+

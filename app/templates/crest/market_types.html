@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row">
+      <div class="col-md-12">
+            <div class="page-header">
+                <h1>Market Types</h1>
+            </div>
+            <table class="table">
+                <thead>
+                    <th scope="col">id</th>
+                    <th scope="col">name</th>
+                </thead>
+                <tbody>
+                    {% for row in data %}
+                        <tr>
+                            <td>{{ row.type.id }}</td>
+                            <td>{{ row.type.name }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div><!--/col-md--->
+    </div><!--/row-->
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+

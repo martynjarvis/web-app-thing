@@ -27,6 +27,7 @@ def load_connection(access_token, refresh_token, expires):
         oauth_endpoint=eve._oauth_endpoint,
         client_id=eve.client_id,
         api_key=eve.api_key,
+        cache_dir=eve.cache_dir,
         )
     if expires - int(time.time()) < 20:
         con.refresh()

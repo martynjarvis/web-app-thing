@@ -61,11 +61,16 @@ def eveapi_cast_func(key, value):
 eveapi.set_cast_func(eveapi_cast_func)
 eveapi.set_user_agent("twitter:@_scruff")
 
+
 # eve crest stuff
+if not os.path.exists(app.config['CREST_CACHE_DIR']):
+    os.mkdir(app.config['CREST_CACHE_DIR'])
+
 eve = pycrest.EVE(
     client_id=app.config['CREST_CLIENT_ID'],
     api_key=app.config['CREST_SECRET_KEY'],
-    redirect_uri=app.config['CREST_CALLBACK_URL'])
+    redirect_uri=app.config['CREST_CALLBACK_URL'],
+    cache_dir=app.config['CREST_CACHE_DIR'])
 eve()  # initialize
 
 from .sso.models import User

@@ -67,11 +67,14 @@ def update_market_history(region_id, type_id):
     href = "https://public-crest.eveonline.com/market/{0}/types/{1}/history/"
     history = APIObject(eve.get(href.format(region_id, type_id)), eve)
 
-    # Here I assume results are returned sorted
+    if len(history.items) == 0:
+        return
+
     average_volume = history.items[0].volume
     average_orders = history.items[0].orderCount
     average_price = history.items[0].avgPrice
 
+    # Here I assume results are returned sorted
     for day in history.items[1:]:
         average_volume = ALPHA*day.volume + average_volume*(1-ALPHA)
         average_orders = ALPHA*day.orderCount + average_orders*(1-ALPHA)

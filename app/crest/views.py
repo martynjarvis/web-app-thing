@@ -9,7 +9,7 @@ from app import eve, db
 from .tools import get_by_attr_val, get_all_items
 from .models import Item, Region, System, Station, MarketHistory, MarketStat
 import tasks
-from app.sso.views import get_connection
+from app.sso.tools import dump_connection
 
 crest = Blueprint('crest', __name__)
 
@@ -32,6 +32,12 @@ def update_map():
 def update_history():
     tasks.update_market_history.apply_async(
         args=(10000002, 34))
+    return redirect(url_for('index'))
+
+@crest.route('/update_stat')
+def update_stat():
+    tasks.update_market_stat.apply_async(
+        args=(dump_connection(), 60003760, 34))
     return redirect(url_for('index'))
 
 @crest.route('/item/<type_id>')

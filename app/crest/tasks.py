@@ -4,6 +4,7 @@ import pycrest
 from app import db, celery, eve
 from .models import Item, Region, System, Station, MarketHistory, MarketStat
 from .tools import get_by_attr_val, get_all_items, item_id_from_crest_href
+from app.sso.tools import load_connection
 
 ALPHA = 0.1
 
@@ -84,23 +85,24 @@ def update_market_history(region_id, type_id):
     db.session.commit()
 
 @celery.task()
-def update_market_stat(auth_con, station_id, type_id):
+def update_market_stat(auth_dump, station_id, type_id):
     station = db.session.query(Station).get(station_id)
     region = db.session.query(Region).get(station.region_id)
     item = db.session.query(Item).get(type_id)
     market_stat = MarketStat.get_or_create(station_id=station_id,
                                            type_id=type_id)
+    auth_con = load_connection(*auth_dump)
 
-    crest_region = getByAttrVal(auth_con.regions().items, 'name', region.name)
+    crest_region = APIObject(auth_con.get(region.href), auth_con)
 
-    region_sell_orders = getAllItems(crest_region().marketSellOrders(type=item.href))
+    region_sell_orders = get_all_items(crest_region().marketSellOrders(type=item.href))
     station_sell_orders = sorted(
         (o for o in region_sell_orders if o.location.id==station_id),
         key=lambda o: o.price)
     current_sell = station_sell_orders[0].price
     market_stat.current_sell = current_sell
 
-    region_buy_orders = getAllItems(crest_region().marketBuyOrders(type=item.href))
+    region_buy_orders = get_all_items(crest_region().marketBuyOrders(type=item.href))
     station_buy_orders = sorted(
         (o for o in region_buy_orders if o.location.id==station_id),
         key=lambda o: o.price,

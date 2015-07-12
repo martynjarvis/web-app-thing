@@ -30,8 +30,14 @@ def update_map():
 
 @crest.route('/update_history')
 def update_history():
-    tasks.update_market_history.apply_async(
-        args=(10000002, 34))
+    tasks.update_market_history.apply_async(args=(10000002, 34))
+    return redirect(url_for('index'))
+
+@crest.route('/update_all_history')
+def update_all_history():
+    crest_items = get_all_items(eve.marketTypes)
+    for item in crest_items:
+        tasks.update_market_history.apply_async(args=(10000002, item.type.id))
     return redirect(url_for('index'))
 
 @crest.route('/update_stat')

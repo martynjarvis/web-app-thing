@@ -92,8 +92,9 @@ def update_market_stat(auth_dump, station_id, type_id):
     market_stat = MarketStat.get_or_create(station_id=station_id,
                                            type_id=type_id)
     auth_con = load_connection(*auth_dump)
+    auth_con()  #initialise object
 
-    crest_region = APIObject(auth_con.get(region.href), auth_con)
+    crest_region = get_by_attr_val(auth_con.regions().items, 'name', region.name)
 
     region_sell_orders = get_all_items(crest_region().marketSellOrders(type=item.href))
     station_sell_orders = sorted(

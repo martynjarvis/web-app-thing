@@ -45,12 +45,14 @@ def view_item(type_id):
     item = db.session.query(Item).get(type_id)
     crest_item = APIObject(eve.get(item.href), eve)
     market_history = MarketHistory.get_by(type_id=type_id, region_id=10000002)
+    market_stat = MarketStat.get_by(type_id=type_id, station_id=60003760)
     return render_template(
         'crest/item_types.html',
         title=item.name,
         item=item,
         crest_item=crest_item(),
-        market_history=market_history)
+        market_history=market_history,
+        market_stat=market_stat)
 
 @crest.route('/station/<station_id>')
 def view_station(station_id):

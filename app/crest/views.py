@@ -3,6 +3,8 @@ import os
 from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
 from flask.ext.login import login_required
 
+from sqlalchemy.orm import aliased
+
 from pycrest.eve import APIObject
 
 from app import eve, db
@@ -31,6 +33,7 @@ def update_map():
 @crest.route('/update_history')
 def update_history():
     tasks.update_market_history.apply_async(args=(10000002, 34))
+    tasks.update_market_history.apply_async(args=(10000049, 34))
     return redirect(url_for('index'))
 
 @crest.route('/update_all_history')
@@ -42,8 +45,8 @@ def update_all_history():
 
 @crest.route('/update_stat')
 def update_stat():
-    tasks.update_market_stat.apply_async(
-        args=(dump_connection(), 60003760, 34))
+    tasks.update_market_stat.apply_async(args=(dump_connection(), 60003760, 34))
+    tasks.update_market_stat.apply_async(args=(dump_connection(), 60012412, 34))
     return redirect(url_for('index'))
 
 @crest.route('/item/<type_id>')
@@ -71,6 +74,44 @@ def view_station(station_id):
         crest_station=None)
         #crest_station=crest_station())
 
+@crest.route('/import/<dest_station_id>')
+def import_to_station(dest_station_id):
+
+    dest_market_stat = aliased(MarketStat)
+    source_market_stat = aliased(MarketStat)
+
+    dest_market_history = aliased(MarketHistory)
+    source_market_history = aliased(MarketHistory)
+
+    dest_station = aliased(Station)
+    source_station = aliased(Station)
+
+    dest_region = aliased(Region)
+    source_region = aliased(Region)
+
+    data = db.session.query(Item, dest_market_stat, source_market_stat,
+                            dest_market_history, source_market_history)\
+        .filter(source_region.id == source_station.region_id)\
+        .filter(dest_region.id == dest_station.region_id)\
+        .filter(source_market_stat.type_id == Item.id)\
+        .filter(source_market_stat.station_id == source_station.facilityID)\
+        .filter(dest_market_stat.type_id == Item.id)\
+        .filter(dest_market_stat.station_id == dest_station.facilityID)\
+        .filter(source_market_history.type_id == Item.id)\
+        .filter(source_market_history.region_id == source_region.id)\
+        .filter(dest_market_history.type_id == Item.id)\
+        .filter(dest_market_history.region_id == dest_region.id)\
+        .filter(source_station.facilityID == 60003760)\
+        .filter(dest_station.facilityID == dest_station_id)\
+        .all()
+
+    #crest_station = APIObject(eve.get(station.href), eve)
+    return render_template(
+        'crest/import.html',
+        title=dest_station.name,
+        data=data,
+    )
+
 @crest.route('/market_type')
 def market_types():
     data = get_all_items(eve.marketTypes)
@@ -89,7 +130,7 @@ def root(path):
     for attr in path.split('/'):
         if attr == "":
             continue
-        if isinstance(data,list):
+        if isinstance(data, list):
             data = get_by_attr_val(data, 'name', attr)
         else:
             data = getattr(data(), attr)

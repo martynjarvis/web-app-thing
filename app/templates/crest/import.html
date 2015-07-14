@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+      <div class="col-md-12">
+            <div class="page-header">
+                <h1>Stuff <small>blah</small></h1>
+            </div>    
+{{data}}
+            
+            <table class="table" id="example">     
+                <thead>
+                    <th scope="col">Item</th>
+                    <th class="ral" scope="col">Volume</th>
+                    <th class="ral" scope="col">Stock</th>
+                    <th class="ral" scope="col">Days</th>
+                    <th class="ral" scope="col">Source Price</th>
+                    <th class="ral" scope="col">Destination Price</th>
+                    <th class="ral" scope="col">Margin</th>
+                </thead>
+                <tbody>
+                    {% for row in data %}  
+                    <tr> 
+                    <td><a href="/item/{{row[0].id}}">{{ row[0].name }}</a></td>
+                    <td class="ral">{{ row[3].average_volume }}</td>
+                    <td class="ral">TODO</td>
+                    <td class="ral">TODO</td>
+                    <td class="ral">{{ row[2].current_sell }}</td>
+                    <td class="ral">{{ row[1].current_sell }}</td>
+                    <td class="ral">TODO</td>
+                    </tr> 
+                    {% endfor %} 
+                <tbody>
+            </table>
+        </div><!--/col-md-->
+    </div><!--/row-->
+{% endblock %}

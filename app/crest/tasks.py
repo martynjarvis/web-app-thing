@@ -1,5 +1,7 @@
+import time
+
 from pycrest.eve import APIObject
-import pycrest
+from pycrest.errors import APIException
 
 from app import db, celery, eve
 from .models import Item, Region, System, Station, MarketHistory, MarketStat
@@ -62,13 +64,32 @@ def update_map():
 
     db.session.commit()
 
-@celery.task()
+@celery.task(rate_limit='30/s')
 def update_market_history(region_id, type_id):
     href = "https://public-crest.eveonline.com/market/{0}/types/{1}/history/"
-    history = APIObject(eve.get(href.format(region_id, type_id)), eve)
+    attempts = 10
+    for _ in xrange(attempts):
+        try:
+            history = APIObject(eve.get(href.format(region_id, type_id)), eve)
+            break
+        except APIException as ex:
+            if "503" in str(ex):
+                print "Received 503, we are being rate limited."
+                print "Cooling off for 10 seconds before retying."
+                time.sleep(10)
+            else:
+                raise
+    else:
+        raise APIException("Continued to receive 503 after 10 attempts.")
 
     if len(history.items) == 0:
-        return
+        # These items have no market history. There are several of these items
+        # towards the end of the marketTypes list. CREST returns empty lists
+        # for these items and we do no analysis of them, this can cause us to
+        # hammer the API and get rate limited. So we sleep here for a short
+        # duration to try and avoid this happening.
+        time.sleep(0.2)
+        return False
 
     average_volume = history.items[0].volume
     average_orders = history.items[0].orderCount
@@ -86,8 +107,9 @@ def update_market_history(region_id, type_id):
     market_history.average_orders = average_orders
     market_history.average_price = average_price
     db.session.commit()
+    return True
 
-@celery.task()
+@celery.task(rate_limit='30/s')
 def update_market_stat(auth_dump, station_id, type_id):
     station = db.session.query(Station).get(station_id)
     region = db.session.query(Region).get(station.region_id)
@@ -101,17 +123,23 @@ def update_market_stat(auth_dump, station_id, type_id):
 
     region_sell_orders = get_all_items(crest_region().marketSellOrders(type=item.href))
     station_sell_orders = sorted(
-        (o for o in region_sell_orders if o.location.id==station_id),
+        (o for o in region_sell_orders if o.location.id == station_id),
         key=lambda o: o.price)
-    current_sell = station_sell_orders[0].price
-    market_stat.current_sell = current_sell
+    if len(station_sell_orders) > 0:
+        current_sell = station_sell_orders[0].price
+        market_stat.current_sell = current_sell
+    else:
+        market_stat.current_sell = None
 
     region_buy_orders = get_all_items(crest_region().marketBuyOrders(type=item.href))
     station_buy_orders = sorted(
-        (o for o in region_buy_orders if o.location.id==station_id),
+        (o for o in region_buy_orders if o.location.id == station_id),
         key=lambda o: o.price,
         reverse=True)
-    current_buy = station_buy_orders[0].price
-    market_stat.current_buy = current_buy
+    if len(station_buy_orders) > 0:
+        current_buy = station_buy_orders[0].price
+        market_stat.current_buy = current_buy
+    else:
+        market_stat.current_buy = None
 
     db.session.commit()

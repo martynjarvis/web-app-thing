@@ -3,7 +3,7 @@ from flask.ext.login import login_required, login_user, logout_user, current_use
 
 from app import eve, db
 from .models import User
-from .tools import get_connection
+from .tools import auth_connection
 
 sso = Blueprint('sso', __name__)
 
@@ -45,6 +45,12 @@ def logout():
 @sso.route('/sso')
 @login_required
 def sso_main():
-    con = get_connection()
-    return render_template('sso/main.html', data=con.whoami(), con=con)
+    with auth_connection() as con:
+        return render_template('sso/main.html', data=con.whoami(), con=con)
 
+@sso.route('/sso/refresh')
+@login_required
+def sso_refresh():
+    with auth_connection() as con:
+        con.refresh()
+    return redirect(url_for('sso.sso_main'))

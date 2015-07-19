@@ -11,27 +11,38 @@
                 {{ forms.render(form) }}
                 <button type="Submit" class="btn btn-default">Submit</button>
             </form>
-            {{data}}
             <table class="table" id="example">     
                 <thead>
                     <th scope="col">Item</th>
-                    <th class="ral" scope="col">Volume</th>
-                    <th class="ral" scope="col">Stock</th>
-                    <th class="ral" scope="col">Days</th>
-                    <th class="ral" scope="col">Source Price</th>
-                    <th class="ral" scope="col">Destination Price</th>
-                    <th class="ral" scope="col">Margin</th>
+                    <th scope="col" class="text-right">Daily Vol.</th>
+                    <th scope="col" class="text-right">Stock (orders)</th>
+                    <th scope="col" class="text-right">Days</th>
+                    <th scope="col" class="text-right">Src. Price</th>
+                    <th scope="col" class="text-right">Dest. Price</th>
+                    <th scope="col" class="text-right">Markup</th>
                 </thead>
                 <tbody>
                     {% for row in data %}  
                     <tr> 
                     <td><a href="/item/{{row[0].id}}">{{ row[0].name }}</a></td>
-                    <td class="ral">{{ row[3].average_volume }}</td>
-                    <td class="ral">{{ row[1].current_sell_volume or 0 }} ({{ row[1].current_sell_orders or 0 }} orders)</td>
-                    <td class="ral">{{ (row[1].current_sell_volume or 0.0)/row[3].average_volume }}</td>
-                    <td class="ral"> {{ row[2].current_sell }} ({{ row[2].current_sell_percentile }})</td>
-                    <td class="ral">{{ row[1].current_sell }} ({{ row[1].current_sell_percentile }})</td>
-                    <td class="ral">TODO</td>
+                    <td class="text-right">{{'{:20,.1f}'.format(row[3].average_volume)}}</td>
+                    <td class="text-right">{{ row[1].current_sell_volume or 0 }} ({{ row[1].current_sell_orders or 0 }})</td>
+                    <td class="text-right">{{'{:20,.1f}'.format((row[1].current_sell_volume or 0.0)/row[3].average_volume)}}</td>
+                    {% if row[2].current_sell %}
+                    <td class="text-right">{{'{:20,.0f}'.format(row[2].current_sell)}}</td>
+                    {% else %}
+                    <td class="text-right"> None </td>
+                    {% endif %}
+                    {% if row[1].current_sell %}
+                    <td class="text-right">{{'{:20,.0f}'.format(row[1].current_sell)}}</td>
+                    {% else %}
+                    <td class="text-right"> None </td>
+                    {% endif %}
+                    {% if row[1].current_sell and row[2].current_sell %}
+                    <td class="text-right">{{'{:20,.1f}%'.format(100*row[1].current_sell/row[2].current_sell - 100)}}</td>
+                    {% else %}
+                    <td class="text-right"> None </td>
+                    {% endif %}
                     </tr> 
                     {% endfor %} 
                 <tbody>

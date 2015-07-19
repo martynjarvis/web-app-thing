@@ -1,3 +1,5 @@
+from collections import defaultdict
+from datetime import datetime, date, timedelta
 import time
 
 from pycrest.eve import APIObject
@@ -108,26 +110,31 @@ def update_market_history(region_id, type_id):
     else:
         raise APIException("Continued to receive errors after 10 attempts.")
 
-    if len(history.items) == 0:
-        return False
+    stamp = "%Y-%m-%dT%H:%M:%S"
 
-    average_volume = history.items[0].volume
-    average_orders = history.items[0].orderCount
-    average_price = history.items[0].avgPrice
+    total_volume = 0
+    total_orders = 0
+    total_price = 0
 
-    # Here I assume results are returned sorted
-    for day in history.items[1:]:
-        average_volume = ALPHA*day.volume + average_volume*(1-ALPHA)
-        average_orders = ALPHA*day.orderCount + average_orders*(1-ALPHA)
-        average_price = ALPHA*day.avgPrice + average_price*(1-ALPHA)
+    today = date.today()
+
+    for day in history.items:
+        age = today - datetime.strptime(day.date, stamp).date()
+        if age > timedelta(days=30):
+            continue
+        total_volume += day.volume
+        total_orders += day.orderCount
+        total_price += day.avgPrice*day.volume
 
     market_history = MarketHistory.get_or_create(region_id=region_id,
                                                  type_id=type_id)
-    market_history.average_volume = average_volume
-    market_history.average_orders = average_orders
-    market_history.average_price = average_price
+    market_history.average_volume = total_volume / 30.0
+    market_history.average_orders = total_orders / 30.0
+    if total_volume == 0:
+        market_history.average_price = None
+    else:
+        market_history.average_price = total_price / total_volume
     db.session.commit()
-    return True
 
 
 def percentile(sorted_orders, volume):
@@ -151,23 +158,42 @@ def get_stats(sorted_orders):
 
 
 @celery.task(rate_limit='15/s')
-def update_market_stat(auth_dump, station_id, type_id):
-    station_id = int(station_id)
-    station = db.session.query(Station).get(station_id)
-    region = db.session.query(Region).get(station.region_id)
-    item = db.session.query(Item).get(type_id)
-    m = MarketStat.get_or_create(station_id=station_id, type_id=type_id)
+def update_market_stat(auth_dump, region_id, type_id):
+
+    # read db stuff
+
+    region = db.session.query(Region.name)\
+        .filter(Region.id == region_id).first()
+    region_name = region[0]
+    item = db.session.query(Item.href)\
+        .filter(Item.id == type_id).first()
+    item_href = item[0]
+    all_stations = db.session.query(Station.facilityID)\
+        .filter(Station.region_id == region_id).all()
+    market_stats = {
+        m.station_id: m for m in db.session.query(MarketStat)
+        .filter(MarketStat.region_id == region_id)
+        .filter(MarketStat.type_id == type_id).all()
+    }
+
+    # crest here
+
     con = get_connection(*auth_dump)
     con()  # initialise object
-    crest_region = get_by_attr_val(con.regions().items, 'name', region.name)
+
+    # print region_id
+    # print region_name
+    # print type_id
+    # print item_href
+    crest_region = get_by_attr_val(con.regions().items, 'name', region_name)
 
     attempts = 10
     for _ in xrange(attempts):
         try:
             region_sell_orders = get_all_items(
-                crest_region().marketSellOrders(type=item.href))
+                crest_region().marketSellOrders(type=item_href))
             region_buy_orders = get_all_items(
-                crest_region().marketBuyOrders(type=item.href))
+                crest_region().marketBuyOrders(type=item_href))
             decrease_cool_factor()
             break
         except APIException as ex:
@@ -182,18 +208,36 @@ def update_market_stat(auth_dump, station_id, type_id):
     else:
         raise APIException("Continued to receive errors after 10 attempts.")
 
-    station_sell_orders = sorted(
-        (o for o in region_sell_orders if o.location.id == station_id),
-        key=lambda o: o.price)
-    (m.current_sell, m.current_sell_percentile, m.current_sell_orders,
-        m.current_sell_volume) = get_stats(station_sell_orders)
+    # analysis here
+    new_market_stats = []
 
-    station_buy_orders = sorted(
-        (o for o in region_buy_orders if int(o.location.id) == station_id),
-        key=lambda o: o.price, reverse=True)
-    (m.current_buy, m.current_buy_percentile, m.current_buy_orders,
-        m.current_buy_volume) = get_stats(station_buy_orders)
+    grouped_sell_orders = defaultdict(list)
+    for o in sorted(region_sell_orders, key=lambda o: o.price):
+        grouped_sell_orders[o.location.id].append(o)
 
+    grouped_buy_orders = defaultdict(list)
+    for o in sorted(region_buy_orders, key=lambda o: o.price, reverse=True):
+        grouped_buy_orders[o.location.id].append(o)
+
+    for station in all_stations:
+        station_id = station[0]
+        m = market_stats.get(station_id, None)
+        if m is None:
+            m = MarketStat(
+                type_id=type_id,
+                station_id=station_id,
+                region_id=region_id,
+            )
+            new_market_stats.append(m)
+
+        (m.current_sell, m.current_sell_percentile, m.current_sell_orders,
+            m.current_sell_volume) = get_stats(grouped_sell_orders[station_id])
+
+        (m.current_buy, m.current_buy_percentile, m.current_buy_orders,
+            m.current_buy_volume) = get_stats(grouped_buy_orders[station_id])
+
+    # write db stuff
+    db.session.add_all(new_market_stats)
     db.session.commit()
 
 

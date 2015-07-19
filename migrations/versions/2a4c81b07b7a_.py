@@ -1,13 +1,13 @@
 """empty message
 
-Revision ID: 45cdb83e13e7
+Revision ID: 2a4c81b07b7a
 Revises: None
-Create Date: 2015-07-18 17:13:13.705567
+Create Date: 2015-07-19 15:13:35.426708
 
 """
 
 # revision identifiers, used by Alembic.
-revision = '45cdb83e13e7'
+revision = '2a4c81b07b7a'
 down_revision = None
 
 from alembic import op
@@ -22,22 +22,24 @@ def upgrade():
     sa.Column('character_name', sa.String(length=50), nullable=True),
     sa.PrimaryKeyConstraint('character_owner_hash')
     )
-    op.create_table('crest_system',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(length=32), nullable=True),
-    sa.Column('href', sa.String(length=80), nullable=True),
-    sa.Column('region_id', sa.Integer(), nullable=True),
-    sa.PrimaryKeyConstraint('id')
-    )
     op.create_table('crest_region',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=32), nullable=True),
     sa.Column('href', sa.String(length=80), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_table('api_api',
+    sa.Column('keyID', sa.Integer(), nullable=False),
+    sa.Column('vCode', sa.String(length=80), nullable=True),
+    sa.Column('accessMask', sa.Integer(), nullable=True),
+    sa.Column('expires', sa.DateTime(), nullable=True),
+    sa.Column('type', sa.Enum('Account', 'Character', 'Corporation', name='api_apitypes'), nullable=True),
+    sa.PrimaryKeyConstraint('keyID')
+    )
     op.create_table('crest_marketstat',
     sa.Column('type_id', sa.Integer(), nullable=False),
     sa.Column('station_id', sa.Integer(), nullable=False),
+    sa.Column('region_id', sa.Integer(), nullable=True),
     sa.Column('current_buy', sa.Numeric(precision=12, scale=2), nullable=True),
     sa.Column('current_buy_percentile', sa.Numeric(precision=12, scale=2), nullable=True),
     sa.Column('current_buy_orders', sa.Integer(), nullable=True),
@@ -47,6 +49,22 @@ def upgrade():
     sa.Column('current_sell_orders', sa.Integer(), nullable=True),
     sa.Column('current_sell_volume', sa.Integer(), nullable=True),
     sa.PrimaryKeyConstraint('type_id', 'station_id')
+    )
+    op.create_table('crest_item',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('name', sa.String(length=80), nullable=True),
+    sa.Column('adjustedPrice', sa.Numeric(precision=12, scale=2), nullable=True),
+    sa.Column('averagePrice', sa.Numeric(precision=12, scale=2), nullable=True),
+    sa.Column('href', sa.String(length=80), nullable=True),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('crest_markethistory',
+    sa.Column('type_id', sa.Integer(), nullable=False),
+    sa.Column('region_id', sa.Integer(), nullable=False),
+    sa.Column('average_volume', sa.Float(), nullable=True),
+    sa.Column('average_orders', sa.Float(), nullable=True),
+    sa.Column('average_price', sa.Numeric(precision=12, scale=2), nullable=True),
+    sa.PrimaryKeyConstraint('type_id', 'region_id')
     )
     op.create_table('api_character',
     sa.Column('characterID', sa.Integer(), nullable=False),
@@ -78,22 +96,6 @@ def upgrade():
     sa.Column('balance', sa.Numeric(precision=12, scale=2), nullable=True),
     sa.PrimaryKeyConstraint('characterID')
     )
-    op.create_table('crest_item',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(length=80), nullable=True),
-    sa.Column('adjustedPrice', sa.Numeric(precision=12, scale=2), nullable=True),
-    sa.Column('averagePrice', sa.Numeric(precision=12, scale=2), nullable=True),
-    sa.Column('href', sa.String(length=80), nullable=True),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.create_table('api_api',
-    sa.Column('keyID', sa.Integer(), nullable=False),
-    sa.Column('vCode', sa.String(length=80), nullable=True),
-    sa.Column('accessMask', sa.Integer(), nullable=True),
-    sa.Column('expires', sa.DateTime(), nullable=True),
-    sa.Column('type', sa.Enum('Account', 'Character', 'Corporation', name='api_apitypes'), nullable=True),
-    sa.PrimaryKeyConstraint('keyID')
-    )
     op.create_table('crest_station',
     sa.Column('facilityID', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=80), nullable=True),
@@ -101,6 +103,13 @@ def upgrade():
     sa.Column('region_id', sa.Integer(), nullable=True),
     sa.Column('type_id', sa.Integer(), nullable=True),
     sa.PrimaryKeyConstraint('facilityID')
+    )
+    op.create_table('crest_system',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('name', sa.String(length=32), nullable=True),
+    sa.Column('href', sa.String(length=80), nullable=True),
+    sa.Column('region_id', sa.Integer(), nullable=True),
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('api_corporation',
     sa.Column('corporationID', sa.Integer(), nullable=False),
@@ -119,36 +128,6 @@ def upgrade():
     sa.Column('memberLimit', sa.Integer(), nullable=True),
     sa.Column('shares', sa.Integer(), nullable=True),
     sa.PrimaryKeyConstraint('corporationID')
-    )
-    op.create_table('crest_markethistory',
-    sa.Column('type_id', sa.Integer(), nullable=False),
-    sa.Column('region_id', sa.Integer(), nullable=False),
-    sa.Column('average_volume', sa.Float(), nullable=True),
-    sa.Column('average_orders', sa.Float(), nullable=True),
-    sa.Column('average_price', sa.Numeric(precision=12, scale=2), nullable=True),
-    sa.PrimaryKeyConstraint('type_id', 'region_id')
-    )
-    op.create_table('api_order',
-    sa.Column('orderID', sa.Integer(), nullable=False),
-    sa.Column('clientTypeID', sa.Integer(), nullable=True),
-    sa.Column('stationID', sa.Integer(), nullable=True),
-    sa.Column('volEntered', sa.Integer(), nullable=True),
-    sa.Column('volRemaining', sa.Integer(), nullable=True),
-    sa.Column('minVolume', sa.Integer(), nullable=True),
-    sa.Column('orderState', sa.Integer(), nullable=True),
-    sa.Column('typeID', sa.Integer(), nullable=True),
-    sa.Column('range', sa.Integer(), nullable=True),
-    sa.Column('accountKey', sa.Integer(), nullable=True),
-    sa.Column('duration', sa.Integer(), nullable=True),
-    sa.Column('escrow', sa.Numeric(precision=12, scale=2), nullable=True),
-    sa.Column('price', sa.Numeric(precision=12, scale=2), nullable=True),
-    sa.Column('bid', sa.Boolean(), nullable=True),
-    sa.Column('issued', sa.DateTime(), nullable=True),
-    sa.Column('charID', sa.Integer(), nullable=True),
-    sa.Column('corporationID', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['charID'], ['api_character.characterID'], ),
-    sa.ForeignKeyConstraint(['corporationID'], ['api_corporation.corporationID'], ),
-    sa.PrimaryKeyConstraint('orderID')
     )
     op.create_table('api_transaction',
     sa.Column('transactionDateTime', sa.DateTime(), nullable=True),
@@ -177,6 +156,28 @@ def upgrade():
     sa.ForeignKeyConstraint(['corporationID'], ['api_corporation.corporationID'], ),
     sa.ForeignKeyConstraint(['keyID'], ['api_api.keyID'], )
     )
+    op.create_table('api_order',
+    sa.Column('orderID', sa.Integer(), nullable=False),
+    sa.Column('clientTypeID', sa.Integer(), nullable=True),
+    sa.Column('stationID', sa.Integer(), nullable=True),
+    sa.Column('volEntered', sa.Integer(), nullable=True),
+    sa.Column('volRemaining', sa.Integer(), nullable=True),
+    sa.Column('minVolume', sa.Integer(), nullable=True),
+    sa.Column('orderState', sa.Integer(), nullable=True),
+    sa.Column('typeID', sa.Integer(), nullable=True),
+    sa.Column('range', sa.Integer(), nullable=True),
+    sa.Column('accountKey', sa.Integer(), nullable=True),
+    sa.Column('duration', sa.Integer(), nullable=True),
+    sa.Column('escrow', sa.Numeric(precision=12, scale=2), nullable=True),
+    sa.Column('price', sa.Numeric(precision=12, scale=2), nullable=True),
+    sa.Column('bid', sa.Boolean(), nullable=True),
+    sa.Column('issued', sa.DateTime(), nullable=True),
+    sa.Column('charID', sa.Integer(), nullable=True),
+    sa.Column('corporationID', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['charID'], ['api_character.characterID'], ),
+    sa.ForeignKeyConstraint(['corporationID'], ['api_corporation.corporationID'], ),
+    sa.PrimaryKeyConstraint('orderID')
+    )
     op.create_table('api_apicharacter',
     sa.Column('characterID', sa.Integer(), nullable=True),
     sa.Column('keyID', sa.Integer(), nullable=True),
@@ -189,17 +190,17 @@ def upgrade():
 def downgrade():
     ### commands auto generated by Alembic - please adjust! ###
     op.drop_table('api_apicharacter')
+    op.drop_table('api_order')
     op.drop_table('api_apicorporation')
     op.drop_table('api_transaction')
-    op.drop_table('api_order')
-    op.drop_table('crest_markethistory')
     op.drop_table('api_corporation')
-    op.drop_table('crest_station')
-    op.drop_table('api_api')
-    op.drop_table('crest_item')
-    op.drop_table('api_character')
-    op.drop_table('crest_marketstat')
-    op.drop_table('crest_region')
     op.drop_table('crest_system')
+    op.drop_table('crest_station')
+    op.drop_table('api_character')
+    op.drop_table('crest_markethistory')
+    op.drop_table('crest_item')
+    op.drop_table('crest_marketstat')
+    op.drop_table('api_api')
+    op.drop_table('crest_region')
     op.drop_table('sso_user')
     ### end Alembic commands ###

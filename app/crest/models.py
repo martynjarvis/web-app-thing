@@ -54,6 +54,7 @@ class MarketStat(BaseMixin, db.Model):
     __tablename__ = 'crest_marketstat'
     type_id = db.Column(db.Integer, primary_key=True)
     station_id = db.Column(db.Integer, primary_key=True)
+    region_id = db.Column(db.Integer)  # denormalized
     current_buy = db.Column(db.Numeric(12, 2))
     current_buy_percentile = db.Column(db.Numeric(12, 2))
     current_buy_orders = db.Column(db.Integer)

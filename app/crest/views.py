@@ -50,12 +50,12 @@ def update_all_history(region_id):
     return redirect(url_for('index'))
 
 
-@crest.route('/update_stat/<station_id>')
+@crest.route('/update_stat/<int:region_id>')
 @login_required
-def update_stat(station_id):
+def update_stat(region_id):
     with auth_connection() as con:
         auth_dump = dump_connection(con)
-    tasks.update_market_stat.apply_async(args=(auth_dump, station_id, 34))
+    tasks.update_market_stat.apply_async(args=(auth_dump, region_id, 34))
     return redirect(url_for('index'))
 
 
@@ -129,12 +129,14 @@ def import_tool():
             .filter(dest_market_stat.station_id == dest_station.facilityID)\
             .filter(source_market_history.type_id == Item.id)\
             .filter(source_market_history.region_id == source_region.id)\
+            .filter(dest_market_history.average_volume > 0)\
             .filter(dest_market_history.type_id == Item.id)\
             .filter(dest_market_history.region_id == dest_region.id)\
             .filter(source_station.facilityID == form.source.data)\
             .filter(dest_station.facilityID == form.destination.data)\
             .order_by(dest_market_history.price_volume.desc())\
             .all()
+        # .filter(dest_market_history.average_price > source_market_history.average_price)\
 
     else:
         data = []

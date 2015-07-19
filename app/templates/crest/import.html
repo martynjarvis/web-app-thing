@@ -1,16 +1,17 @@
 {% extends "base.html" %}
-
-{% block extra_head %}
-{% endblock %}
+{% import "helpers/forms.html" as forms %}
 
 {% block content %}
     <div class="row">
       <div class="col-md-12">
             <div class="page-header">
-                <h1>Stuff <small>blah</small></h1>
+                <h1>Import Tool <small>...</small></h1>
             </div>    
-{{data}}
-            
+            <form action="{{url_for('crest.import_tool')}}" method="POST">
+                {{ forms.render(form) }}
+                <button type="Submit" class="btn btn-default">Submit</button>
+            </form>
+            {{data}}
             <table class="table" id="example">     
                 <thead>
                     <th scope="col">Item</th>
@@ -26,10 +27,10 @@
                     <tr> 
                     <td><a href="/item/{{row[0].id}}">{{ row[0].name }}</a></td>
                     <td class="ral">{{ row[3].average_volume }}</td>
-                    <td class="ral">TODO</td>
-                    <td class="ral">TODO</td>
-                    <td class="ral">{{ row[2].current_sell }}</td>
-                    <td class="ral">{{ row[1].current_sell }}</td>
+                    <td class="ral">{{ row[1].current_sell_volume or 0 }} ({{ row[1].current_sell_orders or 0 }} orders)</td>
+                    <td class="ral">{{ (row[1].current_sell_volume or 0.0)/row[3].average_volume }}</td>
+                    <td class="ral"> {{ row[2].current_sell }} ({{ row[2].current_sell_percentile }})</td>
+                    <td class="ral">{{ row[1].current_sell }} ({{ row[1].current_sell_percentile }})</td>
                     <td class="ral">TODO</td>
                     </tr> 
                     {% endfor %} 

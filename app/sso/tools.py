@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 import time
 
 from flask import session
@@ -6,18 +7,20 @@ from pycrest.eve import AuthedConnection
 
 from app import eve
 
-def get_connection():
-    # There is a bug here involving hitting refresh which sends the old stale
-    # auth I think...
-    con = load_connection(*session['eve_sso_data'])
+# Keep alive connections and reuse them whenever possible
+CON_CACHE = {}
 
-    if con.token != session['eve_sso_data'][0]:
-        # maybe check that this worked?
-        session['eve_sso_data'] = dump_connection(con=con)
 
-    return con
+def get_connection(access_token, refresh_token, expires):
+    con = CON_CACHE.get(refresh_token, None)
+    if con is not None:
+        print "Hit connection cache"
+        if con.expires - int(time.time()) < 20:
+            print "Refreshing token......."
+            con.refresh()
+        return con
+    print "Missed connection cache"
 
-def load_connection(access_token, refresh_token, expires):
     res = {'access_token': access_token,
            'refresh_token': refresh_token,
            'expires_in': 0}
@@ -30,13 +33,24 @@ def load_connection(access_token, refresh_token, expires):
         cache_dir=eve.cache_dir,
         )
     if expires - int(time.time()) < 20:
+        print "Refreshing token......."
         con.refresh()
     else:
         con.expires = expires
+
+    CON_CACHE[refresh_token] = con
+
     return con
 
-def dump_connection(con=None):
-    if con is None:
-        con = get_connection()
+
+def dump_connection(con):
     return (con.token, con.refresh_token, con.expires)
 
+
+@contextmanager
+def auth_connection():
+    access_token, refresh_token, expires = session['eve_sso_data']
+    con = get_connection(access_token, refresh_token, expires)
+    yield con
+    if con.token != access_token:
+        session['eve_sso_data'] = dump_connection(con=con)

@@ -1,6 +1,4 @@
-import os
-
-from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
+from flask import Blueprint, redirect, render_template, url_for
 from flask.ext.login import login_required
 
 from sqlalchemy.orm import aliased
@@ -8,48 +6,70 @@ from sqlalchemy.orm import aliased
 from pycrest.eve import APIObject
 
 from app import eve, db
-from .tools import get_by_attr_val, get_all_items
 from .models import Item, Region, System, Station, MarketHistory, MarketStat
+from .forms import SearchForm, ImportForm, UpdateForm, UpdateMarketForm
 import tasks
-from app.sso.tools import dump_connection
+from app.sso.tools import dump_connection, auth_connection
+
 
 crest = Blueprint('crest', __name__)
 
+
 @crest.route('/update_items')
+@login_required
 def update_items():
     tasks.update_items.apply_async()
     return redirect(url_for('index'))
 
+
 @crest.route('/update_item_prices')
+@login_required
 def update_item_prices():
     tasks.update_item_prices.apply_async()
     return redirect(url_for('index'))
 
+
 @crest.route('/update_map')
+@login_required
 def update_map():
     tasks.update_map.apply_async()
     return redirect(url_for('index'))
 
-@crest.route('/update_history')
-def update_history():
-    tasks.update_market_history.apply_async(args=(10000002, 34))
-    tasks.update_market_history.apply_async(args=(10000049, 34))
+
+@crest.route('/update_history/<region_id>')
+@login_required
+def update_history(region_id):
+    tasks.update_market_history.apply_async(args=(region_id, 34))
     return redirect(url_for('index'))
 
-@crest.route('/update_all_history')
-def update_all_history():
-    crest_items = get_all_items(eve.marketTypes)
-    for item in crest_items:
-        tasks.update_market_history.apply_async(args=(10000002, item.type.id))
+
+@crest.route('/update_all_history/<region_id>')
+@login_required
+def update_all_history(region_id):
+    tasks.update_all_market_history.apply_async(args=(region_id,))
     return redirect(url_for('index'))
 
-@crest.route('/update_stat')
-def update_stat():
-    tasks.update_market_stat.apply_async(args=(dump_connection(), 60003760, 34))
-    tasks.update_market_stat.apply_async(args=(dump_connection(), 60012412, 34))
+
+@crest.route('/update_stat/<station_id>')
+@login_required
+def update_stat(station_id):
+    with auth_connection() as con:
+        auth_dump = dump_connection(con)
+    tasks.update_market_stat.apply_async(args=(auth_dump, station_id, 34))
     return redirect(url_for('index'))
+
+
+@crest.route('/update_all_stat/<station_id>')
+@login_required
+def update_all_stat(station_id):
+    with auth_connection() as con:
+        auth_dump = dump_connection(con)
+    tasks.update_all_market_stat.apply_async(args=(auth_dump, station_id))
+    return redirect(url_for('index'))
+
 
 @crest.route('/item/<type_id>')
+@login_required
 def view_item(type_id):
     item = db.session.query(Item).get(type_id)
     crest_item = APIObject(eve.get(item.href), eve)

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% import "helpers/forms.html" as forms %}
+{% block content %}
+    <div class="row">
+      <div class="col-md-12">
+            <div class="page-header">
+              <h1>Search <small> Items found matching: {{search_term}} </small></h1>
+            </div> 
+            <form action="{{url_for('crest.search')}}" method="POST">
+                {{ forms.render(form) }}
+                <button type="Submit" class="btn btn-default">Submit</button>
+            </form>
+
+            <table class="table table-striped">
+              <thead>
+                 <th scope="col">Item ID</th>
+                 <th scope="col">Item Name</th>
+              </thead>
+              <tbody>
+                    {% for item in data["items"] %}
+                    </tr> 
+                    <td><img src="http://image.eveonline.com/Type/{{item.id}}_32.png" class="img-polaroid"></td>
+                    <td><a href="/item/{{item.id}}">{{item.name}}</a></td>
+                    </tr> 
+                    {% endfor %}
+                    {% for region in data["regions"] %}
+                    </tr> 
+                    <td></td>
+                    <td><a href="/region/{{region.id}}">{{region.name}}</a></td>
+                    </tr> 
+                    {% endfor %}
+                    {% for system in data["systems"] %}
+                    </tr> 
+                    <td></td>
+                    <td><a href="/system/{{system.id}}">{{system.name}}</a></td>
+                    </tr> 
+                    {% endfor %}
+                    {% for station in data["stations"] %}
+                    </tr> 
+                    <td></td>
+                    <td><a href="/station/{{station.facilityID}}">{{station.name}}</a></td>
+                    </tr> 
+                    {% endfor %}
+              </tbody>
+            </table>
+        </div><!--/col-md-->
+    </div><!--/row-->
+
+{% endblock %}

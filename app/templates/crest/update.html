@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% import "helpers/forms.html" as forms %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="page-header">
+            <h1>Update <small> </small></h1>
+        </div> 
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Universe wide:</h2>
+                <form action="{{url_for('crest.update_action')}}" method="POST">
+                    {{ forms.render(update_form) }}
+                    <button type="Submit" class="btn btn-default">Submit</button>
+                </form>
+            </div> 
+            <div class="col-md-6">
+                <h2>Region wide:</h2>
+                <form action="{{url_for('crest.update_market_action')}}" method="POST">
+                    {{ forms.render(update_market_form) }}
+                    <button type="Submit" class="btn btn-default">Submit</button>
+                </form>
+            </div> 
+        </div> 
+    </div><!--/col-md-->
+</div><!--/row-->
+
+{% endblock %}

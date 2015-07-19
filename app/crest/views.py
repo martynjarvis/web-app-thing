@@ -63,107 +63,172 @@ def view_item(type_id):
         market_history=market_history,
         market_stat=market_stat)
 
+
 @crest.route('/station/<station_id>')
+@login_required
 def view_station(station_id):
     station = db.session.query(Station).get(station_id)
-    #crest_station = APIObject(eve.get(station.href), eve)
     return render_template(
         'crest/station.html',
         title=station.name,
         station=station,
         crest_station=None)
-        #crest_station=crest_station())
 
-@crest.route('/import/<dest_station_id>')
-def import_to_station(dest_station_id):
 
-    dest_market_stat = aliased(MarketStat)
-    source_market_stat = aliased(MarketStat)
+@crest.route('/import', methods=['POST', 'GET'])
+@login_required
+def import_tool():
 
-    dest_market_history = aliased(MarketHistory)
-    source_market_history = aliased(MarketHistory)
+    form = ImportForm()
 
-    dest_station = aliased(Station)
-    source_station = aliased(Station)
-
-    dest_region = aliased(Region)
-    source_region = aliased(Region)
-
-    data = db.session.query(Item, dest_market_stat, source_market_stat,
-                            dest_market_history, source_market_history)\
-        .filter(source_region.id == source_station.region_id)\
-        .filter(dest_region.id == dest_station.region_id)\
-        .filter(source_market_stat.type_id == Item.id)\
-        .filter(source_market_stat.station_id == source_station.facilityID)\
-        .filter(dest_market_stat.type_id == Item.id)\
-        .filter(dest_market_stat.station_id == dest_station.facilityID)\
-        .filter(source_market_history.type_id == Item.id)\
-        .filter(source_market_history.region_id == source_region.id)\
-        .filter(dest_market_history.type_id == Item.id)\
-        .filter(dest_market_history.region_id == dest_region.id)\
-        .filter(source_station.facilityID == 60003760)\
-        .filter(dest_station.facilityID == dest_station_id)\
+    all_stations = db.session.query(Station.facilityID, Station.name)\
+        .order_by(Station.name)\
         .all()
+    form.destination.choices = (all_stations)
 
-    #crest_station = APIObject(eve.get(station.href), eve)
+    if form.validate_on_submit():
+        dest_market_stat = aliased(MarketStat)
+        source_market_stat = aliased(MarketStat)
+
+        dest_market_history = aliased(MarketHistory)
+        source_market_history = aliased(MarketHistory)
+
+        dest_station = aliased(Station)
+        source_station = aliased(Station)
+
+        dest_region = aliased(Region)
+        source_region = aliased(Region)
+
+        data = db.session.query(Item, dest_market_stat, source_market_stat,
+                                dest_market_history, source_market_history)\
+            .filter(source_region.id == source_station.region_id)\
+            .filter(dest_region.id == dest_station.region_id)\
+            .filter(source_market_stat.type_id == Item.id)\
+            .filter(source_market_stat.station_id == source_station.facilityID)\
+            .filter(dest_market_stat.type_id == Item.id)\
+            .filter(dest_market_stat.station_id == dest_station.facilityID)\
+            .filter(source_market_history.type_id == Item.id)\
+            .filter(source_market_history.region_id == source_region.id)\
+            .filter(dest_market_history.type_id == Item.id)\
+            .filter(dest_market_history.region_id == dest_region.id)\
+            .filter(source_station.facilityID == form.source.data)\
+            .filter(dest_station.facilityID == form.destination.data)\
+            .order_by(dest_market_history.price_volume.desc())\
+            .all()
+
+    else:
+        data = []
     return render_template(
         'crest/import.html',
-        title=dest_station.name,
+        title="Import tool",
         data=data,
+        form=form,
     )
 
-@crest.route('/market_type')
-def market_types():
-    data = get_all_items(eve.marketTypes)
-    return render_template('crest/market_types.html',
-            title = "Market Types",
-            data = data)
 
-@crest.route('/eve', defaults={'path': ""})
-@crest.route('/eve/<path:path>')
+@crest.route('/search', methods=['POST', 'GET'])
 @login_required
-def root(path):
-    ''' root crest '''
-    data = eve
-    name = 'root'
-    #try:
-    for attr in path.split('/'):
-        if attr == "":
-            continue
-        if isinstance(data, list):
-            data = get_by_attr_val(data, 'name', attr)
-        else:
-            data = getattr(data(), attr)
-        name = attr
+def search():
+    '''Returns a list of items matching search term'''
+    form = SearchForm()
+    if form.validate_on_submit():
+        data = {}
+        data["items"] = db.session.query(Item)\
+            .filter(Item.name >= form.search_term.data)\
+            .filter(Item.name < form.search_term.data + u"\ufffd")\
+            .limit(10)
+        data["regions"] = db.session.query(Region)\
+            .filter(Region.name >= form.search_term.data)\
+            .filter(Region.name < form.search_term.data + u"\ufffd")\
+            .limit(10)
+        data["systems"] = db.session.query(System)\
+            .filter(System.name >= form.search_term.data)\
+            .filter(System.name < form.search_term.data + u"\ufffd")\
+            .limit(10)
+        data["stations"] = db.session.query(Station)\
+            .filter(Station.name >= form.search_term.data)\
+            .filter(Station.name < form.search_term.data + u"\ufffd")\
+            .limit(10)
+        return render_template('crest/search.html',
+                               title=form.search_term.data,
+                               data=data,
+                               search_term=form.search_term.data,
+                               form=form)
+    data = {"items": [], "regions": [], "systems": [], "stations": []}
+    return render_template('crest/search.html',
+                           title="Search",
+                           data=data,
+                           search_term="",
+                           form=form)
 
-    if isinstance(data,list):
-        return render_template(
-            'crest/generic_list.html',
-            title = name,
-            name = name,
-            table_name = name,
-            data = data)
 
-    data = data()
+@crest.route('/update_action', methods=['POST'])
+@login_required
+def update_action():
+    update_form = UpdateForm()
+    if update_form.validate_on_submit():
+        update_tasks = (
+            tasks.update_items,
+            tasks.update_item_prices,
+            tasks.update_map,
+        )
+        task = update_tasks[update_form.task.data]
+        task.apply_async()
 
-    for attr, val in data._dict.iteritems():
-        if isinstance(val, list):
-            other_data = data
-            data = val
-            link_fix = os.path.join(name, attr, "")  # Trailing slash
-
-            return render_template(
-                'crest/generic_list.html',
-                title = name,
-                name = name,
-                table_name = attr,
-                link_fix = link_fix,
-                data = data,
-                other_data = other_data)
+    update_market_form = UpdateMarketForm()
+    all_regions = db.session.query(Region.id, Region.name)\
+        .order_by(Region.name)\
+        .all()
+    update_market_form.region.choices = (all_regions)
 
     return render_template(
-        'crest/generic.html',
-        title = name,
-        name = name,
-        table_name = name,
-        data = data)
+        'crest/update.html',
+        title="Update",
+        update_form=update_form,
+        update_market_form=update_market_form,
+    )
+
+
+@crest.route('/update_market_action', methods=['POST'])
+@login_required
+def update_market_action():
+    update_market_form = UpdateMarketForm()
+    all_regions = db.session.query(Region.id, Region.name)\
+        .order_by(Region.name)\
+        .all()
+    update_market_form.region.choices = (all_regions)
+
+    if update_market_form.validate_on_submit():
+        region_id = update_market_form.region.data
+        if update_market_form.task.data == 0:
+            tasks.update_all_market_history.apply_async(args=(region_id,))
+        elif update_market_form.task.data == 1:
+            with auth_connection() as con:
+                auth_dump = dump_connection(con)
+            tasks.update_all_market_stat.apply_async(
+                args=(auth_dump, region_id)
+            )
+
+    return render_template(
+        'crest/update.html',
+        title="Update",
+        update_form=UpdateForm(),
+        update_market_form=update_market_form,
+    )
+
+
+@crest.route('/update', methods=['POST', 'GET'])
+@login_required
+def update():
+    update_market_form = UpdateMarketForm()
+    all_regions = db.session.query(Region.id, Region.name)\
+        .order_by(Region.name)\
+        .all()
+    update_market_form.region.choices = (all_regions)
+
+    return render_template(
+        'crest/update.html',
+        title="Update",
+        update_form=UpdateForm(),
+        update_market_form=update_market_form,
+    )

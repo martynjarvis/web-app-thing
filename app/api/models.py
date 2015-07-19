@@ -1,8 +1,11 @@
 from app import db
 
-# LINKS:
-#  https://gist.github.com/techniq/5174410
+
 class BaseMixin(object):
+    """Useful methods to include
+
+    https://gist.github.com/techniq/5174410
+    """
     @classmethod
     def get_by(cls, **kw):
         return cls.query.filter_by(**kw).first()
@@ -25,13 +28,20 @@ class BaseMixin(object):
                            for n in self.__table__.c.keys())
         return "{0}({1})".format(self.__class__.__name__, values)
 
-ApiCharacter = db.Table('api_apicharacter',
-                        db.Column('characterID', db.Integer, db.ForeignKey('api_character.characterID')),
-                        db.Column('keyID', db.Integer, db.ForeignKey('api_api.keyID')))
+ApiCharacter = db.Table(
+    'api_apicharacter',
+    db.Column('characterID', db.Integer,
+              db.ForeignKey('api_character.characterID')),
+    db.Column('keyID', db.Integer, db.ForeignKey('api_api.keyID'))
+)
 
-ApiCorporation = db.Table('api_apicorporation',
-                          db.Column('corporationID', db.Integer, db.ForeignKey('api_corporation.corporationID')),
-                          db.Column('keyID', db.Integer, db.ForeignKey('api_api.keyID')))
+ApiCorporation = db.Table(
+    'api_apicorporation',
+    db.Column('corporationID', db.Integer,
+              db.ForeignKey('api_corporation.corporationID')),
+    db.Column('keyID', db.Integer, db.ForeignKey('api_api.keyID'))
+)
+
 
 class Api(BaseMixin, db.Model):
     __tablename__ = 'api_api'
@@ -39,7 +49,9 @@ class Api(BaseMixin, db.Model):
     vCode = db.Column(db.String(80))
     accessMask = db.Column(db.Integer)
     expires = db.Column(db.DateTime)
-    type = db.Column(db.Enum('Account', 'Character', 'Corporation', name='api_apitypes'))
+    type = db.Column(
+        db.Enum('Account', 'Character', 'Corporation', name='api_apitypes'))
+
 
 class Character(BaseMixin, db.Model):
     __tablename__ = 'api_character'
@@ -72,6 +84,7 @@ class Character(BaseMixin, db.Model):
     balance = db.Column(db.Numeric(12, 2))
     apis = db.relationship('Api', secondary=ApiCharacter, backref='characters')
 
+
 class Corporation(BaseMixin, db.Model):
     __tablename__ = 'api_corporation'
     corporationID = db.Column(db.Integer, primary_key=True)
@@ -89,9 +102,11 @@ class Corporation(BaseMixin, db.Model):
     memberCount = db.Column(db.Integer)
     memberLimit = db.Column(db.Integer)
     shares = db.Column(db.Integer)
-    apis = db.relationship('Api', secondary=ApiCorporation, backref='corporations')
+    apis = db.relationship('Api', secondary=ApiCorporation,
+                           backref='corporations')
     # TODO, each api can actually only have a single corporation? is this
     # important?
+
 
 class Transaction(BaseMixin, db.Model):
     __tablename__ = 'api_transaction'
@@ -105,15 +120,20 @@ class Transaction(BaseMixin, db.Model):
     clientName = db.Column(db.String(80))
     stationID = db.Column(db.Integer)
     stationName = db.Column(db.String(80))
-    transactionType = db.Column(db.Enum("buy", "sell", name='api_transactiontypes'))
-    transactionFor = db.Column(db.Enum("personal","corporation", name='api_transactiontypes'))
+    transactionType = db.Column(
+        db.Enum("buy", "sell", name='api_transactiontypes'))
+    transactionFor = db.Column(
+        db.Enum("personal", "corporation", name='api_transactiontypes'))
     journalTransactionID = db.Column(db.BigInteger)
     clientTypeID = db.Column(db.Integer)
 
-    characterID = db.Column(db.Integer, db.ForeignKey('api_character.characterID'), nullable=True)
+    characterID = db.Column(
+        db.Integer, db.ForeignKey('api_character.characterID'), nullable=True)
     character = db.relationship("Character", backref="transactions")
 
-    corporationID = db.Column(db.Integer, db.ForeignKey('api_corporation.corporationID'), nullable=True)
+    corporationID = db.Column(
+        db.Integer, db.ForeignKey('api_corporation.corporationID'),
+        nullable=True)
     corporation = db.relationship("Corporation", backref="transactions")
 
 
@@ -136,10 +156,11 @@ class Order(BaseMixin, db.Model):
     issued = db.Column(db.DateTime)
 
     # API returns charID :/
-    charID = db.Column(db.Integer, db.ForeignKey('api_character.characterID'), nullable=True)
+    charID = db.Column(
+        db.Integer, db.ForeignKey('api_character.characterID'), nullable=True)
     character = db.relationship("Character", backref="orders")
 
-    corporationID = db.Column(db.Integer, db.ForeignKey('api_corporation.corporationID'), nullable=True)
+    corporationID = db.Column(
+        db.Integer, db.ForeignKey('api_corporation.corporationID'),
+        nullable=True)
     corporation = db.relationship("Corporation", backref="orders")
-
-

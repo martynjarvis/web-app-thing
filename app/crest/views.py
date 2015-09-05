@@ -125,18 +125,21 @@ def import_tool():
             .filter(dest_region.id == dest_station.region_id)\
             .filter(source_market_stat.type_id == Item.id)\
             .filter(source_market_stat.station_id == source_station.facilityID)\
+            .filter(source_market_stat.current_sell != None)\
             .filter(dest_market_stat.type_id == Item.id)\
             .filter(dest_market_stat.station_id == dest_station.facilityID)\
             .filter(source_market_history.type_id == Item.id)\
             .filter(source_market_history.region_id == source_region.id)\
+            .filter(source_market_history.average_price != None)\
             .filter(dest_market_history.average_volume > 0)\
             .filter(dest_market_history.type_id == Item.id)\
             .filter(dest_market_history.region_id == dest_region.id)\
+            .filter(dest_market_history.average_price >
+                    source_market_stat.current_sell)\
             .filter(source_station.facilityID == form.source.data)\
             .filter(dest_station.facilityID == form.destination.data)\
             .order_by(dest_market_history.price_volume.desc())\
             .all()
-        # .filter(dest_market_history.average_price > source_market_history.average_price)\
 
     else:
         data = []

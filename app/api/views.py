@@ -92,6 +92,17 @@ def characters():
         data=chars)
 
 
+@api.route('/character/<character_id>')
+@login_required
+def character(character_id):
+    '''Detailed look at a chacter'''
+    character = db.session.query(Character).get(character_id)
+    return render_template(
+        'api/character.html',
+        title=character.name,
+        character=character)
+
+
 @api.route('/corporations')
 @login_required
 def corporations():

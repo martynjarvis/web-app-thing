@@ -77,11 +77,14 @@ eveapi.set_user_agent("twitter:@_scruff")
 if not os.path.exists(app.config['CREST_CACHE_DIR']):
     os.mkdir(app.config['CREST_CACHE_DIR'])
 
+import cache
+c = cache.FileCache(app.config['CREST_CACHE_DIR'])
+
 eve = pycrest.EVE(
     client_id=app.config['CREST_CLIENT_ID'],
     api_key=app.config['CREST_SECRET_KEY'],
     redirect_uri=app.config['CREST_CALLBACK_URL'],
-    cache_dir=app.config['CREST_CACHE_DIR'])
+    cache=c)
 eve()  # initialize
 
 # === eve login and authentication stuff

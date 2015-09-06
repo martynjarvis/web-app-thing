@@ -36,14 +36,14 @@ def update_map():
     return redirect(url_for('index'))
 
 
-@crest.route('/update_history/<region_id>')
+@crest.route('/update_history/<int:region_id>')
 @login_required
 def update_history(region_id):
     tasks.update_market_history.apply_async(args=(region_id, 34))
     return redirect(url_for('index'))
 
 
-@crest.route('/update_all_history/<region_id>')
+@crest.route('/update_all_history/<int:region_id>')
 @login_required
 def update_all_history(region_id):
     tasks.update_all_market_history.apply_async(args=(region_id,))
@@ -59,16 +59,16 @@ def update_stat(region_id):
     return redirect(url_for('index'))
 
 
-@crest.route('/update_all_stat/<station_id>')
+@crest.route('/update_all_stat/<int:region_id>')
 @login_required
-def update_all_stat(station_id):
+def update_all_stat(region_id):
     with auth_connection() as con:
         auth_dump = dump_connection(con)
-    tasks.update_all_market_stat.apply_async(args=(auth_dump, station_id))
+    tasks.update_all_market_stat.apply_async(args=(auth_dump, region_id))
     return redirect(url_for('index'))
 
 
-@crest.route('/item/<type_id>')
+@crest.route('/item/<int:type_id>')
 @login_required
 def view_item(type_id):
     item = db.session.query(Item).get(type_id)
@@ -84,7 +84,7 @@ def view_item(type_id):
         market_stat=market_stat)
 
 
-@crest.route('/station/<station_id>')
+@crest.route('/station/<int:station_id>')
 @login_required
 def view_station(station_id):
     station = db.session.query(Station).get(station_id)

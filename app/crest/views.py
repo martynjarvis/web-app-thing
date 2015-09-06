@@ -15,6 +15,14 @@ from app.sso.tools import dump_connection, auth_connection
 crest = Blueprint('crest', __name__)
 
 
+@crest.route('/update_item_details')
+@login_required
+def update_item_details():
+    test_href = "https://public-crest.eveonline.com/types/34/"
+    tasks.update_item_details.apply_async(args=(test_href,))
+    return redirect(url_for('index'))
+
+
 @crest.route('/update_items')
 @login_required
 def update_items():
@@ -198,6 +206,7 @@ def update_action():
             tasks.update_items,
             tasks.update_map,
             tasks.update_item_prices,
+            tasks.update_all_item_details,
         )
         task = update_tasks[update_form.task.data]
         task.apply_async()

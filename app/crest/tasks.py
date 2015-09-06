@@ -31,6 +31,39 @@ def update_items():
 
 
 @celery.task()
+def update_all_item_details():
+    for crest_item in get_all_items(eve.itemTypes):
+        update_item_details.apply_async(args=(crest_item.href,))
+
+
+@celery.task(rate_limit='30/s')
+def update_item_details(item_href):
+    item_id = item_id_from_crest_href(item_href)
+
+    db_item = db.session.query(Item).get(item_id)
+
+    crest_item = APIObject(eve.get(item_href), eve)
+
+    attempts = 10
+    for _ in xrange(attempts):
+        try:
+            db_item.populate_from_object(crest_item())
+            decrease_cool_factor()
+            break
+        except APIException as ex:
+            if "503" in str(ex):
+                print "Received 503, we are being rate limited."
+                cool_off()
+        except ConnectionError:
+            print "Encountered a ConnectionError."
+            cool_off()
+    else:
+        raise APIException("Continued to receive errors after 10 attempts.")
+
+    db.session.commit()
+
+
+@celery.task()
 def update_item_prices():
     updated_items = []
     crest_items = get_all_items(eve.marketPrices)
@@ -264,4 +297,4 @@ def cool_off():
 
 def decrease_cool_factor():
     global COOL_FACTOR
-    COOL_FACTOR *= 0.95
+    COOL_FACTOR *= 0.99

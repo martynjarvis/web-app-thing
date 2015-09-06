@@ -11,6 +11,8 @@ class Item(BaseMixin, db.Model):
     adjustedPrice = db.Column(db.Numeric(12, 2))
     averagePrice = db.Column(db.Numeric(12, 2))
     href = db.Column(db.String(80))
+    volume = db.Column(db.Float)
+    published = db.Column(db.Boolean)
 
 
 class Region(BaseMixin, db.Model):

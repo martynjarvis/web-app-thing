@@ -30,6 +30,7 @@ class UpdateForm(wtf.Form):
             (0, u'Update Items'),
             (1, u'Update Map'),
             (2, u'Update Market Prices (Universe Average)'),
+            (3, u'Update Item Details'),
         ]
     )
 

@@ -44,3 +44,12 @@ class UpdateMarketForm(wtf.Form):
             (1, u'Update Market Stats'),
         ]
     )
+    items = fields.SelectField(
+        u'Items',
+        coerce=int,
+        choices=[
+            (0, u'All'),
+            (1, u'Popular Only'),
+            (2, u'Favourites Only'),
+        ]
+    )

@@ -194,8 +194,8 @@ def update_action():
     if update_form.validate_on_submit():
         update_tasks = (
             tasks.update_items,
-            tasks.update_item_prices,
             tasks.update_map,
+            tasks.update_item_prices,
         )
         task = update_tasks[update_form.task.data]
         task.apply_async()
@@ -225,13 +225,15 @@ def update_market_action():
 
     if update_market_form.validate_on_submit():
         region_id = update_market_form.region.data
+        items = update_market_form.items.data  # 0 all, 1 popular, 2 favs
         if update_market_form.task.data == 0:
-            tasks.update_all_market_history.apply_async(args=(region_id,))
+            tasks.update_all_market_history.apply_async(
+                args=(region_id, items))
         elif update_market_form.task.data == 1:
             with auth_connection() as con:
                 auth_dump = dump_connection(con)
             tasks.update_all_market_stat.apply_async(
-                args=(auth_dump, region_id)
+                args=(auth_dump, region_id, items)
             )
 
     return render_template(

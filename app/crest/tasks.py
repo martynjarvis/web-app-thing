@@ -73,19 +73,30 @@ def update_map():
     db.session.commit()
 
 
-@celery.task()
-def update_all_market_history(region_id):
-    crest_items = get_all_items(eve.marketTypes)
-    for item in crest_items:
-        update_market_history.apply_async(args=(region_id, item.type.id))
+def get_item_ids_to_update(region_id, items):
+    if items == 0:  # All items
+        return (item.type.id for item in get_all_items(eve.marketTypes))
+    elif items == 1:  # Popular items
+        item_ids = db.session.query(MarketHistory.type_id)\
+            .filter(MarketHistory.region_id == region_id)\
+            .filter(MarketHistory.average_volume > 0)\
+            .all()
+        # sqlalchemy returns a tuple for each row, ie:  (34,)
+        return (i[0] for i in item_ids)
+    elif items == 2:  # Favourite items
+        raise NotImplementedError
 
 
 @celery.task()
-def update_all_market_stat(auth_dump, station_id):
-    crest_items = get_all_items(eve.marketTypes)
-    for item in crest_items:
-        update_market_stat.apply_async(args=(auth_dump, station_id,
-                                       item.type.id))
+def update_all_market_history(region_id, items):
+    for item_id in get_item_ids_to_update(region_id, items):
+        update_market_history.apply_async(args=(region_id, item_id))
+
+
+@celery.task()
+def update_all_market_stat(auth_dump, region_id, items):
+    for item_id in get_item_ids_to_update(region_id, items):
+        update_market_stat.apply_async(args=(auth_dump, region_id, item_id))
 
 
 @celery.task(rate_limit='30/s')
@@ -200,6 +211,9 @@ def update_market_stat(auth_dump, region_id, type_id):
             if "503" in str(ex):
                 print "Received 503, we are being rate limited."
                 cool_off()
+            if "502" in str(ex):
+                print "Received 502, is it downtime?"
+                cool_off()
             else:
                 raise
         except ConnectionError:
@@ -243,7 +257,7 @@ def update_market_stat(auth_dump, region_id, type_id):
 
 def cool_off():
     global COOL_FACTOR
-    COOL_FACTOR += 2.0
+    COOL_FACTOR = min(max(COOL_FACTOR, 1) * 2.0, 60)
     print "Cooling off for {} seconds before retying.".format(COOL_FACTOR)
     time.sleep(COOL_FACTOR)
 

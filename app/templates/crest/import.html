@@ -15,11 +15,11 @@
                 <thead>
                     <th scope="col">Item</th>
                     <th scope="col" class="text-right">Daily Vol.</th>
-                    <th scope="col" class="text-right">Stock (orders)</th>
+                    <th scope="col" class="text-right">Stock (Orders)</th>
                     <th scope="col" class="text-right">Days</th>
-                    <th scope="col" class="text-right">Src. Price</th>
-                    <th scope="col" class="text-right">Dest. Price</th>
-                    <th scope="col" class="text-right">Dest. Avg.</th>
+                    <th scope="col" class="text-right">Source Price<br>(Current Trend)</th>
+                    <th scope="col" class="text-right">Destination Price<br>(Margin) [Avg Margin]</th>
+                    <th scope="col" class="text-right">20% Price</th>
                 </thead>
                 <tbody>
                     {% for row in data %}  
@@ -29,12 +29,15 @@
                     <td class="text-right">{{ row[1].current_sell_volume or 0 }} ({{ row[1].current_sell_orders or 0 }})</td>
                     <td class="text-right">{{'{:20,.1f}'.format((row[1].current_sell_volume or 0.0)/row[3].average_volume)}}</td>
                     <td class="text-right">{{'{:20,.0f}'.format(row[2].current_sell)}} ({{'{:20,.1f}%'.format(100*row[2].current_sell/row[4].average_price - 100)}})</td>
+                    <td class="text-right">
                     {% if row[1].current_sell %}
-                    <td class="text-right">{{'{:20,.0f}'.format(row[1].current_sell)}} ({{'{:20,.1f}%'.format(100*row[1].current_sell/row[2].current_sell - 100)}})</td>
+                        {{'{:20,.0f}'.format(row[1].current_sell)}} ({{'{:20,.1f}%'.format(100*row[1].current_sell/row[2].current_sell - 100)}})
                     {% else %}
-                    <td class="text-right"> None </td>
+                        None
                     {% endif %}
-                    <td class="text-right">{{'{:20,.0f}'.format(row[3].average_price)}} ({{'{:20,.1f}%'.format(100*row[3].average_price/row[2].current_sell - 100)}})</td>
+                    [{{'{:20,.1f}%'.format(100*row[3].average_price/row[2].current_sell - 100)}}]
+                    </td>
+                    <td class="text-right">{{'{:20,.0f}'.format(row[5])}}</td>
                     </tr> 
                     {% endfor %} 
                 <tbody>

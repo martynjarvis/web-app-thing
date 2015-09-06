@@ -120,7 +120,9 @@ def import_tool():
         source_region = aliased(Region)
 
         data = db.session.query(Item, dest_market_stat, source_market_stat,
-                                dest_market_history, source_market_history)\
+                                dest_market_history, source_market_history,
+                                source_market_stat.current_sell*1.2,
+                                )\
             .filter(source_region.id == source_station.region_id)\
             .filter(dest_region.id == dest_station.region_id)\
             .filter(source_market_stat.type_id == Item.id)\
